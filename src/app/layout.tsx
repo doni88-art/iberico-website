@@ -21,7 +21,7 @@ const karla = Karla({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.ibericosaigon.com"),
+  metadataBase: new URL("https://www.weareiberico.com"),
   title: {
     default: "IBÉRICO — Tapas y Vino | Spanish Restaurant, Ho Chi Minh City",
     template: "%s | IBÉRICO Tapas y Vino",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: "IBÉRICO — Tapas y Vino",
     description:
       "Best Spanish Restaurant, Gourmet Vietnam Awards 2025 — authentic tapas and wine in the heart of Ho Chi Minh City.",
-    url: "https://www.ibericosaigon.com",
+    url: "https://www.weareiberico.com",
     siteName: "IBÉRICO Tapas y Vino",
     locale: "en_US",
     type: "website",

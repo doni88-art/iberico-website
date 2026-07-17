@@ -5,6 +5,7 @@ import { join } from "node:path";
 export const alt = "IBÉRICO — Tapas y Vino, Ho Chi Minh City";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+export const dynamic = "force-static";
 
 export default async function Image() {
   const logoBuffer = await readFile(
