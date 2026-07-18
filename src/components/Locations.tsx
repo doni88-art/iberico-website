@@ -120,13 +120,13 @@ export function Locations() {
           </AnimatePresence>
 
           <div className="flex flex-col">
-            <div className="relative h-40 shrink-0 sm:h-48 lg:h-56">
+            <div className="relative h-64 shrink-0 bg-ink sm:h-80 lg:h-96">
               <Image
                 src={LOCATION_PHOTOS[loc.name]}
                 alt={`${loc.name} storefront`}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
+                className="object-contain"
               />
             </div>
             <LocationMap key={loc.name} loc={loc} />
