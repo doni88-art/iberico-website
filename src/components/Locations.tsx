@@ -8,6 +8,12 @@ import { useLanguage, type LocationInfo } from "@/lib/i18n";
 import { Reveal } from "./Reveal";
 import { KineticText } from "./KineticText";
 
+const LOCATION_PHOTOS: Record<string, string> = {
+  "IBÉRICO Thảo Điền": "/images/real-location-thaodien.jpg",
+  "IBÉRICO Thị Sách": "/images/real-location-thisach.jpg",
+  "IBÉRICO Hội An": "/images/real-location-hoian.jpg",
+};
+
 export function Locations() {
   const { t } = useLanguage();
   const [active, setActive] = useState(0);
@@ -113,7 +119,18 @@ export function Locations() {
             </motion.div>
           </AnimatePresence>
 
-          <LocationMap key={loc.name} loc={loc} />
+          <div className="flex flex-col">
+            <div className="relative h-40 shrink-0 sm:h-48 lg:h-56">
+              <Image
+                src={LOCATION_PHOTOS[loc.name]}
+                alt={`${loc.name} storefront`}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+            <LocationMap key={loc.name} loc={loc} />
+          </div>
         </div>
       </div>
     </section>
@@ -148,7 +165,7 @@ function LocationMap({ loc }: { loc: LocationInfo }) {
   };
 
   return (
-    <div className="relative h-72 bg-ink lg:h-auto">
+    <div className="relative min-h-72 flex-1 bg-ink">
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-ink to-charcoal px-6 text-center text-cream/50">
         <MapPin size={28} className="text-gold-light/70" />
         <p className="max-w-[220px] text-xs leading-relaxed">{loc.address}</p>

@@ -118,9 +118,11 @@ export interface Dict {
     another: string;
     required: string;
     whatsapp: string;
+    zalo: string;
     orContact: string;
     call: string;
     emailUs: string;
+    lateNote: string;
   };
   footer: {
     tagline: string;
@@ -169,7 +171,7 @@ const en: Dict = {
       { value: "2021", label: "Founded in Saigon" },
       { value: "3", label: "Locations across Vietnam" },
       { value: "2025", label: "Best Spanish Restaurant, Gourmet Vietnam Awards" },
-      { value: "4.5★", label: "Guest rating" },
+      { value: "4.5–4.7★", label: "Guest rating" },
     ],
   },
   menu: {
@@ -604,7 +606,7 @@ const en: Dict = {
         source: "Hochiminh Gourmet",
       },
     ],
-    ratingLabel: "4.5 / 5 average guest rating",
+    ratingLabel: "4.5–4.7 / 5 average guest rating",
   },
   locations: {
     eyebrow: "Our Locations",
@@ -617,7 +619,7 @@ const en: Dict = {
         name: "IBÉRICO Thảo Điền",
         area: "Flagship · Thảo Điền",
         address: "33 Võ Trường Toản St, Khánh Ward, HCMC",
-        hours: "11:30 – 23:30 daily",
+        hours: "16:00 – 23:30 daily · Kitchen closes 22:30",
         capacity: "Seats up to 60",
         phone: "+84 326 498 956",
         mapQuery: "33 Vo Truong Toan St, Khanh Ward, Ho Chi Minh City",
@@ -630,7 +632,7 @@ const en: Dict = {
         name: "IBÉRICO Thị Sách",
         area: "Sài Gòn Ward",
         address: "20A Thị Sách St, Sài Gòn Ward, HCMC",
-        hours: "Mon–Fri 12:00–00:00 · Sat–Sun 16:00–00:00",
+        hours: "11:00 – 23:30 daily · Kitchen closes 22:30",
         capacity: "Seats 60–80",
         phone: "+84 849 000 531",
         mapQuery: "20A Thi Sach St, Sai Gon Ward, Ho Chi Minh City",
@@ -643,7 +645,7 @@ const en: Dict = {
         name: "IBÉRICO Hội An",
         area: "Ancient Town",
         address: "100 Bạch Đằng St, Hội An Ward, Đà Nẵng City",
-        hours: "10:00 – 00:00 daily",
+        hours: "11:00 – 23:30 daily · Kitchen closes 22:30",
         capacity: "Seats up to 70",
         phone: "+84 868 774 026",
         mapQuery: "100 Bach Dang St, Hoi An Ward, Da Nang City",
@@ -657,14 +659,15 @@ const en: Dict = {
   events: {
     eyebrow: "Private Events & Catering",
     title: "Your table, your celebration",
-    body: "From intimate birthday dinners to full buyouts for company celebrations, our team builds a sharing menu around your guest list — with wine pairings curated for the occasion.",
+    body: "From intimate birthday dinners to full restaurant buyouts, our team builds a sharing menu around your guest list. We also offer full off-site catering — including our legendary paella parties, cooked fresh and served family-style for any size of celebration.",
     bullets: [
+      "Full-service catering for weddings & corporate events",
+      "Legendary paella parties, cooked fresh on-site",
       "Private upstairs room at Thị Sách",
       "Custom tapas & wine pairing menus",
-      "Off-site catering for weddings & corporate events",
       "Full restaurant buyouts available",
     ],
-    cta: "Enquire About Events",
+    cta: "Enquire About Events & Catering",
   },
   reservation: {
     eyebrow: "Reservations",
@@ -688,9 +691,12 @@ const en: Dict = {
     another: "Book Another Table",
     required: "Required",
     whatsapp: "WhatsApp",
+    zalo: "Zalo",
     orContact: "Or reach us directly",
     call: "Call",
     emailUs: "Email",
+    lateNote:
+      "Kitchen closes for hot dishes at 22:30 — a limited menu (cold cuts, cheeses, wine) is still available for bookings until 23:30.",
   },
   footer: {
     tagline: "Authentic Spanish tapas & wine, shared in Ho Chi Minh City.",
@@ -739,7 +745,7 @@ const vi: Dict = {
       { value: "2021", label: "Thành lập tại Sài Gòn" },
       { value: "3", label: "Chi nhánh trên khắp Việt Nam" },
       { value: "2025", label: "Nhà Hàng Tây Ban Nha Xuất Sắc Nhất, Gourmet Vietnam Awards" },
-      { value: "4.5★", label: "Đánh giá từ khách hàng" },
+      { value: "4.5–4.7★", label: "Đánh giá từ khách hàng" },
     ],
   },
   menu: {
@@ -1174,7 +1180,7 @@ const vi: Dict = {
         source: "Hochiminh Gourmet",
       },
     ],
-    ratingLabel: "Đánh giá trung bình 4.5 / 5 từ khách hàng",
+    ratingLabel: "Đánh giá trung bình 4.5–4.7 / 5 từ khách hàng",
   },
   locations: {
     eyebrow: "Địa Điểm Của Chúng Tôi",
@@ -1187,7 +1193,7 @@ const vi: Dict = {
         name: "IBÉRICO Thảo Điền",
         area: "Chi nhánh đầu tiên · Thảo Điền",
         address: "33 Võ Trường Toản, Phường Khánh, TP.HCM",
-        hours: "11:30 – 23:30 hằng ngày",
+        hours: "16:00 – 23:30 hằng ngày · Bếp nóng đóng cửa 22:30",
         capacity: "Sức chứa 60 khách",
         phone: "+84 326 498 956",
         mapQuery: "33 Vo Truong Toan St, Khanh Ward, Ho Chi Minh City",
@@ -1200,7 +1206,7 @@ const vi: Dict = {
         name: "IBÉRICO Thị Sách",
         area: "Phường Sài Gòn",
         address: "20A Thị Sách, Phường Sài Gòn, TP.HCM",
-        hours: "T2–T6: 12:00–00:00 · T7–CN: 16:00–00:00",
+        hours: "11:00 – 23:30 hằng ngày · Bếp nóng đóng cửa 22:30",
         capacity: "Sức chứa 60–80 khách",
         phone: "+84 849 000 531",
         mapQuery: "20A Thi Sach St, Sai Gon Ward, Ho Chi Minh City",
@@ -1213,7 +1219,7 @@ const vi: Dict = {
         name: "IBÉRICO Hội An",
         area: "Phố Cổ",
         address: "100 Bạch Đằng, Phường Hội An, Thành phố Đà Nẵng",
-        hours: "10:00 – 00:00 hằng ngày",
+        hours: "11:00 – 23:30 hằng ngày · Bếp nóng đóng cửa 22:30",
         capacity: "Sức chứa 70 khách",
         phone: "+84 868 774 026",
         mapQuery: "100 Bach Dang St, Hoi An Ward, Da Nang City",
@@ -1227,14 +1233,15 @@ const vi: Dict = {
   events: {
     eyebrow: "Sự Kiện & Tiệc Riêng",
     title: "Bàn tiệc của bạn, dịp kỷ niệm của bạn",
-    body: "Từ những bữa tối sinh nhật ấm cúng đến việc bao trọn nhà hàng cho sự kiện công ty, đội ngũ của chúng tôi sẽ xây dựng thực đơn chia sẻ riêng cho danh sách khách mời của bạn — cùng các cặp rượu vang được tuyển chọn cho dịp đặc biệt.",
+    body: "Từ những bữa tối sinh nhật ấm cúng đến việc bao trọn nhà hàng cho sự kiện công ty, đội ngũ của chúng tôi sẽ xây dựng thực đơn chia sẻ riêng cho danh sách khách mời của bạn. Chúng tôi cũng cung cấp dịch vụ catering trọn gói bên ngoài — bao gồm những bữa tiệc paella nổi tiếng, nấu tươi tại chỗ và phục vụ theo phong cách chia sẻ cho mọi quy mô sự kiện.",
     bullets: [
+      "Dịch vụ catering trọn gói cho tiệc cưới & sự kiện công ty",
+      "Tiệc paella nổi tiếng, nấu tươi tại chỗ",
       "Phòng riêng trên lầu tại Thị Sách",
       "Thực đơn tapas & rượu vang tùy chỉnh",
-      "Dịch vụ catering cho tiệc cưới & sự kiện công ty",
       "Có thể bao trọn toàn bộ nhà hàng",
     ],
-    cta: "Liên Hệ Về Sự Kiện",
+    cta: "Liên Hệ Về Sự Kiện & Catering",
   },
   reservation: {
     eyebrow: "Đặt Bàn",
@@ -1258,9 +1265,12 @@ const vi: Dict = {
     another: "Đặt Thêm Bàn Khác",
     required: "Bắt buộc",
     whatsapp: "WhatsApp",
+    zalo: "Zalo",
     orContact: "Hoặc liên hệ trực tiếp",
     call: "Gọi Điện",
     emailUs: "Email",
+    lateNote:
+      "Bếp nóng đóng cửa lúc 22:30 — vẫn có thể đặt bàn đến 23:30 với thực đơn giới hạn (đồ nguội, phô mai, rượu vang).",
   },
   footer: {
     tagline: "Tapas và rượu vang Tây Ban Nha chính thống, cùng chia sẻ tại Thành phố Hồ Chí Minh.",
@@ -1309,7 +1319,7 @@ const es: Dict = {
       { value: "2021", label: "Fundado en Saigón" },
       { value: "3", label: "Locales en Vietnam" },
       { value: "2025", label: "Mejor Restaurante Español, Gourmet Vietnam Awards" },
-      { value: "4.5★", label: "Valoración de los clientes" },
+      { value: "4.5–4.7★", label: "Valoración de los clientes" },
     ],
   },
   menu: {
@@ -1744,7 +1754,7 @@ const es: Dict = {
         source: "Hochiminh Gourmet",
       },
     ],
-    ratingLabel: "Valoración media de 4.5 / 5",
+    ratingLabel: "Valoración media de 4.5–4.7 / 5",
   },
   locations: {
     eyebrow: "Nuestras Casas",
@@ -1757,7 +1767,7 @@ const es: Dict = {
         name: "IBÉRICO Thảo Điền",
         area: "Local original · Thảo Điền",
         address: "33 Võ Trường Toản, Khánh Ward, Ho Chi Minh",
-        hours: "11:30 – 23:30 todos los días",
+        hours: "16:00 – 23:30 todos los días · Cocina caliente hasta 22:30",
         capacity: "Hasta 60 comensales",
         phone: "+84 326 498 956",
         mapQuery: "33 Vo Truong Toan St, Khanh Ward, Ho Chi Minh City",
@@ -1770,7 +1780,7 @@ const es: Dict = {
         name: "IBÉRICO Thị Sách",
         area: "Sài Gòn Ward",
         address: "20A Thị Sách, Sài Gòn Ward, Ho Chi Minh",
-        hours: "Lun–Vie 12:00–00:00 · Sáb–Dom 16:00–00:00",
+        hours: "11:00 – 23:30 todos los días · Cocina caliente hasta 22:30",
         capacity: "60–80 comensales",
         phone: "+84 849 000 531",
         mapQuery: "20A Thi Sach St, Sai Gon Ward, Ho Chi Minh City",
@@ -1783,7 +1793,7 @@ const es: Dict = {
         name: "IBÉRICO Hội An",
         area: "Casco Antiguo",
         address: "100 Bạch Đằng, Hội An Ward, Đà Nẵng",
-        hours: "10:00 – 00:00 todos los días",
+        hours: "11:00 – 23:30 todos los días · Cocina caliente hasta 22:30",
         capacity: "Hasta 70 comensales",
         phone: "+84 868 774 026",
         mapQuery: "100 Bach Dang St, Hoi An Ward, Da Nang City",
@@ -1797,14 +1807,15 @@ const es: Dict = {
   events: {
     eyebrow: "Privados & Catering",
     title: "Tu mesa, tu celebración",
-    body: "Desde cenas de cumpleaños íntimas hasta el alquiler completo del restaurante para eventos de empresa, nuestro equipo diseña un menú para compartir según tu lista de invitados — con maridajes de vino pensados para la ocasión.",
+    body: "Desde cenas de cumpleaños íntimas hasta el alquiler completo del restaurante para eventos de empresa, nuestro equipo diseña un menú para compartir según tu lista de invitados. También ofrecemos catering externo completo — incluyendo nuestras legendarias fiestas de paella, cocinadas al momento y servidas para compartir, para cualquier tamaño de celebración.",
     bullets: [
+      "Catering externo completo para bodas y eventos corporativos",
+      "Legendarias fiestas de paella, cocinadas al momento",
       "Sala privada en el piso superior de Thị Sách",
       "Menús personalizados de tapas y maridaje",
-      "Catering externo para bodas y eventos corporativos",
       "Alquiler completo del restaurante disponible",
     ],
-    cta: "Consultar sobre Eventos",
+    cta: "Consultar sobre Eventos y Catering",
   },
   reservation: {
     eyebrow: "Reservas",
@@ -1828,9 +1839,12 @@ const es: Dict = {
     another: "Reservar Otra Mesa",
     required: "Obligatorio",
     whatsapp: "WhatsApp",
+    zalo: "Zalo",
     orContact: "O contáctanos directamente",
     call: "Llamar",
     emailUs: "Correo",
+    lateNote:
+      "La cocina caliente cierra a las 22:30 — aún se puede reservar hasta las 23:30 con una carta limitada (embutidos, quesos, vino).",
   },
   footer: {
     tagline: "Auténticas tapas y vino español, para compartir en Ho Chi Minh.",
@@ -1847,6 +1861,12 @@ export const languageLabels: Record<Lang, string> = {
   en: "EN",
   vi: "VI",
   es: "ES",
+};
+
+export const languageFlags: Record<Lang, string> = {
+  en: "🇬🇧",
+  vi: "🇻🇳",
+  es: "🇪🇸",
 };
 
 interface LanguageContextValue {

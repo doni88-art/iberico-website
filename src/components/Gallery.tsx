@@ -10,10 +10,11 @@ import { KineticText } from "./KineticText";
 
 const IMAGES = [
   { src: "/images/real-bar-interior.jpg", alt: "IBÉRICO bar interior with wine wall", span: "row-span-2 sm:col-span-1" },
-  { src: "/images/real-jamon-carving.jpg", alt: "Jamón Ibérico de Bellota, hand-carved at IBÉRICO", span: "sm:col-span-2" },
+  { src: "/images/real-jamon-carving-action.jpg", alt: "Jamón Ibérico de Bellota, hand-carved at IBÉRICO", span: "sm:col-span-2" },
   { src: "/images/menu-croquetas.jpg", alt: "Croquetas de Jamón at IBÉRICO", span: "" },
   { src: "/images/real-manchego-board.jpg", alt: "Manchego cheese, hand-cut at IBÉRICO", span: "" },
   { src: "/images/real-charcuterie-board.jpg", alt: "Chorizo, salchichón, olives and manchego spread", span: "sm:col-span-2" },
+  { src: "/images/real-cactus-terrace.jpg", alt: "IBÉRICO Thảo Điền terrace among the cacti at night", span: "" },
   { src: "/images/real-exterior-night.jpg", alt: "IBÉRICO storefront lit up at night", span: "" },
   { src: "/images/real-exterior-night-2.jpg", alt: "IBÉRICO signage and terrace after dark", span: "" },
   { src: "/images/real-sangria.jpg", alt: "Sangría poured on the terrace at IBÉRICO", span: "" },

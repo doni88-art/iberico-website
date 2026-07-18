@@ -3,15 +3,45 @@
 import { useMemo, useRef, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { CheckCircle2, Loader2, MessageCircle, Phone, Mail } from "lucide-react";
+import { CheckCircle2, Loader2, Phone, Mail } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { Reveal } from "./Reveal";
 import { Magnetic } from "./Magnetic";
 import { ShimmerButton } from "./ShimmerButton";
 import { KineticText } from "./KineticText";
+import { ZaloIcon, WhatsAppIcon } from "./SocialIcons";
 
-// Flagship (Thảo Điền) number — used as the default/quick-link before a location is chosen.
-const DEFAULT_WHATSAPP_NUMBER = "84326498956";
+// Central bookings line — every reservation is sent here via WhatsApp, plus email.
+const BOOKINGS_NUMBER = "84849000531";
+const BOOKINGS_EMAIL = "hola@weareiberico.com";
+
+// Per-location service hours, keyed by the (untranslated) location name.
+const LOCATION_HOURS: Record<
+  string,
+  { start: string; kitchenClose: string; lastBooking: string }
+> = {
+  "IBÉRICO Thảo Điền": { start: "16:00", kitchenClose: "22:30", lastBooking: "23:30" },
+  "IBÉRICO Thị Sách": { start: "11:00", kitchenClose: "22:30", lastBooking: "23:30" },
+  "IBÉRICO Hội An": { start: "11:00", kitchenClose: "22:30", lastBooking: "23:30" },
+};
+const DEFAULT_HOURS = { start: "11:00", kitchenClose: "22:30", lastBooking: "23:30" };
+
+function generateTimeSlots(start: string, end: string): string[] {
+  const [sh, sm] = start.split(":").map(Number);
+  const [eh, em] = end.split(":").map(Number);
+  const slots: string[] = [];
+  let h = sh;
+  let m = sm;
+  while (h < eh || (h === eh && m <= em)) {
+    slots.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+    m += 30;
+    if (m >= 60) {
+      m -= 60;
+      h += 1;
+    }
+  }
+  return slots;
+}
 
 type FormState = {
   name: string;
@@ -63,20 +93,37 @@ export function Reservation() {
     return e;
   }, [form, t]);
 
+  const locationHours = LOCATION_HOURS[form.location] ?? DEFAULT_HOURS;
+  const timeSlots = useMemo(
+    () => generateTimeSlots(locationHours.start, locationHours.lastBooking),
+    [locationHours]
+  );
+  const isLateBooking = form.time >= locationHours.kitchenClose;
+
   const field = (name: keyof FormState) => ({
     value: form[name],
     onChange: (
       e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-    ) => setForm((f) => ({ ...f, [name]: e.target.value })),
+    ) => {
+      const value = e.target.value;
+      setForm((f) => {
+        const next = { ...f, [name]: value };
+        if (name === "location") {
+          const hours = LOCATION_HOURS[value] ?? DEFAULT_HOURS;
+          const slots = generateTimeSlots(hours.start, hours.lastBooking);
+          if (!slots.includes(next.time)) next.time = "";
+        }
+        return next;
+      });
+    },
     onBlur: () => setTouched((tch) => ({ ...tch, [name]: true })),
   });
 
   const showError = (name: keyof FormState) => touched[name] && errors[name];
 
-  const buildWhatsAppUrl = () => {
+  const buildMessageLines = () => {
     const loc = t.locations.items.find((l) => l.name === form.location);
-    const number = loc ? loc.phone.replace(/\s+/g, "") : `+${DEFAULT_WHATSAPP_NUMBER}`;
-    const lines = [
+    return [
       `Hi IBÉRICO! I'd like to reserve a table.`,
       `Name: ${form.name}`,
       `Phone: ${form.phone}`,
@@ -86,9 +133,16 @@ export function Reservation() {
       `Guests: ${form.guests}`,
       `Location: ${loc?.name ?? form.location}`,
       form.notes ? `Notes: ${form.notes}` : null,
-    ].filter(Boolean);
-    return `https://wa.me/${number.replace("+", "")}?text=${encodeURIComponent(lines.join("\n"))}`;
+    ].filter(Boolean) as string[];
   };
+
+  const buildWhatsAppUrl = () =>
+    `https://wa.me/${BOOKINGS_NUMBER}?text=${encodeURIComponent(buildMessageLines().join("\n"))}`;
+
+  const buildMailtoUrl = () =>
+    `mailto:${BOOKINGS_EMAIL}?subject=${encodeURIComponent(
+      `Reservation Request — ${form.name}`
+    )}&body=${encodeURIComponent(buildMessageLines().join("\n"))}`;
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -107,6 +161,7 @@ export function Reservation() {
     setStatus("submitting");
     window.setTimeout(() => {
       window.open(buildWhatsAppUrl(), "_blank", "noopener,noreferrer");
+      window.open(buildMailtoUrl(), "_blank", "noopener,noreferrer");
       setStatus("success");
     }, 700);
   };
@@ -219,6 +274,30 @@ export function Reservation() {
                   />
                 </Field>
 
+                <Field
+                  label={t.reservation.location}
+                  name="location"
+                  required
+                  error={showError("location")}
+                  className="sm:col-span-2"
+                >
+                  <select
+                    id="location"
+                    name="location"
+                    className={inputClass(!!showError("location"))}
+                    {...field("location")}
+                  >
+                    <option value="" disabled>
+                      —
+                    </option>
+                    {t.locations.items.map((loc) => (
+                      <option key={loc.name} value={loc.name}>
+                        {loc.name}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+
                 <Field label={t.reservation.date} name="date" required error={showError("date")}>
                   <input
                     id="date"
@@ -240,12 +319,17 @@ export function Reservation() {
                     <option value="" disabled>
                       —
                     </option>
-                    {TIME_SLOTS.map((slot) => (
+                    {timeSlots.map((slot) => (
                       <option key={slot} value={slot}>
                         {slot}
                       </option>
                     ))}
                   </select>
+                  {isLateBooking && (
+                    <p className="mt-1.5 text-xs leading-relaxed text-stone">
+                      {t.reservation.lateNote}
+                    </p>
+                  )}
                 </Field>
 
                 <Field label={t.reservation.guests} name="guests" required>
@@ -258,24 +342,6 @@ export function Reservation() {
                     className={inputClass(false)}
                     {...field("guests")}
                   />
-                </Field>
-
-                <Field label={t.reservation.location} name="location" required error={showError("location")}>
-                  <select
-                    id="location"
-                    name="location"
-                    className={inputClass(!!showError("location"))}
-                    {...field("location")}
-                  >
-                    <option value="" disabled>
-                      —
-                    </option>
-                    {t.locations.items.map((loc) => (
-                      <option key={loc.name} value={loc.name}>
-                        {loc.name}
-                      </option>
-                    ))}
-                  </select>
                 </Field>
 
                 <Field label={t.reservation.notes} name="notes" className="sm:col-span-2">
@@ -312,23 +378,32 @@ export function Reservation() {
                     </span>
                     <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
                       <a
-                        href={`https://wa.me/${DEFAULT_WHATSAPP_NUMBER}`}
+                        href={`https://wa.me/${BOOKINGS_NUMBER}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-stone transition-colors hover:text-wine"
                       >
-                        <MessageCircle size={16} />
+                        <WhatsAppIcon size={16} />
                         {t.reservation.whatsapp}
                       </a>
                       <a
-                        href={`tel:+${DEFAULT_WHATSAPP_NUMBER}`}
+                        href={`https://zalo.me/${BOOKINGS_NUMBER}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-stone transition-colors hover:text-wine"
+                      >
+                        <ZaloIcon size={16} />
+                        {t.reservation.zalo}
+                      </a>
+                      <a
+                        href={`tel:+${BOOKINGS_NUMBER}`}
                         className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-stone transition-colors hover:text-wine"
                       >
                         <Phone size={16} />
                         {t.reservation.call}
                       </a>
                       <a
-                        href="mailto:hola@weareiberico.com?subject=Reservation%20Request"
+                        href={`mailto:${BOOKINGS_EMAIL}?subject=Reservation%20Request`}
                         className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-stone transition-colors hover:text-wine"
                       >
                         <Mail size={16} />
@@ -345,11 +420,6 @@ export function Reservation() {
     </section>
   );
 }
-
-const TIME_SLOTS = [
-  "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
-  "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30",
-];
 
 function inputClass(invalid: boolean) {
   return [

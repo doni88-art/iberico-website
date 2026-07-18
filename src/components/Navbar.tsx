@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu as MenuIcon, X } from "lucide-react";
-import { useLanguage, languageLabels, type Lang } from "@/lib/i18n";
+import { useLanguage, languageLabels, languageFlags, type Lang } from "@/lib/i18n";
 import { LogoMark } from "./Logo";
 import { ShimmerButton } from "./ShimmerButton";
 
@@ -193,7 +193,7 @@ function LangSwitcher({
           key={code}
           type="button"
           onClick={() => setLang(code)}
-          className={`cursor-pointer rounded-full px-3 py-2 transition-colors ${
+          className={`flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-2 transition-colors ${
             lang === code
               ? "bg-gold text-ink"
               : light
@@ -202,6 +202,7 @@ function LangSwitcher({
           }`}
           aria-pressed={lang === code}
         >
+          <span aria-hidden="true">{languageFlags[code]}</span>
           {languageLabels[code]}
         </button>
       ))}
