@@ -6,6 +6,7 @@ import { Menu as MenuIcon, X } from "lucide-react";
 import { useLanguage, languageLabels, languageFlags, type Lang } from "@/lib/i18n";
 import { LogoMark } from "./Logo";
 import { ShimmerButton } from "./ShimmerButton";
+import { InstagramColorIcon, FacebookColorIcon } from "./SocialIcons";
 
 const SECTIONS: { key: "story" | "menu" | "gallery" | "locations" | "events"; href: string }[] = [
   { key: "story", href: "#story" },
@@ -102,6 +103,7 @@ export function Navbar() {
           </ul>
 
           <div className="hidden lg:flex items-center gap-4">
+            <SocialLinks />
             <LangSwitcher
               lang={lang}
               setLang={setLang}
@@ -165,11 +167,37 @@ export function Navbar() {
                 {t.nav.reserve}
               </ShimmerButton>
               <LangSwitcher lang={lang} setLang={setLang} light={false} />
+              <SocialLinks className="justify-center" />
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
     </>
+  );
+}
+
+function SocialLinks({ className = "" }: { className?: string }) {
+  return (
+    <div className={`flex items-center gap-2.5 ${className}`}>
+      <a
+        href="https://www.instagram.com/iberico_tapas_vino/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Instagram"
+        className="cursor-pointer transition-transform duration-200 hover:scale-110"
+      >
+        <InstagramColorIcon size={22} />
+      </a>
+      <a
+        href="https://www.facebook.com/Ibericosaigon/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Facebook"
+        className="cursor-pointer transition-transform duration-200 hover:scale-110"
+      >
+        <FacebookColorIcon size={22} />
+      </a>
+    </div>
   );
 }
 

@@ -1,3 +1,47 @@
+import { useId } from "react";
+
+export function InstagramColorIcon({ size = 20 }: { size?: number }) {
+  const gradId = useId();
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <defs>
+        <linearGradient id={gradId} x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#FFD600" />
+          <stop offset="25%" stopColor="#FF7A00" />
+          <stop offset="50%" stopColor="#FF0069" />
+          <stop offset="75%" stopColor="#D300C5" />
+          <stop offset="100%" stopColor="#7638FA" />
+        </linearGradient>
+      </defs>
+      <rect x="1" y="1" width="22" height="22" rx="6.5" fill={`url(#${gradId})`} />
+      <rect
+        x="6.2"
+        y="6.2"
+        width="11.6"
+        height="11.6"
+        rx="3.8"
+        fill="none"
+        stroke="#fff"
+        strokeWidth={1.6}
+      />
+      <circle cx="12" cy="12" r="3.1" fill="none" stroke="#fff" strokeWidth={1.6} />
+      <circle cx="16.1" cy="7.9" r="0.9" fill="#fff" />
+    </svg>
+  );
+}
+
+export function FacebookColorIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="1" y="1" width="22" height="22" rx="6.5" fill="#1877F2" />
+      <path
+        d="M15.4 12.6h-2.2V19h-2.7v-6.4H8.9v-2.3h1.6V9c0-1.6.9-2.9 3.1-2.9h2.1v2.3h-1.4c-.6 0-.8.3-.8.8v1.7h2.2l-.3 2.7Z"
+        fill="#fff"
+      />
+    </svg>
+  );
+}
+
 export function InstagramIcon({ size = 18 }: { size?: number }) {
   return (
     <svg
