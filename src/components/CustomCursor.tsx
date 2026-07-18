@@ -58,18 +58,20 @@ export function CustomCursor() {
   return (
     <motion.div
       aria-hidden="true"
-      className="pointer-events-none fixed left-0 top-0 z-[70] mix-blend-difference"
+      className="pointer-events-none fixed left-0 top-0 z-[70]"
       style={{ x: springX, y: springY, translateX: "-50%", translateY: "-50%" }}
     >
-      <motion.div
-        className="rounded-full border border-cream"
+      <motion.span
+        className="block select-none drop-shadow-[0_1px_3px_rgba(0,0,0,0.35)]"
         animate={{
-          width: hovering ? 52 : 14,
-          height: hovering ? 52 : 14,
-          opacity: hovering ? 0.85 : 0.55,
+          scale: hovering ? 1.35 : 1,
+          rotate: hovering ? -10 : 0,
         }}
         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-      />
+        style={{ fontSize: 20, lineHeight: 1 }}
+      >
+        🇪🇸
+      </motion.span>
     </motion.div>
   );
 }

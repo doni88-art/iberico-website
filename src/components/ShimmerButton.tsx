@@ -2,13 +2,15 @@
 
 import type { ReactNode, MouseEventHandler } from "react";
 
-type Variant = "solid" | "wine" | "outline";
+type Variant = "solid" | "wine" | "outline" | "outlineDark";
 
 const VARIANTS: Record<Variant, string> = {
   solid: "bg-gold text-ink hover:bg-gold-light",
   wine: "bg-wine text-cream hover:bg-gold hover:text-ink",
   outline:
     "border border-cream/40 text-cream hover:border-cream hover:bg-cream/10",
+  outlineDark:
+    "border border-ink text-ink hover:bg-ink hover:text-cream",
 };
 
 const BASE =

@@ -112,6 +112,8 @@ export interface Dict {
     notes: string;
     notesPlaceholder: string;
     submit: string;
+    submitWhatsApp: string;
+    submitZalo: string;
     submitting: string;
     success: string;
     successBody: string;
@@ -123,6 +125,7 @@ export interface Dict {
     call: string;
     emailUs: string;
     lateNote: string;
+    zaloCopied: string;
   };
   footer: {
     tagline: string;
@@ -684,6 +687,8 @@ const en: Dict = {
     notes: "Special Requests",
     notesPlaceholder: "Allergies, celebrations, seating preference...",
     submit: "Request Reservation",
+    submitWhatsApp: "Reserve via WhatsApp",
+    submitZalo: "Reserve via Zalo",
     submitting: "Sending...",
     success: "Request received!",
     successBody:
@@ -697,6 +702,7 @@ const en: Dict = {
     emailUs: "Email",
     lateNote:
       "Kitchen closes for hot dishes at 22:30 — a limited menu (cold cuts, cheeses, wine) is still available for bookings until 23:30.",
+    zaloCopied: "Details copied — paste them into the Zalo chat that just opened.",
   },
   footer: {
     tagline: "Authentic Spanish tapas & wine, shared in Ho Chi Minh City.",
@@ -1258,6 +1264,8 @@ const vi: Dict = {
     notes: "Yêu Cầu Đặc Biệt",
     notesPlaceholder: "Dị ứng, dịp kỷ niệm, vị trí bàn mong muốn...",
     submit: "Gửi Yêu Cầu Đặt Bàn",
+    submitWhatsApp: "Đặt Bàn Qua WhatsApp",
+    submitZalo: "Đặt Bàn Qua Zalo",
     submitting: "Đang gửi...",
     success: "Đã nhận yêu cầu!",
     successBody:
@@ -1271,6 +1279,7 @@ const vi: Dict = {
     emailUs: "Email",
     lateNote:
       "Bếp nóng đóng cửa lúc 22:30 — vẫn có thể đặt bàn đến 23:30 với thực đơn giới hạn (đồ nguội, phô mai, rượu vang).",
+    zaloCopied: "Đã sao chép thông tin — vui lòng dán vào cuộc trò chuyện Zalo vừa mở.",
   },
   footer: {
     tagline: "Tapas và rượu vang Tây Ban Nha chính thống, cùng chia sẻ tại Thành phố Hồ Chí Minh.",
@@ -1832,6 +1841,8 @@ const es: Dict = {
     notes: "Peticiones Especiales",
     notesPlaceholder: "Alergias, celebraciones, preferencia de mesa...",
     submit: "Solicitar Reserva",
+    submitWhatsApp: "Reservar por WhatsApp",
+    submitZalo: "Reservar por Zalo",
     submitting: "Enviando...",
     success: "¡Solicitud recibida!",
     successBody:
@@ -1845,6 +1856,7 @@ const es: Dict = {
     emailUs: "Correo",
     lateNote:
       "La cocina caliente cierra a las 22:30 — aún se puede reservar hasta las 23:30 con una carta limitada (embutidos, quesos, vino).",
+    zaloCopied: "Detalles copiados — pégalos en el chat de Zalo que se acaba de abrir.",
   },
   footer: {
     tagline: "Auténticas tapas y vino español, para compartir en Ho Chi Minh.",

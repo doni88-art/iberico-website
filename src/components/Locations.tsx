@@ -68,69 +68,77 @@ export function Locations() {
           ))}
         </Reveal>
 
-        <div className="mt-12 grid grid-cols-1 overflow-hidden rounded-sm border border-border bg-white shadow-xl lg:grid-cols-2">
+        <div className="mt-12 overflow-hidden rounded-sm border border-border bg-white shadow-xl">
           <AnimatePresence mode="wait">
             <motion.div
               key={loc.name}
-              initial={{ opacity: 0, x: -16 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 16 }}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col justify-center p-8 sm:p-12"
             >
-              <h3 className="font-display text-3xl text-ink">{loc.name}</h3>
-              <p className="mt-2 text-sm italic text-stone">{loc.blurb}</p>
-
-              <div className="mt-8 space-y-4 text-sm text-charcoal">
-                <div className="flex items-start gap-3">
-                  <MapPin size={18} className="mt-0.5 shrink-0 text-gold-deep" />
-                  <span>{loc.address}</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Clock size={18} className="mt-0.5 shrink-0 text-gold-deep" />
-                  <span>{loc.hours}</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Users size={18} className="mt-0.5 shrink-0 text-gold-deep" />
-                  <span>{loc.capacity}</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Phone size={18} className="mt-0.5 shrink-0 text-gold-deep" />
-                  <a
-                    href={`tel:${loc.phone.replace(/\s+/g, "")}`}
-                    className="cursor-pointer hover:text-wine"
-                  >
-                    {loc.phone}
-                  </a>
+              <div className="relative h-72 sm:h-80 lg:h-[26rem]">
+                <Image
+                  src={LOCATION_PHOTOS[loc.name]}
+                  alt={`${loc.name} storefront`}
+                  fill
+                  sizes="100vw"
+                  className="object-cover object-[50%_22%]"
+                  priority={active === 0}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/15 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10">
+                  <h3 className="font-display text-3xl text-cream sm:text-4xl">
+                    {loc.name}
+                  </h3>
+                  <div className="mt-2 flex items-center gap-2 text-sm text-cream/85 sm:text-base">
+                    <MapPin size={16} className="shrink-0 text-gold-light" />
+                    {loc.address}
+                  </div>
                 </div>
               </div>
 
-              <a
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                  loc.mapQuery
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-8 inline-flex w-fit cursor-pointer items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-cream transition-all duration-300 hover:bg-wine"
-              >
-                {t.locations.directions}
-                <ArrowUpRight size={16} />
-              </a>
+              <div className="grid grid-cols-1 lg:grid-cols-2">
+                <div className="flex flex-col justify-center p-8 sm:p-12">
+                  <p className="text-sm italic text-stone">{loc.blurb}</p>
+
+                  <div className="mt-6 space-y-4 text-sm text-charcoal">
+                    <div className="flex items-start gap-3">
+                      <Clock size={18} className="mt-0.5 shrink-0 text-gold-deep" />
+                      <span>{loc.hours}</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Users size={18} className="mt-0.5 shrink-0 text-gold-deep" />
+                      <span>{loc.capacity}</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Phone size={18} className="mt-0.5 shrink-0 text-gold-deep" />
+                      <a
+                        href={`tel:${loc.phone.replace(/\s+/g, "")}`}
+                        className="cursor-pointer hover:text-wine"
+                      >
+                        {loc.phone}
+                      </a>
+                    </div>
+                  </div>
+
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                      loc.mapQuery
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-8 inline-flex w-fit cursor-pointer items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-cream transition-all duration-300 hover:bg-wine"
+                  >
+                    {t.locations.directions}
+                    <ArrowUpRight size={16} />
+                  </a>
+                </div>
+
+                <LocationMap key={loc.name} loc={loc} />
+              </div>
             </motion.div>
           </AnimatePresence>
-
-          <div className="flex flex-col">
-            <div className="relative h-64 shrink-0 bg-ink sm:h-80 lg:h-96">
-              <Image
-                src={LOCATION_PHOTOS[loc.name]}
-                alt={`${loc.name} storefront`}
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-contain"
-              />
-            </div>
-            <LocationMap key={loc.name} loc={loc} />
-          </div>
         </div>
       </div>
     </section>
@@ -165,7 +173,7 @@ function LocationMap({ loc }: { loc: LocationInfo }) {
   };
 
   return (
-    <div className="relative min-h-72 flex-1 bg-ink">
+    <div className="relative h-72 bg-ink lg:h-auto">
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-ink to-charcoal px-6 text-center text-cream/50">
         <MapPin size={28} className="text-gold-light/70" />
         <p className="max-w-[220px] text-xs leading-relaxed">{loc.address}</p>

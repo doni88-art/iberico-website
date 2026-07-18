@@ -139,13 +139,9 @@ export function Reservation() {
   const buildWhatsAppUrl = () =>
     `https://wa.me/${BOOKINGS_NUMBER}?text=${encodeURIComponent(buildMessageLines().join("\n"))}`;
 
-  const buildMailtoUrl = () =>
-    `mailto:${BOOKINGS_EMAIL}?subject=${encodeURIComponent(
-      `Reservation Request — ${form.name}`
-    )}&body=${encodeURIComponent(buildMessageLines().join("\n"))}`;
+  const buildZaloUrl = () => `https://zalo.me/${BOOKINGS_NUMBER}`;
 
-  const onSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  const validate = () => {
     if (Object.keys(errors).length > 0) {
       setTouched(
         REQUIRED_FIELDS.reduce((acc, k) => ({ ...acc, [k]: true }), { email: true })
@@ -156,14 +152,31 @@ export function Reservation() {
           ?.querySelector<HTMLElement>(`[name="${firstInvalid}"]`)
           ?.focus();
       }
-      return;
+      return false;
     }
+    return true;
+  };
+
+  const [channel, setChannel] = useState<"whatsapp" | "zalo" | null>(null);
+
+  const sendVia = (via: "whatsapp" | "zalo") => {
+    if (!validate()) return;
+    setChannel(via);
     setStatus("submitting");
     window.setTimeout(() => {
-      window.open(buildWhatsAppUrl(), "_blank", "noopener,noreferrer");
-      window.open(buildMailtoUrl(), "_blank", "noopener,noreferrer");
+      if (via === "whatsapp") {
+        window.open(buildWhatsAppUrl(), "_blank", "noopener,noreferrer");
+      } else {
+        navigator.clipboard?.writeText(buildMessageLines().join("\n")).catch(() => {});
+        window.open(buildZaloUrl(), "_blank", "noopener,noreferrer");
+      }
       setStatus("success");
     }, 700);
+  };
+
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    sendVia("whatsapp");
   };
 
   return (
@@ -211,12 +224,18 @@ export function Reservation() {
                 <p className="mt-2 max-w-sm text-sm leading-relaxed text-charcoal/80">
                   {t.reservation.successBody}
                 </p>
+                {channel === "zalo" && (
+                  <p className="mt-3 max-w-sm text-sm leading-relaxed text-wine">
+                    {t.reservation.zaloCopied}
+                  </p>
+                )}
                 <button
                   type="button"
                   onClick={() => {
                     setForm(initialState);
                     setTouched({});
                     setStatus("idle");
+                    setChannel(null);
                   }}
                   className="mt-7 cursor-pointer rounded-full border border-ink px-6 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-cream"
                 >
@@ -355,46 +374,53 @@ export function Reservation() {
                   />
                 </Field>
 
-                <div className="sm:col-span-2 mt-2 flex flex-col items-center gap-4">
-                  <Magnetic range={80} strength={0.2} className="w-full sm:w-auto">
-                    <ShimmerButton
-                      type="submit"
-                      variant="wine"
-                      disabled={status === "submitting"}
-                      className="w-full sm:w-auto sm:min-w-[260px]"
-                    >
-                      {status === "submitting" && (
-                        <Loader2 size={16} className="animate-spin" />
-                      )}
-                      {status === "submitting"
-                        ? t.reservation.submitting
-                        : t.reservation.submit}
-                    </ShimmerButton>
-                  </Magnetic>
+                <div className="sm:col-span-2 mt-2 flex flex-col items-center gap-5">
+                  <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+                    <Magnetic range={70} strength={0.2} className="w-full sm:w-auto">
+                      <ShimmerButton
+                        type="submit"
+                        variant="wine"
+                        disabled={status === "submitting"}
+                        className="w-full sm:min-w-[220px]"
+                      >
+                        {status === "submitting" && channel === "whatsapp" && (
+                          <Loader2 size={16} className="animate-spin" />
+                        )}
+                        {!(status === "submitting" && channel === "whatsapp") && (
+                          <WhatsAppIcon size={16} />
+                        )}
+                        {status === "submitting" && channel === "whatsapp"
+                          ? t.reservation.submitting
+                          : t.reservation.submitWhatsApp}
+                      </ShimmerButton>
+                    </Magnetic>
+
+                    <Magnetic range={70} strength={0.2} className="w-full sm:w-auto">
+                      <ShimmerButton
+                        type="button"
+                        variant="outlineDark"
+                        disabled={status === "submitting"}
+                        onClick={() => sendVia("zalo")}
+                        className="w-full sm:min-w-[220px]"
+                      >
+                        {status === "submitting" && channel === "zalo" && (
+                          <Loader2 size={16} className="animate-spin" />
+                        )}
+                        {!(status === "submitting" && channel === "zalo") && (
+                          <ZaloIcon size={16} />
+                        )}
+                        {status === "submitting" && channel === "zalo"
+                          ? t.reservation.submitting
+                          : t.reservation.submitZalo}
+                      </ShimmerButton>
+                    </Magnetic>
+                  </div>
 
                   <div className="flex flex-col items-center gap-3">
                     <span className="text-xs uppercase tracking-[0.15em] text-stone/70">
                       {t.reservation.orContact}
                     </span>
                     <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-                      <a
-                        href={`https://wa.me/${BOOKINGS_NUMBER}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-stone transition-colors hover:text-wine"
-                      >
-                        <WhatsAppIcon size={16} />
-                        {t.reservation.whatsapp}
-                      </a>
-                      <a
-                        href={`https://zalo.me/${BOOKINGS_NUMBER}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-stone transition-colors hover:text-wine"
-                      >
-                        <ZaloIcon size={16} />
-                        {t.reservation.zalo}
-                      </a>
                       <a
                         href={`tel:+${BOOKINGS_NUMBER}`}
                         className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-stone transition-colors hover:text-wine"
