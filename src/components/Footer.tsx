@@ -53,6 +53,7 @@ export function Footer() {
               <li><a href="#gallery" className="cursor-pointer transition-colors hover:text-gold-light">{t.nav.gallery}</a></li>
               <li><a href="#locations" className="cursor-pointer transition-colors hover:text-gold-light">{t.nav.locations}</a></li>
               <li><a href="#events" className="cursor-pointer transition-colors hover:text-gold-light">{t.nav.events}</a></li>
+              <li><a href="#careers" className="cursor-pointer transition-colors hover:text-gold-light">{t.nav.careers}</a></li>
               <li><a href="#reserve" className="cursor-pointer transition-colors hover:text-gold-light">{t.nav.reserve}</a></li>
             </ul>
           </div>

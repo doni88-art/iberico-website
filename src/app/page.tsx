@@ -6,6 +6,7 @@ import { Menu } from "@/components/Menu";
 import { Gallery } from "@/components/Gallery";
 import { Locations } from "@/components/Locations";
 import { Events } from "@/components/Events";
+import { Careers } from "@/components/Careers";
 import { Reservation } from "@/components/Reservation";
 import { Footer } from "@/components/Footer";
 
@@ -21,6 +22,7 @@ export default function Home() {
         <Gallery />
         <Locations />
         <Events />
+        <Careers />
         <Reservation />
       </main>
       <Footer />

@@ -45,6 +45,7 @@ export interface Dict {
     gallery: string;
     locations: string;
     events: string;
+    careers: string;
     reserve: string;
   };
   hero: {
@@ -98,6 +99,19 @@ export interface Dict {
     bullets: string[];
     cta: string;
   };
+  careers: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    applyCta: string;
+    emailNote: string;
+    positions: {
+      title: string;
+      type: string;
+      department: string;
+      description: string;
+    }[];
+  };
   reservation: {
     eyebrow: string;
     title: string;
@@ -150,6 +164,7 @@ const en: Dict = {
     gallery: "Gallery",
     locations: "Locations",
     events: "Events",
+    careers: "Careers",
     reserve: "Reserve",
   },
   hero: {
@@ -672,6 +687,45 @@ const en: Dict = {
     ],
     cta: "Enquire About Events & Catering",
   },
+  careers: {
+    eyebrow: "Careers",
+    title: "Join the IBÉRICO team",
+    subtitle:
+      "We're always looking for people who care about great food and warm hospitality — across our Saigon and Hội An houses.",
+    applyCta: "Apply Now",
+    emailNote:
+      "Send your CV and a short note to hola@weareiberico.com, or reach us on WhatsApp — tell us which role and location you're applying for.",
+    positions: [
+      {
+        title: "Waiter",
+        type: "Full-time",
+        department: "Service",
+        description:
+          "Deliver warm, attentive floor service and guide guests through our tapas menu and wine list with confidence.",
+      },
+      {
+        title: "Waiter Internship",
+        type: "Internship",
+        department: "Service",
+        description:
+          "Learn full-service Spanish hospitality from the ground up, with hands-on mentorship and a clear path to a full-time role.",
+      },
+      {
+        title: "Chef de Partie",
+        type: "Full-time",
+        department: "Kitchen",
+        description:
+          "Run your own station — charcuterie, tapas, or paella — with precision, consistency, and pride in every plate.",
+      },
+      {
+        title: "Cook Internship",
+        type: "Internship",
+        department: "Kitchen",
+        description:
+          "Hands-on kitchen training across every station, from jamón prep to paella, under our head chef's guidance.",
+      },
+    ],
+  },
   reservation: {
     eyebrow: "Reservations",
     title: "Book Your Table",
@@ -727,6 +781,7 @@ const vi: Dict = {
     gallery: "Hình Ảnh",
     locations: "Chi Nhánh",
     events: "Sự Kiện",
+    careers: "Tuyển Dụng",
     reserve: "Đặt Bàn",
   },
   hero: {
@@ -1249,6 +1304,45 @@ const vi: Dict = {
     ],
     cta: "Liên Hệ Về Sự Kiện & Catering",
   },
+  careers: {
+    eyebrow: "Tuyển Dụng",
+    title: "Gia nhập đội ngũ IBÉRICO",
+    subtitle:
+      "Chúng tôi luôn tìm kiếm những người yêu ẩm thực và dịch vụ chân thành — tại cả Sài Gòn và Hội An.",
+    applyCta: "Ứng Tuyển Ngay",
+    emailNote:
+      "Gửi CV và vài dòng giới thiệu đến hola@weareiberico.com, hoặc nhắn tin qua WhatsApp — cho chúng tôi biết bạn ứng tuyển vị trí nào và tại chi nhánh nào.",
+    positions: [
+      {
+        title: "Nhân Viên Phục Vụ",
+        type: "Toàn thời gian",
+        department: "Phục vụ",
+        description:
+          "Mang đến dịch vụ chu đáo, ấm áp và tự tin giới thiệu thực đơn tapas cùng danh sách rượu vang cho khách.",
+      },
+      {
+        title: "Thực Tập Phục Vụ",
+        type: "Thực tập",
+        department: "Phục vụ",
+        description:
+          "Học cách phục vụ theo phong cách Tây Ban Nha từ nền tảng, với sự kèm cặp trực tiếp và cơ hội trở thành nhân viên chính thức.",
+      },
+      {
+        title: "Chef de Partie",
+        type: "Toàn thời gian",
+        department: "Bếp",
+        description:
+          "Phụ trách một khu vực bếp riêng — đồ nguội, tapas hoặc paella — với sự chính xác, ổn định và tự hào trong từng món ăn.",
+      },
+      {
+        title: "Thực Tập Đầu Bếp",
+        type: "Thực tập",
+        department: "Bếp",
+        description:
+          "Được đào tạo thực tế tại mọi khu vực bếp, từ sơ chế jamón đến paella, dưới sự hướng dẫn của bếp trưởng.",
+      },
+    ],
+  },
   reservation: {
     eyebrow: "Đặt Bàn",
     title: "Đặt Bàn Của Bạn",
@@ -1304,6 +1398,7 @@ const es: Dict = {
     gallery: "Galería",
     locations: "Locales",
     events: "Eventos",
+    careers: "Empleo",
     reserve: "Reservar",
   },
   hero: {
@@ -1825,6 +1920,45 @@ const es: Dict = {
       "Alquiler completo del restaurante disponible",
     ],
     cta: "Consultar sobre Eventos y Catering",
+  },
+  careers: {
+    eyebrow: "Empleo",
+    title: "Únete al equipo de IBÉRICO",
+    subtitle:
+      "Siempre buscamos personas apasionadas por la buena comida y la hospitalidad cercana — en Saigón y Hội An.",
+    applyCta: "Postular Ahora",
+    emailNote:
+      "Envía tu CV y una breve nota a hola@weareiberico.com, o escríbenos por WhatsApp — cuéntanos a qué puesto y en qué local te postulas.",
+    positions: [
+      {
+        title: "Camarero/a",
+        type: "Tiempo completo",
+        department: "Sala",
+        description:
+          "Ofrece un servicio de sala cálido y atento, guiando a los clientes por nuestra carta de tapas y la bodega con confianza.",
+      },
+      {
+        title: "Prácticas de Camarero/a",
+        type: "Prácticas",
+        department: "Sala",
+        description:
+          "Aprende el servicio de sala al estilo español desde cero, con mentoría directa y un camino claro hacia un puesto fijo.",
+      },
+      {
+        title: "Chef de Partie",
+        type: "Tiempo completo",
+        department: "Cocina",
+        description:
+          "Lleva tu propia partida — embutidos, tapas o paella — con precisión, constancia y orgullo en cada plato.",
+      },
+      {
+        title: "Prácticas de Cocina",
+        type: "Prácticas",
+        department: "Cocina",
+        description:
+          "Formación práctica en cada partida de cocina, desde el corte del jamón hasta la paella, con la guía de nuestro jefe de cocina.",
+      },
+    ],
   },
   reservation: {
     eyebrow: "Reservas",

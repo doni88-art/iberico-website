@@ -8,12 +8,16 @@ import { LogoMark } from "./Logo";
 import { ShimmerButton } from "./ShimmerButton";
 import { InstagramColorIcon, FacebookColorIcon } from "./SocialIcons";
 
-const SECTIONS: { key: "story" | "menu" | "gallery" | "locations" | "events"; href: string }[] = [
+const SECTIONS: {
+  key: "story" | "menu" | "gallery" | "locations" | "events" | "careers";
+  href: string;
+}[] = [
   { key: "story", href: "#story" },
   { key: "menu", href: "#menu" },
   { key: "gallery", href: "#gallery" },
   { key: "locations", href: "#locations" },
   { key: "events", href: "#events" },
+  { key: "careers", href: "#careers" },
 ];
 
 export function Navbar() {
