@@ -1,0 +1,6 @@
+{
+  "crons": [
+    { "path": "/api/send-confirmations", "schedule": "*/5 * * * *" },
+    { "path": "/api/send-survey-emails", "schedule": "*/15 * * * *" }
+  ]
+}

@@ -13,8 +13,8 @@ const SECTIONS: {
   href: string;
 }[] = [
   { key: "story", href: "#story" },
-  { key: "menu", href: "#menu" },
   { key: "gallery", href: "#gallery" },
+  { key: "menu", href: "#menu" },
   { key: "locations", href: "#locations" },
   { key: "events", href: "#events" },
   { key: "careers", href: "#careers" },
@@ -70,13 +70,13 @@ export function Navbar() {
               scrolled || open ? "text-ink" : "text-cream"
             }`}
           >
-            <LogoMark className="h-9 w-9" />
+            <LogoMark className="h-12 w-12" />
             <span className="flex flex-col leading-none">
-              <span className="font-display text-lg tracking-[0.12em]">
+              <span className="font-display text-2xl tracking-[0.1em]">
                 IBÉRICO
               </span>
               <span
-                className={`text-[10px] tracking-[0.25em] uppercase ${
+                className={`mt-0.5 text-[9px] tracking-[0.25em] uppercase ${
                   scrolled || open ? "text-gold-deep" : "text-gold-light"
                 }`}
               >

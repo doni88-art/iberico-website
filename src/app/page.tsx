@@ -18,8 +18,8 @@ export default function Home() {
         <Hero />
         <Marquee />
         <Story />
-        <Menu />
         <Gallery />
+        <Menu />
         <Locations />
         <Events />
         <Careers />

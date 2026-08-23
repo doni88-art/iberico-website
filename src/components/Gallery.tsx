@@ -9,14 +9,18 @@ import { Reveal, RevealGroup, revealItem } from "./Reveal";
 import { KineticText } from "./KineticText";
 
 const IMAGES = [
+  { src: "/images/real-facade-night-thisach.jpg", alt: "IBÉRICO Thị Sách glowing marquee sign and terrace at night", span: "sm:col-span-2" },
   { src: "/images/real-bar-interior.jpg", alt: "IBÉRICO bar interior with wine wall", span: "row-span-2 sm:col-span-1" },
+  { src: "/images/real-lanterns-hoian.jpg", alt: "IBÉRICO Hội An terrace strung with lanterns at night", span: "" },
+  { src: "/images/real-jamon-carving-portrait.jpg", alt: "Jamón Ibérico de Bellota being hand-carved tableside", span: "" },
+  { src: "/images/real-guests-toast.jpg", alt: "Guests toasting over tapas and wine at IBÉRICO", span: "" },
   { src: "/images/real-jamon-carving-action.jpg", alt: "Jamón Ibérico de Bellota, hand-carved at IBÉRICO", span: "sm:col-span-2" },
   { src: "/images/menu-croquetas.jpg", alt: "Croquetas de Jamón at IBÉRICO", span: "" },
   { src: "/images/real-manchego-board.jpg", alt: "Manchego cheese, hand-cut at IBÉRICO", span: "" },
   { src: "/images/real-charcuterie-board.jpg", alt: "Chorizo, salchichón, olives and manchego spread", span: "sm:col-span-2" },
+  { src: "/images/real-street-night.jpg", alt: "IBÉRICO storefront and street scene at night", span: "" },
   { src: "/images/real-cactus-terrace.jpg", alt: "IBÉRICO Thảo Điền terrace among the cacti at night", span: "" },
   { src: "/images/real-exterior-night.jpg", alt: "IBÉRICO storefront lit up at night", span: "" },
-  { src: "/images/real-exterior-night-2.jpg", alt: "IBÉRICO signage and terrace after dark", span: "" },
   { src: "/images/real-sangria.jpg", alt: "Sangría poured on the terrace at IBÉRICO", span: "" },
   { src: "/images/real-dessert-tart.jpg", alt: "House dessert tart at IBÉRICO", span: "" },
 ];

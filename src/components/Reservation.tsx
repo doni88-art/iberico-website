@@ -74,7 +74,7 @@ const REQUIRED_FIELDS: (keyof FormState)[] = [
 ];
 
 export function Reservation() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [form, setForm] = useState<FormState>(initialState);
   const [touched, setTouched] = useState<Partial<Record<keyof FormState, boolean>>>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
@@ -141,6 +141,28 @@ export function Reservation() {
 
   const buildZaloUrl = () => `https://zalo.me/${BOOKINGS_NUMBER}`;
 
+  const saveBooking = (via: "whatsapp" | "zalo") => {
+    fetch("/api/reservations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: form.name,
+        phone: form.phone,
+        email: form.email,
+        guests: form.guests,
+        date: form.date,
+        time: form.time,
+        location: form.location,
+        notes: form.notes,
+        channel: via,
+        lang,
+      }),
+      keepalive: true,
+    }).catch(() => {
+      // Non-blocking: the WhatsApp/Zalo handoff must never wait on this.
+    });
+  };
+
   const validate = () => {
     if (Object.keys(errors).length > 0) {
       setTouched(
@@ -163,6 +185,7 @@ export function Reservation() {
     if (!validate()) return;
     setChannel(via);
     setStatus("submitting");
+    saveBooking(via);
     window.setTimeout(() => {
       if (via === "whatsapp") {
         window.open(buildWhatsAppUrl(), "_blank", "noopener,noreferrer");

@@ -20,11 +20,29 @@ const CATEGORY_IMAGES = [
   "/images/menu-sangria-pour.jpg",
 ];
 
+const SAIGON_LABEL: Record<"en" | "vi" | "es", string> = {
+  en: "Saigon",
+  vi: "Sài Gòn",
+  es: "Saigón",
+};
+
+type LocationView = "saigon" | "hoian";
+
 export function Menu() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const [location, setLocation] = useState<LocationView>("saigon");
   const [active, setActive] = useState(0);
-  const category = t.menu.categories[active];
+  const categories =
+    location === "saigon" ? t.menu.categories : t.menu.hoianCategories;
+  const note = location === "saigon" ? t.menu.note : t.menu.hoianNote;
+  const category = categories[Math.min(active, categories.length - 1)];
   const image = CATEGORY_IMAGES[active % CATEGORY_IMAGES.length];
+
+  const selectLocation = (next: LocationView) => {
+    if (next === location) return;
+    setLocation(next);
+    setActive(0);
+  };
 
   return (
     <section id="menu" className="relative bg-ink py-24 text-cream sm:py-32">
@@ -41,9 +59,37 @@ export function Menu() {
           </p>
         </Reveal>
 
-        <Reveal delay={0.15} className="mt-12">
+        <Reveal delay={0.1} className="mt-10">
+          <div className="flex justify-center gap-2">
+            {(["saigon", "hoian"] as LocationView[]).map((loc) => (
+              <button
+                key={loc}
+                type="button"
+                onClick={() => selectLocation(loc)}
+                className={`relative cursor-pointer rounded-full border px-5 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] transition-colors duration-300 sm:text-sm ${
+                  location === loc
+                    ? "border-gold-light text-ink"
+                    : "border-cream/20 text-cream/70 hover:text-cream"
+                }`}
+              >
+                {location === loc && (
+                  <motion.span
+                    layoutId="menu-location-pill"
+                    className="absolute inset-0 rounded-full bg-gold-light"
+                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">
+                  {loc === "saigon" ? SAIGON_LABEL[lang] : "Hội An"}
+                </span>
+              </button>
+            ))}
+          </div>
+        </Reveal>
+
+        <Reveal delay={0.15} className="mt-8">
           <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
-            {t.menu.categories.map((cat, i) => (
+            {categories.map((cat, i) => (
               <button
                 key={cat.label}
                 type="button"
@@ -91,7 +137,7 @@ export function Menu() {
           <div className="min-h-[420px]">
             <AnimatePresence mode="wait">
               <motion.div
-                key={category.label}
+                key={`${location}-${category.label}`}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
@@ -129,7 +175,7 @@ export function Menu() {
         </div>
 
         <p className="mt-14 text-center text-xs text-cream/40">
-          {t.menu.note}
+          {note}
         </p>
       </div>
     </section>

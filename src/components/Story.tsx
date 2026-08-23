@@ -61,10 +61,8 @@ export function Story() {
             <div className="divider-gold my-7 w-24" />
           </Reveal>
 
-          <Reveal delay={0.15} className="space-y-4 text-[15px] leading-relaxed text-charcoal sm:text-base">
-            <p>{t.story.p1}</p>
-            <p>{t.story.p2}</p>
-            <p>{t.story.p3}</p>
+          <Reveal delay={0.15} className="text-[15px] leading-relaxed text-charcoal sm:text-base">
+            <p>{t.story.body}</p>
           </Reveal>
 
           <RevealGroup className="mt-10 grid grid-cols-2 gap-x-4 gap-y-7 border-t border-border pt-8 sm:grid-cols-4 sm:gap-8">

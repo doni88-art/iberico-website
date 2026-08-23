@@ -7,6 +7,7 @@ import { useLanguage } from "@/lib/i18n";
 import { ChevronDown } from "lucide-react";
 import { Magnetic } from "./Magnetic";
 import { ShimmerButton } from "./ShimmerButton";
+import { LogoMark } from "./Logo";
 
 export function Hero() {
   const { t } = useLanguage();
@@ -57,6 +58,18 @@ export function Hero() {
         >
           {t.hero.eyebrow}
         </motion.span>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92, y: shouldReduceMotion ? 0 : 12 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.05, ease }}
+          className="mb-7 flex items-center gap-3 rounded-2xl bg-cream px-6 py-3 shadow-xl"
+        >
+          <LogoMark className="h-9 w-9 shrink-0" />
+          <span className="font-display text-3xl tracking-[0.1em] text-ink sm:text-4xl">
+            IBÉRICO
+          </span>
+        </motion.div>
 
         <h1 className="font-display text-balance leading-[0.95]">
           <motion.span
