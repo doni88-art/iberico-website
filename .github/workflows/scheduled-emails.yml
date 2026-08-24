@@ -1,0 +1,25 @@
+name: Scheduled booking emails
+
+# Vercel Cron on the Hobby plan only allows once-daily schedules, which is
+# too coarse for a "~10-15 min after booking" confirmation and a "3h after
+# the visit" satisfaction survey. GitHub Actions has no such limit, so this
+# workflow pings the same two API routes on a tight schedule instead.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send due confirmation emails
+        run: |
+          curl -sf -X GET "https://www.weareiberico.com/api/send-confirmations" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
+
+      - name: Send due satisfaction-survey emails
+        run: |
+          curl -sf -X GET "https://www.weareiberico.com/api/send-survey-emails" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
