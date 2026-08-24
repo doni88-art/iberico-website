@@ -12,7 +12,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-ink pt-20 text-cream/80">
+    <footer className="relative bg-ink-soft pt-20 text-cream/80">
       <div className="divider-wine absolute inset-x-0 top-0 w-full" aria-hidden="true" />
       <div className="mx-auto max-w-7xl px-6 sm:px-8">
         <div className="grid grid-cols-1 gap-12 border-b border-cream/10 pb-14 sm:grid-cols-2 lg:grid-cols-4">

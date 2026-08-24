@@ -14,6 +14,15 @@ const LOCATION_PHOTOS: Record<string, string> = {
   "IBÉRICO Hội An": "/images/real-location-hoian.jpg",
 };
 
+// Each facade photo frames its signage at a different height, so a single
+// shared crop point either clips the sign or the entrance — tuned per photo
+// instead so the full storefront reads clearly.
+const LOCATION_PHOTO_POSITION: Record<string, string> = {
+  "IBÉRICO Thảo Điền": "50% 30%",
+  "IBÉRICO Thị Sách": "50% 38%",
+  "IBÉRICO Hội An": "50% 48%",
+};
+
 export function Locations() {
   const { t } = useLanguage();
   const [active, setActive] = useState(0);
@@ -77,13 +86,14 @@ export function Locations() {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="relative h-72 sm:h-80 lg:h-[26rem]">
+              <div className="relative h-[26rem] sm:h-[32rem] lg:h-[38rem]">
                 <Image
                   src={LOCATION_PHOTOS[loc.name]}
                   alt={`${loc.name} storefront`}
                   fill
                   sizes="100vw"
-                  className="object-cover object-[50%_22%]"
+                  className="object-cover"
+                  style={{ objectPosition: LOCATION_PHOTO_POSITION[loc.name] }}
                   priority={active === 0}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/15 to-transparent" />
@@ -173,7 +183,7 @@ function LocationMap({ loc }: { loc: LocationInfo }) {
   };
 
   return (
-    <div className="relative h-72 bg-ink lg:h-auto">
+    <div className="relative h-72 bg-ink-soft lg:h-auto">
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-ink to-charcoal px-6 text-center text-cream/50">
         <MapPin size={28} className="text-gold-light/70" />
         <p className="max-w-[220px] text-xs leading-relaxed">{loc.address}</p>

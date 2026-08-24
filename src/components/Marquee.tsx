@@ -7,7 +7,7 @@ export function Marquee() {
   const loop = [...t.marquee, ...t.marquee];
 
   return (
-    <div className="relative overflow-hidden border-y border-gold-light/20 bg-ink py-4">
+    <div className="relative overflow-hidden border-y border-gold-light/20 bg-ink-soft py-4">
       <div className="flex w-max animate-marquee items-center">
         {loop.map((item, i) => (
           <span key={i} className="flex shrink-0 items-center">

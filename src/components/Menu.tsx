@@ -45,7 +45,7 @@ export function Menu() {
   };
 
   return (
-    <section id="menu" className="relative bg-ink py-24 text-cream sm:py-32">
+    <section id="menu" className="relative bg-ink-soft py-24 text-cream sm:py-32">
       <div className="mx-auto max-w-6xl px-6 sm:px-8">
         <Reveal className="text-center">
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-light">

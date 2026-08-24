@@ -63,12 +63,17 @@ export function Hero() {
           initial={{ opacity: 0, scale: 0.92, y: shouldReduceMotion ? 0 : 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.05, ease }}
-          className="mb-7 flex items-center gap-3 rounded-2xl bg-cream px-6 py-3 shadow-xl"
+          className="mb-7 flex items-center gap-4 rounded-2xl bg-cream px-7 py-4 shadow-xl"
         >
-          <LogoMark className="h-9 w-9 shrink-0" />
-          <span className="font-display text-3xl tracking-[0.1em] text-ink sm:text-4xl">
-            IBÉRICO
-          </span>
+          <LogoMark className="h-12 w-12 shrink-0" />
+          <Image
+            src="/brand/logo-wordmark.png"
+            alt="IBÉRICO Vinos y Tapas"
+            width={908}
+            height={530}
+            className="h-12 w-auto sm:h-14"
+            priority
+          />
         </motion.div>
 
         <h1 className="font-display text-balance leading-[0.95]">

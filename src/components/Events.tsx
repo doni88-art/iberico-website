@@ -15,7 +15,7 @@ export function Events() {
   const { t } = useLanguage();
 
   return (
-    <section id="events" className="relative overflow-hidden bg-ink py-24 text-cream sm:py-32">
+    <section id="events" className="relative overflow-hidden bg-ink-soft py-24 text-cream sm:py-32">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-6 sm:px-8 lg:grid-cols-2 lg:gap-20">
         <div>
           <Reveal>
