@@ -6,7 +6,7 @@ import { buildConfirmationEmail } from "@/lib/email";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const CONFIRMATION_DELAY_MS = 10 * 60 * 1000;
+const CONFIRMATION_DELAY_MS = 3 * 60 * 1000;
 const BATCH_SIZE = 50;
 
 export async function GET(request: Request) {
@@ -25,9 +25,9 @@ export async function GET(request: Request) {
   }
 
   const supabase = getSupabaseAdmin();
-  // Due 10+ minutes after the booking was *submitted* (not the visit itself —
+  // Due 3+ minutes after the booking was *submitted* (not the visit itself —
   // see /api/send-survey-emails for the post-visit satisfaction email). The
-  // cron runs every 15 min, so actual delivery lands ~10-25 min after submit.
+  // GitHub Actions cron runs every 10 min, so actual delivery lands ~3-13 min after submit.
   const cutoff = new Date(Date.now() - CONFIRMATION_DELAY_MS).toISOString();
 
   const { data: due, error } = await supabase
