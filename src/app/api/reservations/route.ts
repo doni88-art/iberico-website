@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
-import { getSupabaseAdmin } from "@/lib/supabase";
+import { Resend } from "resend";
+import { getSupabaseAdmin, type Booking } from "@/lib/supabase";
+import { buildConfirmationEmail } from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -23,6 +25,42 @@ const REQUIRED: (keyof ReservationPayload)[] = [
   "time",
   "location",
 ];
+
+async function sendConfirmationNow(
+  supabase: ReturnType<typeof getSupabaseAdmin>,
+  booking: Booking
+) {
+  const resendKey = process.env.RESEND_API_KEY;
+  if (!resendKey) return;
+
+  try {
+    const resend = new Resend(resendKey);
+    const fromAddress = process.env.RESEND_FROM ?? "IBÉRICO <onboarding@resend.dev>";
+    const { subject, html } = buildConfirmationEmail(booking);
+    const { error: sendError } = await resend.emails.send({
+      from: fromAddress,
+      to: booking.email as string,
+      subject,
+      html,
+    });
+
+    if (sendError) {
+      console.error("Immediate confirmation send failed, cron will retry:", sendError.message);
+      return;
+    }
+
+    const { error: updateError } = await supabase
+      .from("bookings")
+      .update({ confirmation_email_sent_at: new Date().toISOString() })
+      .eq("id", booking.id);
+
+    if (updateError) {
+      console.error("Confirmation sent but failed to mark as sent:", updateError.message);
+    }
+  } catch (err) {
+    console.error("Immediate confirmation send threw, cron will retry:", err);
+  }
+}
 
 export async function POST(request: Request) {
   let body: ReservationPayload;
@@ -56,23 +94,37 @@ export async function POST(request: Request) {
 
   try {
     const supabase = getSupabaseAdmin();
-    const { error } = await supabase.from("bookings").insert({
-      name: body.name,
-      phone: body.phone,
-      email: body.email || null,
-      party_size: partySize,
-      booking_date: body.date,
-      booking_time: body.time,
-      reservation_at: reservationAt.toISOString(),
-      location: body.location,
-      notes: body.notes || null,
-      channel,
-      lang,
-    });
+    const { data: inserted, error } = await supabase
+      .from("bookings")
+      .insert({
+        name: body.name,
+        phone: body.phone,
+        email: body.email || null,
+        party_size: partySize,
+        booking_date: body.date,
+        booking_time: body.time,
+        reservation_at: reservationAt.toISOString(),
+        location: body.location,
+        notes: body.notes || null,
+        channel,
+        lang,
+      })
+      .select()
+      .single();
 
-    if (error) {
-      console.error("Failed to save booking:", error.message);
+    if (error || !inserted) {
+      console.error("Failed to save booking:", error?.message);
       return NextResponse.json({ error: "Could not save booking" }, { status: 500 });
+    }
+
+    // Send the confirmation right away instead of waiting on the cron sweep
+    // in /api/send-confirmations — that cron (GitHub Actions schedule) isn't
+    // guaranteed to fire on time, sometimes lagging an hour or more. It's
+    // left in place as a retry safety net: it only picks up bookings where
+    // confirmation_email_sent_at is still null, which is exactly what happens
+    // here if this immediate send fails.
+    if (inserted.email) {
+      await sendConfirmationNow(supabase, inserted as Booking);
     }
 
     return NextResponse.json({ ok: true });
