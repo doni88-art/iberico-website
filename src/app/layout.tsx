@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Karla } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
 import { ScrollProgress } from "@/components/ScrollProgress";
@@ -69,6 +70,7 @@ export default function RootLayout({
         <ScrollProgress />
         <CustomCursor />
         <LanguageProvider>{children}</LanguageProvider>
+        <Analytics />
       </body>
     </html>
   );
