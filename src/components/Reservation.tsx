@@ -11,9 +11,23 @@ import { ShimmerButton } from "./ShimmerButton";
 import { KineticText } from "./KineticText";
 import { ZaloIcon, WhatsAppIcon } from "./SocialIcons";
 
-// Central bookings line — every reservation is sent here via WhatsApp, plus email.
-const BOOKINGS_NUMBER = "84849000531";
+// Bookings routing. Thảo Điền and Thị Sách share the central Saigon line;
+// Hội An has its own WhatsApp/Zalo number. Digits only, country code first.
+const CENTRAL_BOOKINGS_NUMBER = "84849000531";
+const HOI_AN_BOOKINGS_NUMBER = "84868774026";
 const BOOKINGS_EMAIL = "hola@weareiberico.com";
+
+// Keyed by the (untranslated) location name — the same key set as LOCATION_HOURS.
+const LOCATION_BOOKINGS_NUMBER: Record<string, string> = {
+  "IBÉRICO Thảo Điền": CENTRAL_BOOKINGS_NUMBER,
+  "IBÉRICO Thị Sách": CENTRAL_BOOKINGS_NUMBER,
+  "IBÉRICO Hội An": HOI_AN_BOOKINGS_NUMBER,
+};
+
+// Falls back to the central line until a location is picked / for any unknown value.
+function bookingsNumberFor(location: string): string {
+  return LOCATION_BOOKINGS_NUMBER[location] ?? CENTRAL_BOOKINGS_NUMBER;
+}
 
 // Per-location service hours, keyed by the (untranslated) location name.
 const LOCATION_HOURS: Record<
@@ -137,9 +151,11 @@ export function Reservation() {
   };
 
   const buildWhatsAppUrl = () =>
-    `https://wa.me/${BOOKINGS_NUMBER}?text=${encodeURIComponent(buildMessageLines().join("\n"))}`;
+    `https://wa.me/${bookingsNumberFor(form.location)}?text=${encodeURIComponent(
+      buildMessageLines().join("\n")
+    )}`;
 
-  const buildZaloUrl = () => `https://zalo.me/${BOOKINGS_NUMBER}`;
+  const buildZaloUrl = () => `https://zalo.me/${bookingsNumberFor(form.location)}`;
 
   const saveBooking = (via: "whatsapp" | "zalo") => {
     fetch("/api/reservations", {
@@ -445,7 +461,7 @@ export function Reservation() {
                     </span>
                     <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
                       <a
-                        href={`tel:+${BOOKINGS_NUMBER}`}
+                        href={`tel:+${bookingsNumberFor(form.location)}`}
                         className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-stone transition-colors hover:text-wine"
                       >
                         <Phone size={16} />

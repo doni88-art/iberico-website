@@ -16,10 +16,18 @@ jobs:
     steps:
       - name: Send due confirmation emails
         run: |
-          curl -sf -X GET "https://www.weareiberico.com/api/send-confirmations" \
-            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
+          body=$(curl -sS -w "\n%{http_code}" -X GET \
+            "https://www.weareiberico.com/api/send-confirmations" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}")
+          code=$(echo "$body" | tail -n1)
+          echo "$body" | sed '$d'
+          test "$code" -lt 400
 
       - name: Send due satisfaction-survey emails
         run: |
-          curl -sf -X GET "https://www.weareiberico.com/api/send-survey-emails" \
-            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
+          body=$(curl -sS -w "\n%{http_code}" -X GET \
+            "https://www.weareiberico.com/api/send-survey-emails" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}")
+          code=$(echo "$body" | tail -n1)
+          echo "$body" | sed '$d'
+          test "$code" -lt 400

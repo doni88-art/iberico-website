@@ -5,7 +5,9 @@ import { useLanguage } from "@/lib/i18n";
 import { LogoMark } from "./Logo";
 import { InstagramIcon, FacebookIcon, ZaloIcon, WhatsAppIcon } from "./SocialIcons";
 
-const BOOKINGS_NUMBER = "84849000531";
+// Two bookings lines: the Saigon houses share one, Hội An has its own.
+const SAIGON_NUMBER = "84849000531";
+const HOI_AN_NUMBER = "84868774026";
 
 export function Footer() {
   const { t } = useLanguage();
@@ -89,7 +91,7 @@ export function Footer() {
                 <Mail size={18} />
               </a>
               <a
-                href={`https://wa.me/${BOOKINGS_NUMBER}`}
+                href={`https://wa.me/${SAIGON_NUMBER}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
@@ -98,7 +100,7 @@ export function Footer() {
                 <WhatsAppIcon size={18} />
               </a>
               <a
-                href={`https://zalo.me/${BOOKINGS_NUMBER}`}
+                href={`https://zalo.me/${SAIGON_NUMBER}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Zalo"
@@ -107,12 +109,20 @@ export function Footer() {
                 <ZaloIcon size={18} />
               </a>
             </div>
-            <a
-              href={`tel:+${BOOKINGS_NUMBER}`}
-              className="mt-5 inline-block cursor-pointer text-sm text-cream/70 transition-colors hover:text-gold-light"
-            >
-              +84 849 000 531
-            </a>
+            <div className="mt-5 space-y-2 text-sm">
+              <a
+                href={`tel:+${SAIGON_NUMBER}`}
+                className="block cursor-pointer text-cream/70 transition-colors hover:text-gold-light"
+              >
+                <span className="text-cream/90">Ho Chi Minh City</span> · +84 849 000 531
+              </a>
+              <a
+                href={`tel:+${HOI_AN_NUMBER}`}
+                className="block cursor-pointer text-cream/70 transition-colors hover:text-gold-light"
+              >
+                <span className="text-cream/90">Hội An</span> · +84 868 774 026
+              </a>
+            </div>
           </div>
         </div>
 

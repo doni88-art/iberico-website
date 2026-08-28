@@ -85,7 +85,14 @@ export async function GET(request: Request) {
 
   if (failures.length > 0) {
     console.error("send-confirmations failures:", failures);
+    // Return 5xx so the GitHub Actions cron run goes red and we get notified.
+    // A silent {sent:0} 200 previously hid a fully-broken sender (e.g. an
+    // unverified RESEND_FROM domain) behind a green checkmark for days.
+    return NextResponse.json(
+      { sent, failed: failures.length, errors: failures },
+      { status: 502 }
+    );
   }
 
-  return NextResponse.json({ sent, failed: failures.length });
+  return NextResponse.json({ sent, failed: 0 });
 }
