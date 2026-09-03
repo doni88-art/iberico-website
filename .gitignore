@@ -46,3 +46,6 @@ next-env.d.ts
 /*.jpeg
 /*.JPEG
 /*.png
+
+# superpowers scratch
+.superpowers/
