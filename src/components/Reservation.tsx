@@ -276,6 +276,7 @@ export function Reservation() {
                 onClick={() => {
                   clearBooking();
                   setForm((f) => ({ ...f, date: "", location: "", notes: "" }));
+                  setTouched((tch) => ({ ...tch, date: false, location: false }));
                 }}
                 className="shrink-0 cursor-pointer text-xs font-semibold uppercase tracking-wide text-wine hover:underline"
               >
