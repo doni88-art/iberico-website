@@ -81,6 +81,17 @@ const initialState: FormState = {
   notes: "",
 };
 
+// Keep the time slot valid for the current location: if the selected time is not
+// among the new location's generated slots, clear it. Mirrors the guard that the
+// field() location-change handler needs, so every path that writes `location`
+// (change handler, event pre-fill, banner Clear) stays consistent.
+function reconcileTime(next: FormState): FormState {
+  const hours = LOCATION_HOURS[next.location] ?? DEFAULT_HOURS;
+  const slots = generateTimeSlots(hours.start, hours.lastBooking);
+  if (!slots.includes(next.time)) next.time = "";
+  return next;
+}
+
 const REQUIRED_FIELDS: (keyof FormState)[] = [
   "name",
   "phone",
@@ -92,6 +103,9 @@ const REQUIRED_FIELDS: (keyof FormState)[] = [
 export function Reservation() {
   const { t, lang } = useLanguage();
   const { event, bookingEventId, clearBooking } = useWhatsOn();
+  // Relies on useWhatsOn().event being referentially stable (it is held in
+  // useState), so the seed effect below only re-runs when the booking target
+  // actually changes — not on every render.
   const bookingForEvent =
     bookingEventId && event && event.id === bookingEventId ? event : null;
   const [form, setForm] = useState<FormState>(initialState);
@@ -101,16 +115,36 @@ export function Reservation() {
 
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
+  // Seed date + location + notes once, when a booking target first appears.
+  // Language changes are handled by the separate effect below so they do not
+  // clobber a visitor's hand-edited date/location.
   useEffect(() => {
     if (!bookingForEvent) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setForm((f) => ({
-      ...f,
-      date: bookingForEvent.bookingDate,
-      location: bookingForEvent.locationName,
-      notes: eventCopy(bookingForEvent, lang).bookingNote,
-    }));
+    setForm((f) =>
+      reconcileTime({
+        ...f,
+        date: bookingForEvent.bookingDate,
+        location: bookingForEvent.locationName,
+        notes: eventCopy(bookingForEvent, lang).bookingNote,
+      })
+    );
     setTouched((tch) => ({ ...tch, date: true, location: true }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookingForEvent]);
+
+  // On language toggle, re-translate ONLY the notes field, and only while it
+  // still holds one of the event's seeded bookingNote strings (i.e. the visitor
+  // has not customised it). Leaves hand-edited date/location/notes untouched.
+  useEffect(() => {
+    if (!bookingForEvent) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setForm((f) => {
+      const seeded = Object.values(bookingForEvent.copy).map((c) => c.bookingNote);
+      return seeded.includes(f.notes)
+        ? { ...f, notes: eventCopy(bookingForEvent, lang).bookingNote }
+        : f;
+    });
   }, [bookingForEvent, lang]);
 
   const errors = useMemo(() => {
@@ -139,11 +173,7 @@ export function Reservation() {
       const value = e.target.value;
       setForm((f) => {
         const next = { ...f, [name]: value };
-        if (name === "location") {
-          const hours = LOCATION_HOURS[value] ?? DEFAULT_HOURS;
-          const slots = generateTimeSlots(hours.start, hours.lastBooking);
-          if (!slots.includes(next.time)) next.time = "";
-        }
+        if (name === "location") return reconcileTime(next);
         return next;
       });
     },
@@ -275,7 +305,9 @@ export function Reservation() {
                 type="button"
                 onClick={() => {
                   clearBooking();
-                  setForm((f) => ({ ...f, date: "", location: "", notes: "" }));
+                  setForm((f) =>
+                    reconcileTime({ ...f, date: "", location: "", notes: "" })
+                  );
                   setTouched((tch) => ({ ...tch, date: false, location: false }));
                 }}
                 className="shrink-0 cursor-pointer text-xs font-semibold uppercase tracking-wide text-wine hover:underline"
