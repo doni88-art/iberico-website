@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu as MenuIcon, X } from "lucide-react";
 import { useLanguage, languageLabels, languageFlags, type Lang } from "@/lib/i18n";
+import { useWhatsOn } from "@/lib/whats-on";
 import { LogoMark } from "./Logo";
 import { ShimmerButton } from "./ShimmerButton";
 import { InstagramColorIcon, FacebookColorIcon } from "./SocialIcons";
@@ -22,6 +23,7 @@ const SECTIONS: {
 
 export function Navbar() {
   const { lang, setLang, t } = useLanguage();
+  const { event, openPopup } = useWhatsOn();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -104,6 +106,21 @@ export function Navbar() {
                 </a>
               </li>
             ))}
+            {event && (
+              <li>
+                <button
+                  type="button"
+                  onClick={openPopup}
+                  className={`relative cursor-pointer transition-colors after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:transition-all after:duration-300 hover:after:w-full ${
+                    scrolled
+                      ? "hover:text-gold-deep after:bg-gold-deep"
+                      : "hover:text-gold-light after:bg-gold-light"
+                  }`}
+                >
+                  {t.whatsOn.navLabel}
+                </button>
+              </li>
+            )}
           </ul>
 
           <div className="hidden lg:flex items-center gap-4">
@@ -155,6 +172,29 @@ export function Navbar() {
                   </a>
                 </motion.li>
               ))}
+              {event && (
+                <motion.li
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 0.05 * SECTIONS.length + 0.1,
+                    duration: 0.4,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="border-b border-border py-4"
+                >
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      openPopup();
+                    }}
+                    className="cursor-pointer text-left"
+                  >
+                    {t.whatsOn.navLabel}
+                  </button>
+                </motion.li>
+              )}
             </ul>
             <motion.div
               initial={{ opacity: 0, y: 16 }}
