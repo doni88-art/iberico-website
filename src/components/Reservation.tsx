@@ -1,10 +1,12 @@
 "use client";
 
-import { useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { CheckCircle2, Loader2, Phone, Mail } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
+import { useWhatsOn } from "@/lib/whats-on";
+import { eventCopy } from "@/lib/events";
 import { Reveal } from "./Reveal";
 import { Magnetic } from "./Magnetic";
 import { ShimmerButton } from "./ShimmerButton";
@@ -89,12 +91,27 @@ const REQUIRED_FIELDS: (keyof FormState)[] = [
 
 export function Reservation() {
   const { t, lang } = useLanguage();
+  const { event, bookingEventId, clearBooking } = useWhatsOn();
+  const bookingForEvent =
+    bookingEventId && event && event.id === bookingEventId ? event : null;
   const [form, setForm] = useState<FormState>(initialState);
   const [touched, setTouched] = useState<Partial<Record<keyof FormState, boolean>>>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
   const formRef = useRef<HTMLFormElement>(null);
 
   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+
+  useEffect(() => {
+    if (!bookingForEvent) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setForm((f) => ({
+      ...f,
+      date: bookingForEvent.bookingDate,
+      location: bookingForEvent.locationName,
+      notes: eventCopy(bookingForEvent, lang).bookingNote,
+    }));
+    setTouched((tch) => ({ ...tch, date: true, location: true }));
+  }, [bookingForEvent, lang]);
 
   const errors = useMemo(() => {
     const e: Partial<Record<keyof FormState, string>> = {};
@@ -244,6 +261,28 @@ export function Reservation() {
         </Reveal>
 
         <Reveal delay={0.15} className="mt-12 rounded-sm border border-border bg-white p-6 shadow-xl sm:p-10">
+          {bookingForEvent && status !== "success" && (
+            <div className="mb-6 flex items-center justify-between gap-3 rounded-sm border border-gold/40 bg-gold/10 px-4 py-3 text-sm text-ink">
+              <span>
+                {t.whatsOn.bookingBannerPrefix}{" "}
+                <strong className="font-semibold">
+                  {eventCopy(bookingForEvent, lang).eyebrow}
+                </strong>
+                {" · "}
+                {eventCopy(bookingForEvent, lang).when}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  clearBooking();
+                  setForm((f) => ({ ...f, date: "", location: "", notes: "" }));
+                }}
+                className="shrink-0 cursor-pointer text-xs font-semibold uppercase tracking-wide text-wine hover:underline"
+              >
+                {t.whatsOn.bookingClear}
+              </button>
+            </div>
+          )}
           <AnimatePresence mode="wait">
             {status === "success" ? (
               <motion.div
