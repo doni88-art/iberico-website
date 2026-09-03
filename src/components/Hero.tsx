@@ -49,15 +49,6 @@ export function Hero() {
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-6 text-center text-cream"
       >
-        <motion.span
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold-light/40 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-light"
-        >
-          {t.hero.eyebrow}
-        </motion.span>
-
         <motion.div
           initial={{ opacity: 0, scale: 0.92, y: shouldReduceMotion ? 0 : 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -78,11 +69,20 @@ export function Hero() {
           </span>
         </motion.div>
 
+        <motion.span
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease }}
+          className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold-light/40 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-light"
+        >
+          {t.hero.eyebrow}
+        </motion.span>
+
         <h1 className="font-display text-balance leading-[0.95]">
           <motion.span
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 32 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.1, ease }}
+            transition={{ duration: 0.9, delay: 0.2, ease }}
             className="block text-[15vw] sm:text-8xl md:text-9xl"
           >
             {t.hero.title1}
@@ -90,7 +90,7 @@ export function Hero() {
           <motion.span
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 32 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.25, ease }}
+            transition={{ duration: 0.9, delay: 0.3, ease }}
             className="block text-[15vw] italic text-gold-light sm:text-8xl md:text-9xl"
           >
             {t.hero.title2}
