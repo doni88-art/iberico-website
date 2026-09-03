@@ -7,7 +7,6 @@ import { useLanguage } from "@/lib/i18n";
 import { ChevronDown } from "lucide-react";
 import { Magnetic } from "./Magnetic";
 import { ShimmerButton } from "./ShimmerButton";
-import { LogoMark } from "./Logo";
 
 export function Hero() {
   const { t } = useLanguage();
@@ -62,18 +61,21 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0, scale: 0.92, y: shouldReduceMotion ? 0 : 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.05, ease }}
-          className="mb-7 flex items-center gap-4 rounded-2xl bg-cream px-7 py-4 shadow-xl"
+          transition={{ duration: 0.9, delay: 0.05, ease }}
+          className="mb-8 flex flex-col items-center gap-2.5"
         >
-          <LogoMark className="h-12 w-12 shrink-0" />
           <Image
-            src="/brand/logo-wordmark.png"
+            src="/brand/logo-mark.png"
             alt="IBÉRICO Vinos y Tapas"
-            width={908}
-            height={530}
-            className="h-12 w-auto sm:h-14"
+            width={462}
+            height={601}
             priority
+            className="h-[52px] w-auto brightness-0 invert drop-shadow-[0_2px_16px_rgba(0,0,0,0.5)]"
           />
+          <span className="h-px w-9 bg-cream/50" />
+          <span className="font-display text-sm tracking-[0.34em] text-cream sm:text-base">
+            <span className="pl-[0.34em]">IBÉRICO</span>
+          </span>
         </motion.div>
 
         <h1 className="font-display text-balance leading-[0.95]">
