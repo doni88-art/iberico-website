@@ -15,10 +15,16 @@ export function EventPopup() {
   const shouldReduceMotion = useReducedMotion();
   const cardRef = useRef<HTMLDivElement>(null);
   const lastFocused = useRef<HTMLElement | null>(null);
+  // Set when the CTA hands off to the reservation form, so the close-effect
+  // cleanup does not yank focus back out of the form.
+  const skipRestore = useRef(false);
 
-  // Auto-open ~900ms after mount, every visit (no persistence).
+  // Auto-open ~900ms after mount, every visit (no persistence). Skipped when the
+  // visitor deep-linked to a section (e.g. /#reserve, /#menu from QR codes /
+  // promo collateral) — they asked for something specific, don't hijack them.
   useEffect(() => {
     if (!event) return;
+    if (window.location.hash) return;
     const id = window.setTimeout(() => openPopup(), 900);
     return () => window.clearTimeout(id);
   }, [event, openPopup]);
@@ -60,7 +66,17 @@ export function EventPopup() {
     return () => {
       window.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = "";
-      lastFocused.current?.focus?.();
+      // Only restore focus if the element is still in the document (the mobile
+      // "What's On" button unmounts with the menu overlay) and the CTA hasn't
+      // already moved focus into the reservation form.
+      if (
+        !skipRestore.current &&
+        lastFocused.current &&
+        document.contains(lastFocused.current)
+      ) {
+        lastFocused.current.focus();
+      }
+      skipRestore.current = false;
     };
   }, [popupOpen, closePopup]);
 
@@ -70,10 +86,13 @@ export function EventPopup() {
   const titleId = `event-popup-title-${event.id}`;
 
   const onReserve = () => {
+    skipRestore.current = true;
     startBooking();
     document
       .getElementById("reserve")
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Land a keyboard user on the form's first field, not the document top.
+    document.getElementById("name")?.focus({ preventScroll: true });
   };
 
   return (
