@@ -3,6 +3,7 @@ import { Playfair_Display, Karla } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
+import { WhatsOnProvider } from "@/lib/whats-on";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { CustomCursor } from "@/components/CustomCursor";
 
@@ -69,7 +70,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-cream text-ink">
         <ScrollProgress />
         <CustomCursor />
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider>
+          <WhatsOnProvider>{children}</WhatsOnProvider>
+        </LanguageProvider>
         <Analytics />
       </body>
     </html>
