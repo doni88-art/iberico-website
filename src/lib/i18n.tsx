@@ -57,6 +57,16 @@ export interface Dict {
     cta2: string;
     scroll: string;
   };
+  whatsOn: {
+    navLabel: string;
+    close: string;
+    maybeLater: string;
+    whenLabel: string;
+    whereLabel: string;
+    priceLabel: string;
+    bookingBannerPrefix: string;
+    bookingClear: string;
+  };
   story: {
     eyebrow: string;
     title: string;
@@ -168,7 +178,7 @@ const en: Dict = {
     reserve: "Reserve",
   },
   hero: {
-    eyebrow: "Saigon · Est. 2021",
+    eyebrow: "Vinos y Tapas · Saigon · Est. 2021",
     title1: "Tapas",
     title2: "y Vino",
     subtitle:
@@ -176,6 +186,16 @@ const en: Dict = {
     cta1: "Reserve a Table",
     cta2: "View Menu",
     scroll: "Scroll",
+  },
+  whatsOn: {
+    navLabel: "What's On",
+    close: "Close",
+    maybeLater: "Maybe later",
+    whenLabel: "When",
+    whereLabel: "Where",
+    priceLabel: "Price",
+    bookingBannerPrefix: "You're booking for",
+    bookingClear: "Clear",
   },
   story: {
     eyebrow: "Our Story",
@@ -1558,7 +1578,7 @@ const vi: Dict = {
     reserve: "Đặt Bàn",
   },
   hero: {
-    eyebrow: "Sài Gòn · Thành lập 2021",
+    eyebrow: "Vinos y Tapas · Sài Gòn · Thành lập 2021",
     title1: "Tapas",
     title2: "y Vino",
     subtitle:
@@ -1566,6 +1586,16 @@ const vi: Dict = {
     cta1: "Đặt Bàn Ngay",
     cta2: "Xem Thực Đơn",
     scroll: "Cuộn xuống",
+  },
+  whatsOn: {
+    navLabel: "Sự kiện",
+    close: "Đóng",
+    maybeLater: "Để sau",
+    whenLabel: "Khi nào",
+    whereLabel: "Ở đâu",
+    priceLabel: "Giá",
+    bookingBannerPrefix: "Bạn đang đặt bàn cho",
+    bookingClear: "Xoá",
   },
   story: {
     eyebrow: "Câu Chuyện Của Chúng Tôi",
@@ -2948,7 +2978,7 @@ const es: Dict = {
     reserve: "Reservar",
   },
   hero: {
-    eyebrow: "Saigón · Desde 2021",
+    eyebrow: "Vinos y Tapas · Saigón · Desde 2021",
     title1: "Tapas",
     title2: "y Vino",
     subtitle:
@@ -2956,6 +2986,16 @@ const es: Dict = {
     cta1: "Reservar Mesa",
     cta2: "Ver la Carta",
     scroll: "Desplázate",
+  },
+  whatsOn: {
+    navLabel: "Agenda",
+    close: "Cerrar",
+    maybeLater: "Quizás luego",
+    whenLabel: "Cuándo",
+    whereLabel: "Dónde",
+    priceLabel: "Precio",
+    bookingBannerPrefix: "Estás reservando para",
+    bookingClear: "Borrar",
   },
   story: {
     eyebrow: "Nuestra Historia",
