@@ -57,7 +57,7 @@ export function Hero() {
         >
           <Image
             src="/brand/logo-mark.png"
-            alt="IBÉRICO Vinos y Tapas"
+            alt=""
             width={462}
             height={601}
             priority
