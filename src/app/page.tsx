@@ -9,6 +9,7 @@ import { Events } from "@/components/Events";
 import { Careers } from "@/components/Careers";
 import { Reservation } from "@/components/Reservation";
 import { Footer } from "@/components/Footer";
+import { EventPopup } from "@/components/EventPopup";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
         <Reservation />
       </main>
       <Footer />
+      <EventPopup />
     </>
   );
 }
