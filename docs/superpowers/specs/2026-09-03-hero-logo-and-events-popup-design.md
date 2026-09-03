@@ -10,8 +10,8 @@
    card floating on the dusk photo. It reads like a sticker and breaks the
    editorial tone of the rest of the site. (An unrelated, uncommitted local edit
    in `Hero.tsx` already gropes at a fix — it is superseded by this work.)
-2. The restaurant runs headline events (the 5-Year Anniversary on 3 Oct, then
-   Pinchos Night on 19 Nov). There is currently no way for a visitor to learn
+2. The restaurant runs headline events (Pinchos Night on 19 Sep, then the 5-Year
+   Anniversary on 3 Oct). There is currently no way for a visitor to learn
    about them on arrival. Note: the existing `Events` section is *private venue
    hire* — unrelated, not touched by this work.
 
@@ -112,33 +112,33 @@ export function eventCopy(event: SiteEvent, lang: Lang): SiteEventCopy {
 
 ### Real content
 
-**PINCHOS_NIGHT** — rescheduled to Thu 19 Nov 2026 (was 26 Sep); all other
-details unchanged. Note: the social captions in `iberico-promotions/` still say
-26 Sep and "Saturday" — those are out of scope here but now stale.
+**PINCHOS_NIGHT** — moved to Sat 19 Sep 2026 (was 26 Sep), one week earlier;
+all other details unchanged. Note: the social captions in `iberico-promotions/`
+still say 26 Sep — out of scope here but now stale.
 - `id`: `"pinchos-night"`
-- `showUntilISO`: `"2026-11-20T00:00:00+07:00"`
-- `bookingDate`: `"2026-11-19"`
+- `showUntilISO`: `"2026-09-20T00:00:00+07:00"`
+- `bookingDate`: `"2026-09-19"`
 - `locationName`: `"IBÉRICO Thảo Điền"`
 - `copy.en`:
   - eyebrow: `Pinchos Night · 1st Edition`
   - title: `20 pinchos,`
   - titleEm: `one night only`
   - description: `A Basque-style pintxo feast at IBÉRICO Thảo Điền — coming out of the kitchen non-stop, all you can eat.`
-  - when: `Thu 19 Nov · 6:00–9:00 PM`
+  - when: `Sat 19 Sep · 6:00–9:00 PM`
   - where: `IBÉRICO Thảo Điền · 33 Võ Trường Toản`
   - price: `490.000++ VND / person · drinks separate`
   - cta: `Reserve a table`
-  - bookingNote: `Booking for Pinchos Night — Thu 19 Nov, 6 PM`
+  - bookingNote: `Booking for Pinchos Night — Sat 19 Sep, 6 PM`
 - `copy.vi`:
   - eyebrow: `Pinchos Night · Số đầu tiên`
   - title: `20 loại pinchos,`
   - titleEm: `một đêm duy nhất`
   - description: `Tiệc pincho kiểu Basque tại IBÉRICO Thảo Điền — ra liên tục từ bếp, ăn không giới hạn.`
-  - when: `Thứ Năm 19/11 · 18:00–21:00`
+  - when: `Thứ Bảy 19/9 · 18:00–21:00`
   - where: `IBÉRICO Thảo Điền · 33 Võ Trường Toản`
   - price: `490.000++ VND / người · đồ uống tính riêng`
   - cta: `Đặt bàn`
-  - bookingNote: `Đặt bàn cho Pinchos Night — Thứ Năm 19/11, 18:00`
+  - bookingNote: `Đặt bàn cho Pinchos Night — Thứ Bảy 19/9, 18:00`
 
 **ANNIVERSARY_5YR**
 - `id`: `"anniversary-5yr"`
@@ -302,13 +302,12 @@ No test infra in this repo (matches project convention). Verify via:
      375px and desktop.
    - Popup appears ~900ms after load; ✕ / Esc / backdrop / "Maybe later" all
      close it; reload → reappears.
-   - `Reserve a table` → smooth scroll to form, `date` = 2026-10-03 (Anniversary,
-     the current event as of Sep), `location` = Thảo Điền, banner shown, note
+   - `Reserve a table` → smooth scroll to form, `date` = 2026-09-19 (Pinchos
+     Night, the current event), `location` = Thảo Điền, banner shown, note
      present; submitting WhatsApp shows the note in the message body.
    - Banner `Clear` resets the three fields and hides the banner.
    - Navbar "What's On" reopens the popup (desktop + mobile menu).
    - Toggle VI: popup + banner + nav label all translate.
-   - Temporarily set `currentEvent(new Date("2026-10-20"))` → Pinchos Night
-     content shows (`date` prefill 2026-11-19); set `"2026-11-25"` → no popup,
-     no nav link.
+   - Temporarily set `currentEvent(new Date("2026-09-25"))` → Anniversary content
+     shows (`date` prefill 2026-10-03); set `"2026-10-10"` → no popup, no nav link.
    - `prefers-reduced-motion` → surfaces fade only, no slide/scale.

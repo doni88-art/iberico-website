@@ -88,12 +88,12 @@ export interface SiteEvent {
   copy: Partial<Record<Lang, SiteEventCopy>> & { en: SiteEventCopy };
 }
 
-// Pinchos Night was rescheduled from 26 Sep to Thu 19 Nov 2026; details otherwise
-// unchanged. (Social captions in iberico-promotions/ are now stale — out of scope.)
+// Pinchos Night was moved from 26 Sep to Sat 19 Sep 2026; details otherwise
+// unchanged. (Social captions in iberico-promotions/ still say 26 Sep — out of scope.)
 const PINCHOS_NIGHT: SiteEvent = {
   id: "pinchos-night",
-  showUntilISO: "2026-11-20T00:00:00+07:00",
-  bookingDate: "2026-11-19",
+  showUntilISO: "2026-09-20T00:00:00+07:00",
+  bookingDate: "2026-09-19",
   locationName: "IBÉRICO Thảo Điền",
   copy: {
     en: {
@@ -102,11 +102,11 @@ const PINCHOS_NIGHT: SiteEvent = {
       titleEm: "one night only",
       description:
         "A Basque-style pintxo feast at IBÉRICO Thảo Điền — coming out of the kitchen non-stop, all you can eat.",
-      when: "Thu 19 Nov · 6:00–9:00 PM",
+      when: "Sat 19 Sep · 6:00–9:00 PM",
       where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
       price: "490.000++ VND / person · drinks separate",
       cta: "Reserve a table",
-      bookingNote: "Booking for Pinchos Night — Thu 19 Nov, 6 PM",
+      bookingNote: "Booking for Pinchos Night — Sat 19 Sep, 6 PM",
     },
     vi: {
       eyebrow: "Pinchos Night · Số đầu tiên",
@@ -114,11 +114,11 @@ const PINCHOS_NIGHT: SiteEvent = {
       titleEm: "một đêm duy nhất",
       description:
         "Tiệc pincho kiểu Basque tại IBÉRICO Thảo Điền — ra liên tục từ bếp, ăn không giới hạn.",
-      when: "Thứ Năm 19/11 · 18:00–21:00",
+      when: "Thứ Bảy 19/9 · 18:00–21:00",
       where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
       price: "490.000++ VND / người · đồ uống tính riêng",
       cta: "Đặt bàn",
-      bookingNote: "Đặt bàn cho Pinchos Night — Thứ Năm 19/11, 18:00",
+      bookingNote: "Đặt bàn cho Pinchos Night — Thứ Bảy 19/9, 18:00",
     },
   },
 };
@@ -184,11 +184,11 @@ Expected: no new errors.
 
 Run:
 ```bash
-npx tsx --eval "import('./src/lib/events.ts').then(m => console.log([m.currentEvent(new Date('2026-09-10T12:00:00+07:00'))?.id, m.currentEvent(new Date('2026-10-20T12:00:00+07:00'))?.id, m.currentEvent(new Date('2026-11-25T12:00:00+07:00'))?.id]))"
+npx tsx --eval "import('./src/lib/events.ts').then(m => console.log([m.currentEvent(new Date('2026-09-10T12:00:00+07:00'))?.id, m.currentEvent(new Date('2026-09-25T12:00:00+07:00'))?.id, m.currentEvent(new Date('2026-10-10T12:00:00+07:00'))?.id]))"
 ```
-Expected output: `[ 'anniversary-5yr', 'pinchos-night', undefined ]`
-(Anniversary's `showUntilISO` is 4 Oct — sooner than Pinchos Night's 20 Nov — so
-it is the active event first, then the popup rolls to Pinchos Night.)
+Expected output: `[ 'pinchos-night', 'anniversary-5yr', undefined ]`
+(Pinchos Night's `showUntilISO` is 20 Sep — sooner than the Anniversary's 4 Oct —
+so it is the active event first, then the popup rolls to the Anniversary.)
 (`npx tsx` is fetched on demand; the `import type` line is erased at runtime so the `@/` alias never resolves. If offline, skip this step — Task 8 re-verifies rollover in the browser.)
 
 - [ ] **Step 4: Lint**
@@ -794,10 +794,11 @@ Expected: PASS.
 
 With `npm run dev`, open `http://localhost:3000`:
 - ~0.9s after load the popup fades/scales in over a dimmed page. Body scroll is locked.
-- Content (the current event as of Sep is the Anniversary): crest,
-  `5 YEARS OF IBÉRICO`, `The anniversary` / *party*, description, When/Where/Price
-  rows (`Sat 3 Oct · from 4:00 PM` / `IBÉRICO Thảo Điền · 33 Võ Trường Toản` /
-  `Free entry · à la carte all night`), `Reserve a table` + `Maybe later`.
+- Content (the current event is Pinchos Night, 19 Sep): crest,
+  `PINCHOS NIGHT · 1ST EDITION`, `20 pinchos,` / *one night only*, description,
+  When/Where/Price rows (`Sat 19 Sep · 6:00–9:00 PM` /
+  `IBÉRICO Thảo Điền · 33 Võ Trường Toản` /
+  `490.000++ VND / person · drinks separate`), `Reserve a table` + `Maybe later`.
 - Close paths all work: `✕`, `Maybe later`, click the dim backdrop, `Esc`. After closing, scroll is restored and it does not reappear until reload.
 - Tab key cycles focus **within** the card only; Shift+Tab wraps backwards.
 - Click `Reserve a table`: popup closes, page smooth-scrolls to the reservation section.
@@ -898,7 +899,7 @@ Expected: PASS.
 With `npm run dev`, open `http://localhost:3000`:
 - Desktop nav shows `What's On` after `Careers`. Dismiss the popup, click `What's On` → popup reopens.
 - Shrink to mobile, open the hamburger menu: `Sự kiện`/`What's On` is the last item; tapping it closes the menu and opens the popup.
-- Temporarily edit `src/lib/whats-on.tsx` `setEvent(currentEvent())` → `setEvent(currentEvent(new Date("2026-12-01")))`, reload: no popup auto-opens **and** the nav link is gone. Revert the edit.
+- Temporarily edit `src/lib/whats-on.tsx` `setEvent(currentEvent())` → `setEvent(currentEvent(new Date("2026-10-10")))`, reload: no popup auto-opens **and** the nav link is gone. Revert the edit.
 
 - [ ] **Step 6: Commit**
 
@@ -997,9 +998,9 @@ Expected: PASS.
 - [ ] **Step 6: Preview check**
 
 With `npm run dev`, open `http://localhost:3000`:
-- Let the popup appear, click `Reserve a table`. Page scrolls to the form. The gold banner reads **"You're booking for 5 Years of IBÉRICO · Sat 3 Oct · from 4:00 PM"**.
-- Form is pre-filled: Date = `2026-10-03`, Location = `IBÉRICO Thảo Điền`, Notes = `Booking for the 5-Year Anniversary Party — Sat 3 Oct, from 4 PM`. Time slots populated for Thảo Điền hours.
-- Fill Name + Phone + Time, click the WhatsApp button: the opened `wa.me` message body contains a `Notes: Booking for the 5-Year Anniversary Party …` line.
+- Let the popup appear, click `Reserve a table`. Page scrolls to the form. The gold banner reads **"You're booking for Pinchos Night · 1st Edition · Sat 19 Sep · 6:00–9:00 PM"**.
+- Form is pre-filled: Date = `2026-09-19`, Location = `IBÉRICO Thảo Điền`, Notes = `Booking for Pinchos Night — Sat 19 Sep, 6 PM`. Time slots populated for Thảo Điền hours.
+- Fill Name + Phone + Time, click the WhatsApp button: the opened `wa.me` message body contains a `Notes: Booking for Pinchos Night …` line.
 - Click `Clear` in the banner: banner disappears, Date/Location/Notes reset to empty, `guests` still `2`.
 - Toggle language to `VI` before clearing: banner text and the pre-filled note are Vietnamese.
 
@@ -1030,19 +1031,19 @@ Expected: PASS, zero warnings introduced by this feature.
 
 - [ ] **Step 2: Event rollover**
 
-Default (no arg, real date ≈ Sep 2026): popup + navbar link show the **5-Year
-Anniversary** (`The anniversary` / *party*, `Sat 3 Oct · from 4:00 PM`,
-`Free entry · à la carte all night`); `Reserve a table` pre-fills Date `2026-10-03`,
-note `Booking for the 5-Year Anniversary Party — Sat 3 Oct, from 4 PM`.
+Default (no arg, real date ≈ early Sep 2026): popup + navbar link show
+**Pinchos Night** (`20 pinchos,` / *one night only*, `Sat 19 Sep · 6:00–9:00 PM`,
+`490.000++ VND / person · drinks separate`); `Reserve a table` pre-fills Date
+`2026-09-19`, note `Booking for Pinchos Night — Sat 19 Sep, 6 PM`.
 
 Then temporarily edit `src/lib/whats-on.tsx`: `setEvent(currentEvent())` →
-`setEvent(currentEvent(new Date("2026-10-20T12:00:00+07:00")))`. Reload:
-- Popup + navbar link now show **Pinchos Night** (`20 pinchos,` / *one night only*,
-  `Thu 19 Nov · 6:00–9:00 PM`, `490.000++ VND / person · drinks separate`).
-- Click `Reserve a table`: Date pre-fills `2026-11-19`, note =
-  `Booking for Pinchos Night — Thu 19 Nov, 6 PM`.
-Then try `new Date("2026-11-25T12:00:00+07:00")`: no popup, no navbar link, no console errors.
-**Revert the edit** and confirm the Anniversary is back.
+`setEvent(currentEvent(new Date("2026-09-25T12:00:00+07:00")))`. Reload:
+- Popup + navbar link now show the **5-Year Anniversary** (`The anniversary` /
+  *party*, `Sat 3 Oct · from 4:00 PM`, `Free entry · à la carte all night`).
+- Click `Reserve a table`: Date pre-fills `2026-10-03`, note =
+  `Booking for the 5-Year Anniversary Party — Sat 3 Oct, from 4 PM`.
+Then try `new Date("2026-10-10T12:00:00+07:00")`: no popup, no navbar link, no console errors.
+**Revert the edit** and confirm Pinchos Night is back.
 
 - [ ] **Step 3: Language sweep**
 
