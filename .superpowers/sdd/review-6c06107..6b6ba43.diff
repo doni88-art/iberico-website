@@ -1,0 +1,168 @@
+# Review package: 6c06107..6b6ba43
+
+## Commits
+6b6ba43 feat(i18n): add whatsOn strings; widen hero eyebrow to "Vinos y Tapas"
+
+## Files changed
+ src/lib/i18n.tsx | 46 +++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 43 insertions(+), 3 deletions(-)
+
+## Diff
+diff --git a/src/lib/i18n.tsx b/src/lib/i18n.tsx
+index 9673389..f3cea53 100644
+--- a/src/lib/i18n.tsx
++++ b/src/lib/i18n.tsx
+@@ -50,20 +50,30 @@ export interface Dict {
+   };
+   hero: {
+     eyebrow: string;
+     title1: string;
+     title2: string;
+     subtitle: string;
+     cta1: string;
+     cta2: string;
+     scroll: string;
+   };
++  whatsOn: {
++    navLabel: string;
++    close: string;
++    maybeLater: string;
++    whenLabel: string;
++    whereLabel: string;
++    priceLabel: string;
++    bookingBannerPrefix: string;
++    bookingClear: string;
++  };
+   story: {
+     eyebrow: string;
+     title: string;
+     body: string;
+     quote: string;
+     quoteAuthor: string;
+     stats: { value: string; label: string }[];
+   };
+   menu: {
+     eyebrow: string;
+@@ -161,29 +171,39 @@ const en: Dict = {
+   nav: {
+     story: "Our Story",
+     menu: "Menu",
+     gallery: "Gallery",
+     locations: "Locations",
+     events: "Events",
+     careers: "Careers",
+     reserve: "Reserve",
+   },
+   hero: {
+-    eyebrow: "Saigon · Est. 2021",
++    eyebrow: "Vinos y Tapas · Saigon · Est. 2021",
+     title1: "Tapas",
+     title2: "y Vino",
+     subtitle:
+       "Iberian tapas and Spanish wine, unhurried — in the heart of Ho Chi Minh City.",
+     cta1: "Reserve a Table",
+     cta2: "View Menu",
+     scroll: "Scroll",
+   },
++  whatsOn: {
++    navLabel: "What's On",
++    close: "Close",
++    maybeLater: "Maybe later",
++    whenLabel: "When",
++    whereLabel: "Where",
++    priceLabel: "Price",
++    bookingBannerPrefix: "You're booking for",
++    bookingClear: "Clear",
++  },
+   story: {
+     eyebrow: "Our Story",
+     title: "The Living Spirit of Spanish Dining in Vietnam",
+     body: "Founded in 2021, IBÉRICO brought Spain's tapas spirit to Vietnam: hand-sliced jamón, garlicky prawns hot off the pan, paella built for the table. Order by instinct, share everything, linger long — now three houses strong, from Saigon to the river in Hội An.",
+     quote: "Best Spanish Restaurant in Vietnam.",
+     quoteAuthor: "Gourmet Vietnam Awards, 2025",
+     stats: [
+       { value: "2021", label: "Founded in Saigon" },
+       { value: "3", label: "Locations across Vietnam" },
+       { value: "2025", label: "Best Spanish Restaurant, Gourmet Vietnam Awards" },
+@@ -1551,29 +1571,39 @@ const vi: Dict = {
+   nav: {
+     story: "Câu Chuyện",
+     menu: "Thực Đơn",
+     gallery: "Hình Ảnh",
+     locations: "Chi Nhánh",
+     events: "Sự Kiện",
+     careers: "Tuyển Dụng",
+     reserve: "Đặt Bàn",
+   },
+   hero: {
+-    eyebrow: "Sài Gòn · Thành lập 2021",
++    eyebrow: "Vinos y Tapas · Sài Gòn · Thành lập 2021",
+     title1: "Tapas",
+     title2: "y Vino",
+     subtitle:
+       "Tapas Iberia và vang Tây Ban Nha, thong thả — giữa lòng Thành phố Hồ Chí Minh.",
+     cta1: "Đặt Bàn Ngay",
+     cta2: "Xem Thực Đơn",
+     scroll: "Cuộn xuống",
+   },
++  whatsOn: {
++    navLabel: "Sự kiện",
++    close: "Đóng",
++    maybeLater: "Để sau",
++    whenLabel: "Khi nào",
++    whereLabel: "Ở đâu",
++    priceLabel: "Giá",
++    bookingBannerPrefix: "Bạn đang đặt bàn cho",
++    bookingClear: "Xoá",
++  },
+   story: {
+     eyebrow: "Câu Chuyện Của Chúng Tôi",
+     title: "Tinh Thần Sống Động Của Ẩm Thực Tây Ban Nha Tại Việt Nam",
+     body: "Ra đời năm 2021, IBÉRICO mang tinh thần tapas Tây Ban Nha đến Việt Nam: jamón thái tay, tôm sốt tỏi thơm lừng ngay khi ra chảo, paella làm cho cả bàn cùng thưởng thức. Gọi theo bản năng, chia sẻ tất cả, ở lại thật lâu — nay đã có ba cơ sở, từ Sài Gòn đến bên sông Hội An.",
+     quote: "Nhà Hàng Tây Ban Nha Xuất Sắc Nhất Việt Nam.",
+     quoteAuthor: "Gourmet Vietnam Awards, 2025",
+     stats: [
+       { value: "2021", label: "Thành lập tại Sài Gòn" },
+       { value: "3", label: "Chi nhánh trên khắp Việt Nam" },
+       { value: "2025", label: "Nhà Hàng Tây Ban Nha Xuất Sắc Nhất, Gourmet Vietnam Awards" },
+@@ -2941,29 +2971,39 @@ const es: Dict = {
+   nav: {
+     story: "Historia",
+     menu: "Carta",
+     gallery: "Galería",
+     locations: "Locales",
+     events: "Eventos",
+     careers: "Empleo",
+     reserve: "Reservar",
+   },
+   hero: {
+-    eyebrow: "Saigón · Desde 2021",
++    eyebrow: "Vinos y Tapas · Saigón · Desde 2021",
+     title1: "Tapas",
+     title2: "y Vino",
+     subtitle:
+       "Tapas ibéricas y vino español, sin prisa — en el corazón de Ho Chi Minh.",
+     cta1: "Reservar Mesa",
+     cta2: "Ver la Carta",
+     scroll: "Desplázate",
+   },
++  whatsOn: {
++    navLabel: "Agenda",
++    close: "Cerrar",
++    maybeLater: "Quizás luego",
++    whenLabel: "Cuándo",
++    whereLabel: "Dónde",
++    priceLabel: "Precio",
++    bookingBannerPrefix: "Estás reservando para",
++    bookingClear: "Borrar",
++  },
+   story: {
+     eyebrow: "Nuestra Historia",
+     title: "El Espíritu Vivo de la Gastronomía Española en Vietnam",
+     body: "Fundado en 2021, IBÉRICO trajo el espíritu de las tapas españolas a Vietnam: jamón cortado a mano, gambas al ajillo recién salidas de la sartén, paella pensada para toda la mesa. Pide por instinto, comparte todo, quédate hasta tarde — hoy con tres locales, desde Saigón hasta el río en Hội An.",
+     quote: "El Mejor Restaurante Español de Vietnam.",
+     quoteAuthor: "Gourmet Vietnam Awards, 2025",
+     stats: [
+       { value: "2021", label: "Fundado en Saigón" },
+       { value: "3", label: "Locales en Vietnam" },
+       { value: "2025", label: "Mejor Restaurante Español, Gourmet Vietnam Awards" },

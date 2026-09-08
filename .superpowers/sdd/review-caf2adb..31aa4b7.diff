@@ -1,0 +1,1337 @@
+# Review package: caf2adb306f48fb3fea777b75b1398aeabe6d59b..HEAD
+
+## Commits
+31aa4b7 fix(reservation): clear touched flags when clearing an event booking
+d4a8d75 feat(reservation): pre-fill + banner when arriving from the event popup
+c32d24d feat(nav): add conditional "What's On" link that reopens the event popup
+126f7ca fix(events): guard event-popup focus trap when focus is outside the card
+8261bc6 feat(events): add EventPopup modal, shown once per visit
+aba11e3 fix(hero): order crest lockup above the eyebrow
+31645af feat(hero): replace white logo card with crest + wordmark lockup
+b508eb9 chore: commit next-dev-regenerated AGENTS.md agent-rules block
+ac27dfb feat(events): add WhatsOnProvider context and mount it in layout
+6b6ba43 feat(i18n): add whatsOn strings; widen hero eyebrow to "Vinos y Tapas"
+6c06107 feat(events): add site-events data module + currentEvent selector
+b793b0b Correct Pinchos Night date to 19 Sep (not 19 Nov)
+d403e90 Reschedule Pinchos Night to 19 Nov in spec + plan
+d20edef chore: gitignore .superpowers scratch dir
+
+## Files changed
+ .gitignore                                         |   3 +
+ AGENTS.md                                          |   6 +-
+ .../plans/2026-09-03-hero-logo-and-events-popup.md |  46 ++++--
+ ...2026-09-03-hero-logo-and-events-popup-design.md |  30 ++--
+ src/app/layout.tsx                                 |   5 +-
+ src/app/page.tsx                                   |   2 +
+ src/components/EventPopup.tsx                      | 180 +++++++++++++++++++++
+ src/components/Hero.tsx                            |  40 ++---
+ src/components/Navbar.tsx                          |  40 +++++
+ src/components/Reservation.tsx                     |  42 ++++-
+ src/lib/events.ts                                  | 110 +++++++++++++
+ src/lib/i18n.tsx                                   |  46 +++++-
+ src/lib/whats-on.tsx                               |  76 +++++++++
+ 13 files changed, 572 insertions(+), 54 deletions(-)
+
+## Diff
+diff --git a/.gitignore b/.gitignore
+index be2c69b..d904225 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -39,10 +39,13 @@ yarn-error.log*
+ # typescript
+ *.tsbuildinfo
+ next-env.d.ts
+ 
+ # raw source assets (not used at build time — processed versions live in public/)
+ /*.pdf
+ /*.jpg
+ /*.jpeg
+ /*.JPEG
+ /*.png
++
++# superpowers scratch
++.superpowers/
+diff --git a/AGENTS.md b/AGENTS.md
+index 8bd0e39..643577d 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -1,5 +1,9 @@
+ <!-- BEGIN:nextjs-agent-rules -->
++
+ # This is NOT the Next.js you know
+ 
+-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
++This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
++
++This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
++
+ <!-- END:nextjs-agent-rules -->
+diff --git a/docs/superpowers/plans/2026-09-03-hero-logo-and-events-popup.md b/docs/superpowers/plans/2026-09-03-hero-logo-and-events-popup.md
+index 21f1ff6..54616b8 100644
+--- a/docs/superpowers/plans/2026-09-03-hero-logo-and-events-popup.md
++++ b/docs/superpowers/plans/2026-09-03-hero-logo-and-events-popup.md
+@@ -81,49 +81,51 @@ export interface SiteEvent {
+   id: string;
+   /** Stop showing once now >= this instant. Vietnam offset (+07:00). */
+   showUntilISO: string;
+   /** Pre-fill value for the reservation <input type="date"> (YYYY-MM-DD). */
+   bookingDate: string;
+   /** Must exactly match a t.locations.items[].name key. */
+   locationName: string;
+   copy: Partial<Record<Lang, SiteEventCopy>> & { en: SiteEventCopy };
+ }
+ 
++// Pinchos Night was moved from 26 Sep to Sat 19 Sep 2026; details otherwise
++// unchanged. (Social captions in iberico-promotions/ still say 26 Sep — out of scope.)
+ const PINCHOS_NIGHT: SiteEvent = {
+   id: "pinchos-night",
+-  showUntilISO: "2026-09-27T00:00:00+07:00",
+-  bookingDate: "2026-09-26",
++  showUntilISO: "2026-09-20T00:00:00+07:00",
++  bookingDate: "2026-09-19",
+   locationName: "IBÉRICO Thảo Điền",
+   copy: {
+     en: {
+       eyebrow: "Pinchos Night · 1st Edition",
+       title: "20 pinchos,",
+       titleEm: "one night only",
+       description:
+         "A Basque-style pintxo feast at IBÉRICO Thảo Điền — coming out of the kitchen non-stop, all you can eat.",
+-      when: "Sat 26 Sep · 6:00–9:00 PM",
++      when: "Sat 19 Sep · 6:00–9:00 PM",
+       where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
+       price: "490.000++ VND / person · drinks separate",
+       cta: "Reserve a table",
+-      bookingNote: "Booking for Pinchos Night — Sat 26 Sep, 6 PM",
++      bookingNote: "Booking for Pinchos Night — Sat 19 Sep, 6 PM",
+     },
+     vi: {
+       eyebrow: "Pinchos Night · Số đầu tiên",
+       title: "20 loại pinchos,",
+       titleEm: "một đêm duy nhất",
+       description:
+         "Tiệc pincho kiểu Basque tại IBÉRICO Thảo Điền — ra liên tục từ bếp, ăn không giới hạn.",
+-      when: "Thứ Bảy 26/9 · 18:00–21:00",
++      when: "Thứ Bảy 19/9 · 18:00–21:00",
+       where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
+       price: "490.000++ VND / người · đồ uống tính riêng",
+       cta: "Đặt bàn",
+-      bookingNote: "Đặt bàn cho Pinchos Night — Thứ Bảy 26/9, 18:00",
++      bookingNote: "Đặt bàn cho Pinchos Night — Thứ Bảy 19/9, 18:00",
+     },
+   },
+ };
+ 
+ const ANNIVERSARY_5YR: SiteEvent = {
+   id: "anniversary-5yr",
+   showUntilISO: "2026-10-04T00:00:00+07:00",
+   bookingDate: "2026-10-03",
+   locationName: "IBÉRICO Thảo Điền",
+   copy: {
+@@ -175,23 +177,25 @@ export function eventCopy(event: SiteEvent, lang: Lang): SiteEventCopy {
+ 
+ - [ ] **Step 2: Typecheck**
+ 
+ Run: `npx tsc --noEmit`
+ Expected: no new errors.
+ 
+ - [ ] **Step 3: Verify the selector logic at three dates**
+ 
+ Run:
+ ```bash
+-npx tsx --eval "import('./src/lib/events.ts').then(m => console.log([m.currentEvent(new Date('2026-09-10T12:00:00+07:00'))?.id, m.currentEvent(new Date('2026-09-30T12:00:00+07:00'))?.id, m.currentEvent(new Date('2026-10-10T12:00:00+07:00'))?.id]))"
++npx tsx --eval "import('./src/lib/events.ts').then(m => console.log([m.currentEvent(new Date('2026-09-10T12:00:00+07:00'))?.id, m.currentEvent(new Date('2026-09-25T12:00:00+07:00'))?.id, m.currentEvent(new Date('2026-10-10T12:00:00+07:00'))?.id]))"
+ ```
+ Expected output: `[ 'pinchos-night', 'anniversary-5yr', undefined ]`
++(Pinchos Night's `showUntilISO` is 20 Sep — sooner than the Anniversary's 4 Oct —
++so it is the active event first, then the popup rolls to the Anniversary.)
+ (`npx tsx` is fetched on demand; the `import type` line is erased at runtime so the `@/` alias never resolves. If offline, skip this step — Task 8 re-verifies rollover in the browser.)
+ 
+ - [ ] **Step 4: Lint**
+ 
+ Run: `npm run lint`
+ Expected: no new errors for `src/lib/events.ts`.
+ 
+ - [ ] **Step 5: Commit**
+ 
+ ```bash
+@@ -783,21 +787,25 @@ and add `<EventPopup />` as the last child of the fragment, after `<Footer />`:
+ 
+ - [ ] **Step 3: Typecheck + lint**
+ 
+ Run: `npx tsc --noEmit && npm run lint`
+ Expected: PASS.
+ 
+ - [ ] **Step 4: Preview check**
+ 
+ With `npm run dev`, open `http://localhost:3000`:
+ - ~0.9s after load the popup fades/scales in over a dimmed page. Body scroll is locked.
+-- Content: crest, `PINCHOS NIGHT · 1ST EDITION`, `20 pinchos,` / *one night only*, description, When/Where/Price rows, `Reserve a table` + `Maybe later`.
++- Content (the current event is Pinchos Night, 19 Sep): crest,
++  `PINCHOS NIGHT · 1ST EDITION`, `20 pinchos,` / *one night only*, description,
++  When/Where/Price rows (`Sat 19 Sep · 6:00–9:00 PM` /
++  `IBÉRICO Thảo Điền · 33 Võ Trường Toản` /
++  `490.000++ VND / person · drinks separate`), `Reserve a table` + `Maybe later`.
+ - Close paths all work: `✕`, `Maybe later`, click the dim backdrop, `Esc`. After closing, scroll is restored and it does not reappear until reload.
+ - Tab key cycles focus **within** the card only; Shift+Tab wraps backwards.
+ - Click `Reserve a table`: popup closes, page smooth-scrolls to the reservation section.
+ - Emulate `prefers-reduced-motion: reduce`, reload: popup fades only (no slide/scale).
+ - 375px width: card fits with padding, nothing clipped.
+ 
+ - [ ] **Step 5: Commit**
+ 
+ ```bash
+ git add src/components/EventPopup.tsx src/app/page.tsx
+@@ -884,21 +892,21 @@ In the mobile `<ul className="flex flex-col gap-1 text-2xl font-display">`, imme
+ - [ ] **Step 4: Typecheck + lint**
+ 
+ Run: `npx tsc --noEmit && npm run lint`
+ Expected: PASS.
+ 
+ - [ ] **Step 5: Preview check**
+ 
+ With `npm run dev`, open `http://localhost:3000`:
+ - Desktop nav shows `What's On` after `Careers`. Dismiss the popup, click `What's On` → popup reopens.
+ - Shrink to mobile, open the hamburger menu: `Sự kiện`/`What's On` is the last item; tapping it closes the menu and opens the popup.
+-- Temporarily edit `src/lib/whats-on.tsx` `setEvent(currentEvent())` → `setEvent(currentEvent(new Date("2026-11-01")))`, reload: no popup auto-opens **and** the nav link is gone. Revert the edit.
++- Temporarily edit `src/lib/whats-on.tsx` `setEvent(currentEvent())` → `setEvent(currentEvent(new Date("2026-10-10")))`, reload: no popup auto-opens **and** the nav link is gone. Revert the edit.
+ 
+ - [ ] **Step 6: Commit**
+ 
+ ```bash
+ git add src/components/Navbar.tsx
+ git commit -m "$(cat <<'EOF'
+ feat(nav): add conditional "What's On" link that reopens the event popup
+ 
+ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+ EOF
+@@ -983,22 +991,22 @@ In the JSX, inside `<Reveal delay={0.15} className="mt-12 rounded-sm border bord
+ ```
+ 
+ - [ ] **Step 5: Typecheck + lint**
+ 
+ Run: `npx tsc --noEmit && npm run lint`
+ Expected: PASS.
+ 
+ - [ ] **Step 6: Preview check**
+ 
+ With `npm run dev`, open `http://localhost:3000`:
+-- Let the popup appear, click `Reserve a table`. Page scrolls to the form. The gold banner reads **"You're booking for Pinchos Night · 1st Edition · Sat 26 Sep · 6:00–9:00 PM"**.
+-- Form is pre-filled: Date = `2026-09-26`, Location = `IBÉRICO Thảo Điền`, Notes = `Booking for Pinchos Night — Sat 26 Sep, 6 PM`. Time slots populated for Thảo Điền hours.
++- Let the popup appear, click `Reserve a table`. Page scrolls to the form. The gold banner reads **"You're booking for Pinchos Night · 1st Edition · Sat 19 Sep · 6:00–9:00 PM"**.
++- Form is pre-filled: Date = `2026-09-19`, Location = `IBÉRICO Thảo Điền`, Notes = `Booking for Pinchos Night — Sat 19 Sep, 6 PM`. Time slots populated for Thảo Điền hours.
+ - Fill Name + Phone + Time, click the WhatsApp button: the opened `wa.me` message body contains a `Notes: Booking for Pinchos Night …` line.
+ - Click `Clear` in the banner: banner disappears, Date/Location/Notes reset to empty, `guests` still `2`.
+ - Toggle language to `VI` before clearing: banner text and the pre-filled note are Vietnamese.
+ 
+ - [ ] **Step 7: Commit**
+ 
+ ```bash
+ git add src/components/Reservation.tsx
+ git commit -m "$(cat <<'EOF'
+ feat(reservation): pre-fill + banner when arriving from the event popup
+@@ -1016,24 +1024,32 @@ EOF
+ 
+ **Interfaces:** none.
+ 
+ - [ ] **Step 1: Clean typecheck + lint on the whole tree**
+ 
+ Run: `npx tsc --noEmit && npm run lint`
+ Expected: PASS, zero warnings introduced by this feature.
+ 
+ - [ ] **Step 2: Event rollover**
+ 
+-Temporarily edit `src/lib/whats-on.tsx`: `setEvent(currentEvent())` → `setEvent(currentEvent(new Date("2026-09-30T12:00:00+07:00")))`. Reload:
+-- Popup + navbar link now show the **5-Year Anniversary** content (`The anniversary` / *party*, `Sat 3 Oct · from 4:00 PM`, `Free entry · à la carte all night`).
+-- Click `Reserve a table`: Date pre-fills `2026-10-03`, note = `Booking for the 5-Year Anniversary Party — Sat 3 Oct, from 4 PM`.
+-Then try `new Date("2026-10-05T12:00:00+07:00")`: no popup, no navbar link, no console errors.
++Default (no arg, real date ≈ early Sep 2026): popup + navbar link show
++**Pinchos Night** (`20 pinchos,` / *one night only*, `Sat 19 Sep · 6:00–9:00 PM`,
++`490.000++ VND / person · drinks separate`); `Reserve a table` pre-fills Date
++`2026-09-19`, note `Booking for Pinchos Night — Sat 19 Sep, 6 PM`.
++
++Then temporarily edit `src/lib/whats-on.tsx`: `setEvent(currentEvent())` →
++`setEvent(currentEvent(new Date("2026-09-25T12:00:00+07:00")))`. Reload:
++- Popup + navbar link now show the **5-Year Anniversary** (`The anniversary` /
++  *party*, `Sat 3 Oct · from 4:00 PM`, `Free entry · à la carte all night`).
++- Click `Reserve a table`: Date pre-fills `2026-10-03`, note =
++  `Booking for the 5-Year Anniversary Party — Sat 3 Oct, from 4 PM`.
++Then try `new Date("2026-10-10T12:00:00+07:00")`: no popup, no navbar link, no console errors.
+ **Revert the edit** and confirm Pinchos Night is back.
+ 
+ - [ ] **Step 3: Language sweep**
+ 
+ Cycle EN → VI → ES with the popup open and again with the booking banner shown:
+ - EN/VI have bespoke copy; ES shows the English event copy (fallback) but ES chrome (`Agenda`, `Cerrar`, `Cuándo`…). No missing-string blanks anywhere.
+ 
+ - [ ] **Step 4: Hero + popup coexistence**
+ 
+ - Hero lockup renders correctly with no white box (desktop + 375px).
+diff --git a/docs/superpowers/specs/2026-09-03-hero-logo-and-events-popup-design.md b/docs/superpowers/specs/2026-09-03-hero-logo-and-events-popup-design.md
+index ab9abd4..68811b5 100644
+--- a/docs/superpowers/specs/2026-09-03-hero-logo-and-events-popup-design.md
++++ b/docs/superpowers/specs/2026-09-03-hero-logo-and-events-popup-design.md
+@@ -3,22 +3,22 @@
+ **Date:** 2026-09-03
+ **Repo:** `iberico-website`
+ **Status:** Approved for planning
+ 
+ ## Problem
+ 
+ 1. The hero renders the IBÉRICO crest + wordmark inside a solid `bg-cream` rounded
+    card floating on the dusk photo. It reads like a sticker and breaks the
+    editorial tone of the rest of the site. (An unrelated, uncommitted local edit
+    in `Hero.tsx` already gropes at a fix — it is superseded by this work.)
+-2. The restaurant runs headline events (Pinchos Night, then the 5-Year
+-   Anniversary a week later). There is currently no way for a visitor to learn
++2. The restaurant runs headline events (Pinchos Night on 19 Sep, then the 5-Year
++   Anniversary on 3 Oct). There is currently no way for a visitor to learn
+    about them on arrival. Note: the existing `Events` section is *private venue
+    hire* — unrelated, not touched by this work.
+ 
+ ## Goals
+ 
+ - Replace the hero logo card with a restrained, on-brand lockup (chosen: "Option C").
+ - Show the next upcoming event in a dismissible popup on arrival.
+ - Let the popup's CTA drop the visitor into the booking form with the event's
+   date + location pre-filled and a visible "you're booking for X" banner.
+ - The feature turns itself off once the last event has passed.
+@@ -105,45 +105,47 @@ export function currentEvent(now: Date = new Date()): SiteEvent | null {
+   );
+ }
+ 
+ export function eventCopy(event: SiteEvent, lang: Lang): SiteEventCopy {
+   return event.copy[lang] ?? event.copy.en;
+ }
+ ```
+ 
+ ### Real content
+ 
+-**PINCHOS_NIGHT**
++**PINCHOS_NIGHT** — moved to Sat 19 Sep 2026 (was 26 Sep), one week earlier;
++all other details unchanged. Note: the social captions in `iberico-promotions/`
++still say 26 Sep — out of scope here but now stale.
+ - `id`: `"pinchos-night"`
+-- `showUntilISO`: `"2026-09-27T00:00:00+07:00"`
+-- `bookingDate`: `"2026-09-26"`
++- `showUntilISO`: `"2026-09-20T00:00:00+07:00"`
++- `bookingDate`: `"2026-09-19"`
+ - `locationName`: `"IBÉRICO Thảo Điền"`
+ - `copy.en`:
+   - eyebrow: `Pinchos Night · 1st Edition`
+   - title: `20 pinchos,`
+   - titleEm: `one night only`
+   - description: `A Basque-style pintxo feast at IBÉRICO Thảo Điền — coming out of the kitchen non-stop, all you can eat.`
+-  - when: `Sat 26 Sep · 6:00–9:00 PM`
++  - when: `Sat 19 Sep · 6:00–9:00 PM`
+   - where: `IBÉRICO Thảo Điền · 33 Võ Trường Toản`
+   - price: `490.000++ VND / person · drinks separate`
+   - cta: `Reserve a table`
+-  - bookingNote: `Booking for Pinchos Night — Sat 26 Sep, 6 PM`
++  - bookingNote: `Booking for Pinchos Night — Sat 19 Sep, 6 PM`
+ - `copy.vi`:
+   - eyebrow: `Pinchos Night · Số đầu tiên`
+   - title: `20 loại pinchos,`
+   - titleEm: `một đêm duy nhất`
+   - description: `Tiệc pincho kiểu Basque tại IBÉRICO Thảo Điền — ra liên tục từ bếp, ăn không giới hạn.`
+-  - when: `Thứ Bảy 26/9 · 18:00–21:00`
++  - when: `Thứ Bảy 19/9 · 18:00–21:00`
+   - where: `IBÉRICO Thảo Điền · 33 Võ Trường Toản`
+   - price: `490.000++ VND / người · đồ uống tính riêng`
+   - cta: `Đặt bàn`
+-  - bookingNote: `Đặt bàn cho Pinchos Night — Thứ Bảy 26/9, 18:00`
++  - bookingNote: `Đặt bàn cho Pinchos Night — Thứ Bảy 19/9, 18:00`
+ 
+ **ANNIVERSARY_5YR**
+ - `id`: `"anniversary-5yr"`
+ - `showUntilISO`: `"2026-10-04T00:00:00+07:00"`
+ - `bookingDate`: `"2026-10-03"`
+ - `locationName`: `"IBÉRICO Thảo Điền"`
+ - `copy.en`:
+   - eyebrow: `5 Years of IBÉRICO`
+   - title: `The anniversary`
+   - titleEm: `party`
+@@ -293,19 +295,19 @@ New `i18n.tsx` strings under a `whatsOn` key: `navLabel`, `close`, `maybeLater`,
+ No test infra in this repo (matches project convention). Verify via:
+ 
+ 1. `npx eslint` — clean.
+ 2. `npx tsc --noEmit` — clean. (Do **not** use `next build` for the check — per
+    project notes it mutates `layout.tsx` / `package.json`.)
+ 3. Preview (`next dev`) manual pass:
+    - Hero: lockup renders on photo, no card, centered, animates, looks right at
+      375px and desktop.
+    - Popup appears ~900ms after load; ✕ / Esc / backdrop / "Maybe later" all
+      close it; reload → reappears.
+-   - `Reserve a table` → smooth scroll to form, `date` = 2026-09-26, `location` =
+-     Thảo Điền, banner shown, note present; submitting WhatsApp shows the note in
+-     the message body.
++   - `Reserve a table` → smooth scroll to form, `date` = 2026-09-19 (Pinchos
++     Night, the current event), `location` = Thảo Điền, banner shown, note
++     present; submitting WhatsApp shows the note in the message body.
+    - Banner `Clear` resets the three fields and hides the banner.
+    - Navbar "What's On" reopens the popup (desktop + mobile menu).
+    - Toggle VI: popup + banner + nav label all translate.
+-   - Temporarily set `currentEvent(new Date("2026-09-28"))` → Anniversary content
+-     shows; set `"2026-10-05"` → no popup, no nav link.
++   - Temporarily set `currentEvent(new Date("2026-09-25"))` → Anniversary content
++     shows (`date` prefill 2026-10-03); set `"2026-10-10"` → no popup, no nav link.
+    - `prefers-reduced-motion` → surfaces fade only, no slide/scale.
+diff --git a/src/app/layout.tsx b/src/app/layout.tsx
+index 1bd56f6..78ed44b 100644
+--- a/src/app/layout.tsx
++++ b/src/app/layout.tsx
+@@ -1,15 +1,16 @@
+ import type { Metadata, Viewport } from "next";
+ import { Playfair_Display, Karla } from "next/font/google";
+ import { Analytics } from "@vercel/analytics/next";
+ import "./globals.css";
+ import { LanguageProvider } from "@/lib/i18n";
++import { WhatsOnProvider } from "@/lib/whats-on";
+ import { ScrollProgress } from "@/components/ScrollProgress";
+ import { CustomCursor } from "@/components/CustomCursor";
+ 
+ const playfair = Playfair_Display({
+   variable: "--font-display",
+   subsets: ["latin"],
+   weight: ["400", "500", "600", "700", "900"],
+   style: ["normal", "italic"],
+   display: "swap",
+ });
+@@ -62,16 +63,18 @@ export default function RootLayout({
+   children: React.ReactNode;
+ }>) {
+   return (
+     <html
+       lang="en"
+       className={`${playfair.variable} ${karla.variable} h-full antialiased`}
+     >
+       <body className="min-h-full flex flex-col bg-cream text-ink">
+         <ScrollProgress />
+         <CustomCursor />
+-        <LanguageProvider>{children}</LanguageProvider>
++        <LanguageProvider>
++          <WhatsOnProvider>{children}</WhatsOnProvider>
++        </LanguageProvider>
+         <Analytics />
+       </body>
+     </html>
+   );
+ }
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index 0a337a3..1409877 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -2,30 +2,32 @@ import { Navbar } from "@/components/Navbar";
+ import { Hero } from "@/components/Hero";
+ import { Marquee } from "@/components/Marquee";
+ import { Story } from "@/components/Story";
+ import { Menu } from "@/components/Menu";
+ import { Gallery } from "@/components/Gallery";
+ import { Locations } from "@/components/Locations";
+ import { Events } from "@/components/Events";
+ import { Careers } from "@/components/Careers";
+ import { Reservation } from "@/components/Reservation";
+ import { Footer } from "@/components/Footer";
++import { EventPopup } from "@/components/EventPopup";
+ 
+ export default function Home() {
+   return (
+     <>
+       <Navbar />
+       <main id="main">
+         <Hero />
+         <Marquee />
+         <Story />
+         <Gallery />
+         <Menu />
+         <Locations />
+         <Events />
+         <Careers />
+         <Reservation />
+       </main>
+       <Footer />
++      <EventPopup />
+     </>
+   );
+ }
+diff --git a/src/components/EventPopup.tsx b/src/components/EventPopup.tsx
+new file mode 100644
+index 0000000..7f8b3d1
+--- /dev/null
++++ b/src/components/EventPopup.tsx
+@@ -0,0 +1,180 @@
++"use client";
++
++import { useEffect, useRef } from "react";
++import Image from "next/image";
++import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
++import { X } from "lucide-react";
++import { useLanguage } from "@/lib/i18n";
++import { useWhatsOn } from "@/lib/whats-on";
++import { eventCopy } from "@/lib/events";
++import { ShimmerButton } from "./ShimmerButton";
++
++export function EventPopup() {
++  const { t, lang } = useLanguage();
++  const { event, popupOpen, openPopup, closePopup, startBooking } = useWhatsOn();
++  const shouldReduceMotion = useReducedMotion();
++  const cardRef = useRef<HTMLDivElement>(null);
++  const lastFocused = useRef<HTMLElement | null>(null);
++
++  // Auto-open ~900ms after mount, every visit (no persistence).
++  useEffect(() => {
++    if (!event) return;
++    const id = window.setTimeout(() => openPopup(), 900);
++    return () => window.clearTimeout(id);
++  }, [event, openPopup]);
++
++  // While open: lock body scroll, trap focus, restore focus on close, Esc closes.
++  useEffect(() => {
++    if (!popupOpen) return;
++    lastFocused.current = document.activeElement as HTMLElement | null;
++    document.body.style.overflow = "hidden";
++    const card = cardRef.current;
++    card?.focus();
++
++    const onKeyDown = (e: KeyboardEvent) => {
++      if (e.key === "Escape") {
++        closePopup();
++        return;
++      }
++      if (e.key !== "Tab" || !card) return;
++      const focusables = card.querySelectorAll<HTMLElement>(
++        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
++      );
++      if (focusables.length === 0) return;
++      const first = focusables[0];
++      const last = focusables[focusables.length - 1];
++      if (!card.contains(document.activeElement)) {
++        e.preventDefault();
++        first.focus();
++        return;
++      }
++      if (e.shiftKey && document.activeElement === first) {
++        e.preventDefault();
++        last.focus();
++      } else if (!e.shiftKey && document.activeElement === last) {
++        e.preventDefault();
++        first.focus();
++      }
++    };
++    window.addEventListener("keydown", onKeyDown);
++    return () => {
++      window.removeEventListener("keydown", onKeyDown);
++      document.body.style.overflow = "";
++      lastFocused.current?.focus?.();
++    };
++  }, [popupOpen, closePopup]);
++
++  if (!event) return null;
++
++  const c = eventCopy(event, lang);
++  const titleId = `event-popup-title-${event.id}`;
++
++  const onReserve = () => {
++    startBooking();
++    document
++      .getElementById("reserve")
++      ?.scrollIntoView({ behavior: "smooth", block: "start" });
++  };
++
++  return (
++    <AnimatePresence>
++      {popupOpen && (
++        <motion.div
++          className="fixed inset-0 z-[90] flex items-center justify-center bg-ink/80 p-5 backdrop-blur-sm"
++          initial={{ opacity: 0 }}
++          animate={{ opacity: 1 }}
++          exit={{ opacity: 0 }}
++          transition={{ duration: 0.25 }}
++          onClick={closePopup}
++        >
++          <motion.div
++            ref={cardRef}
++            role="dialog"
++            aria-modal="true"
++            aria-labelledby={titleId}
++            tabIndex={-1}
++            onClick={(e) => e.stopPropagation()}
++            initial={
++              shouldReduceMotion
++                ? { opacity: 0 }
++                : { opacity: 0, y: 12, scale: 0.96 }
++            }
++            animate={{ opacity: 1, y: 0, scale: 1 }}
++            exit={
++              shouldReduceMotion
++                ? { opacity: 0 }
++                : { opacity: 0, y: 12, scale: 0.96 }
++            }
++            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
++            className="relative w-full max-w-md rounded-sm border border-gold/20 bg-ink p-8 text-center text-cream shadow-2xl outline-none sm:p-10"
++          >
++            <button
++              type="button"
++              onClick={closePopup}
++              aria-label={t.whatsOn.close}
++              className="absolute right-3 top-3 flex h-9 w-9 cursor-pointer items-center justify-center text-cream/55 transition-colors hover:text-cream"
++            >
++              <X size={20} />
++            </button>
++
++            <Image
++              src="/brand/logo-mark.png"
++              alt=""
++              width={462}
++              height={601}
++              className="mx-auto h-10 w-auto brightness-0 invert"
++            />
++
++            <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-light">
++              {c.eyebrow}
++            </p>
++
++            <h2 id={titleId} className="font-display mt-3 text-3xl leading-tight">
++              {c.title}
++              <span className="block italic text-gold-light">{c.titleEm}</span>
++            </h2>
++
++            <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-cream/80">
++              {c.description}
++            </p>
++
++            <span className="mx-auto my-5 block h-px w-9 bg-gold/50" />
++
++            <dl className="space-y-2 text-sm">
++              {[
++                [t.whatsOn.whenLabel, c.when],
++                [t.whatsOn.whereLabel, c.where],
++                [t.whatsOn.priceLabel, c.price],
++              ].map(([k, v]) => (
++                <div key={k} className="flex flex-col items-center">
++                  <dt className="text-[10px] uppercase tracking-[0.14em] text-gold-light">
++                    {k}
++                  </dt>
++                  <dd className="text-cream/90">{v}</dd>
++                </div>
++              ))}
++            </dl>
++
++            <div className="mt-7 flex flex-col items-center gap-3">
++              <ShimmerButton
++                type="button"
++                variant="wine"
++                onClick={onReserve}
++                className="min-w-[200px]"
++              >
++                {c.cta}
++              </ShimmerButton>
++              <button
++                type="button"
++                onClick={closePopup}
++                className="cursor-pointer text-[11px] uppercase tracking-[0.1em] text-cream/55 transition-colors hover:text-cream/90"
++              >
++                {t.whatsOn.maybeLater}
++              </button>
++            </div>
++          </motion.div>
++        </motion.div>
++      )}
++    </AnimatePresence>
++  );
++}
+diff --git a/src/components/Hero.tsx b/src/components/Hero.tsx
+index a148bc3..df77b3d 100644
+--- a/src/components/Hero.tsx
++++ b/src/components/Hero.tsx
+@@ -1,20 +1,19 @@
+ "use client";
+ 
+ import { useRef } from "react";
+ import Image from "next/image";
+ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+ import { useLanguage } from "@/lib/i18n";
+ import { ChevronDown } from "lucide-react";
+ import { Magnetic } from "./Magnetic";
+ import { ShimmerButton } from "./ShimmerButton";
+-import { LogoMark } from "./Logo";
+ 
+ export function Hero() {
+   const { t } = useLanguage();
+   const shouldReduceMotion = useReducedMotion();
+   const sectionRef = useRef<HTMLElement>(null);
+ 
+   const { scrollYProgress } = useScroll({
+     target: sectionRef,
+     offset: ["start start", "end start"],
+   });
+@@ -43,59 +42,62 @@ export function Hero() {
+           />
+         </motion.div>
+         <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/55 to-ink/90" />
+         <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" />
+       </motion.div>
+ 
+       <motion.div
+         style={{ y: contentY, opacity: contentOpacity }}
+         className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-6 text-center text-cream"
+       >
+-        <motion.span
+-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+-          animate={{ opacity: 1, y: 0 }}
+-          transition={{ duration: 0.8, ease }}
+-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold-light/40 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-light"
+-        >
+-          {t.hero.eyebrow}
+-        </motion.span>
+-
+         <motion.div
+           initial={{ opacity: 0, scale: 0.92, y: shouldReduceMotion ? 0 : 12 }}
+           animate={{ opacity: 1, scale: 1, y: 0 }}
+-          transition={{ duration: 0.8, delay: 0.05, ease }}
+-          className="mb-7 flex items-center gap-4 rounded-2xl bg-cream px-7 py-4 shadow-xl"
++          transition={{ duration: 0.9, delay: 0.05, ease }}
++          className="mb-8 flex flex-col items-center gap-2.5"
+         >
+-          <LogoMark className="h-12 w-12 shrink-0" />
+           <Image
+-            src="/brand/logo-wordmark.png"
++            src="/brand/logo-mark.png"
+             alt="IBÉRICO Vinos y Tapas"
+-            width={908}
+-            height={530}
+-            className="h-12 w-auto sm:h-14"
++            width={462}
++            height={601}
+             priority
++            className="h-[52px] w-auto brightness-0 invert drop-shadow-[0_2px_16px_rgba(0,0,0,0.5)]"
+           />
++          <span className="h-px w-9 bg-cream/50" />
++          <span className="font-display text-sm tracking-[0.34em] text-cream sm:text-base">
++            <span className="pl-[0.34em]">IBÉRICO</span>
++          </span>
+         </motion.div>
+ 
++        <motion.span
++          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
++          animate={{ opacity: 1, y: 0 }}
++          transition={{ duration: 0.8, delay: 0.15, ease }}
++          className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold-light/40 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-light"
++        >
++          {t.hero.eyebrow}
++        </motion.span>
++
+         <h1 className="font-display text-balance leading-[0.95]">
+           <motion.span
+             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 32 }}
+             animate={{ opacity: 1, y: 0 }}
+-            transition={{ duration: 0.9, delay: 0.1, ease }}
++            transition={{ duration: 0.9, delay: 0.2, ease }}
+             className="block text-[15vw] sm:text-8xl md:text-9xl"
+           >
+             {t.hero.title1}
+           </motion.span>
+           <motion.span
+             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 32 }}
+             animate={{ opacity: 1, y: 0 }}
+-            transition={{ duration: 0.9, delay: 0.25, ease }}
++            transition={{ duration: 0.9, delay: 0.3, ease }}
+             className="block text-[15vw] italic text-gold-light sm:text-8xl md:text-9xl"
+           >
+             {t.hero.title2}
+           </motion.span>
+         </h1>
+ 
+         <motion.p
+           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.8, delay: 0.45, ease }}
+diff --git a/src/components/Navbar.tsx b/src/components/Navbar.tsx
+index 9641ea8..bb2dac5 100644
+--- a/src/components/Navbar.tsx
++++ b/src/components/Navbar.tsx
+@@ -1,34 +1,36 @@
+ "use client";
+ 
+ import { useEffect, useState } from "react";
+ import { AnimatePresence, motion } from "framer-motion";
+ import { Menu as MenuIcon, X } from "lucide-react";
+ import { useLanguage, languageLabels, languageFlags, type Lang } from "@/lib/i18n";
++import { useWhatsOn } from "@/lib/whats-on";
+ import { LogoMark } from "./Logo";
+ import { ShimmerButton } from "./ShimmerButton";
+ import { InstagramColorIcon, FacebookColorIcon } from "./SocialIcons";
+ 
+ const SECTIONS: {
+   key: "story" | "menu" | "gallery" | "locations" | "events" | "careers";
+   href: string;
+ }[] = [
+   { key: "story", href: "#story" },
+   { key: "gallery", href: "#gallery" },
+   { key: "menu", href: "#menu" },
+   { key: "locations", href: "#locations" },
+   { key: "events", href: "#events" },
+   { key: "careers", href: "#careers" },
+ ];
+ 
+ export function Navbar() {
+   const { lang, setLang, t } = useLanguage();
++  const { event, openPopup } = useWhatsOn();
+   const [scrolled, setScrolled] = useState(false);
+   const [open, setOpen] = useState(false);
+ 
+   useEffect(() => {
+     const onScroll = () => setScrolled(window.scrollY > 32);
+     onScroll();
+     window.addEventListener("scroll", onScroll, { passive: true });
+     return () => window.removeEventListener("scroll", onScroll);
+   }, []);
+ 
+@@ -97,20 +99,35 @@ export function Navbar() {
+                   className={`relative cursor-pointer transition-colors after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:transition-all after:duration-300 hover:after:w-full ${
+                     scrolled
+                       ? "hover:text-gold-deep after:bg-gold-deep"
+                       : "hover:text-gold-light after:bg-gold-light"
+                   }`}
+                 >
+                   {t.nav[s.key]}
+                 </a>
+               </li>
+             ))}
++            {event && (
++              <li>
++                <button
++                  type="button"
++                  onClick={openPopup}
++                  className={`relative cursor-pointer transition-colors after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:transition-all after:duration-300 hover:after:w-full ${
++                    scrolled
++                      ? "hover:text-gold-deep after:bg-gold-deep"
++                      : "hover:text-gold-light after:bg-gold-light"
++                  }`}
++                >
++                  {t.whatsOn.navLabel}
++                </button>
++              </li>
++            )}
+           </ul>
+ 
+           <div className="hidden lg:flex items-center gap-4">
+             <SocialLinks />
+             <LangSwitcher
+               lang={lang}
+               setLang={setLang}
+               light={!scrolled}
+             />
+             <ShimmerButton href="#reserve" variant="wine" size="sm" className="hover:scale-[1.03]">
+@@ -148,20 +165,43 @@ export function Navbar() {
+                   initial={{ opacity: 0, y: 16 }}
+                   animate={{ opacity: 1, y: 0 }}
+                   transition={{ delay: 0.05 * i + 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                   className="border-b border-border py-4"
+                 >
+                   <a href={s.href} onClick={() => setOpen(false)} className="cursor-pointer">
+                     {t.nav[s.key]}
+                   </a>
+                 </motion.li>
+               ))}
++              {event && (
++                <motion.li
++                  initial={{ opacity: 0, y: 16 }}
++                  animate={{ opacity: 1, y: 0 }}
++                  transition={{
++                    delay: 0.05 * SECTIONS.length + 0.1,
++                    duration: 0.4,
++                    ease: [0.22, 1, 0.36, 1],
++                  }}
++                  className="border-b border-border py-4"
++                >
++                  <button
++                    type="button"
++                    onClick={() => {
++                      setOpen(false);
++                      openPopup();
++                    }}
++                    className="cursor-pointer text-left"
++                  >
++                    {t.whatsOn.navLabel}
++                  </button>
++                </motion.li>
++              )}
+             </ul>
+             <motion.div
+               initial={{ opacity: 0, y: 16 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ delay: 0.4, duration: 0.4 }}
+               className="mt-8 flex flex-col gap-6"
+             >
+               <ShimmerButton
+                 href="#reserve"
+                 onClick={() => setOpen(false)}
+diff --git a/src/components/Reservation.tsx b/src/components/Reservation.tsx
+index fb9b73b..f214186 100644
+--- a/src/components/Reservation.tsx
++++ b/src/components/Reservation.tsx
+@@ -1,17 +1,19 @@
+ "use client";
+ 
+-import { useMemo, useRef, useState, type FormEvent } from "react";
++import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+ import { AnimatePresence, motion } from "framer-motion";
+ import Image from "next/image";
+ import { CheckCircle2, Loader2, Phone, Mail } from "lucide-react";
+ import { useLanguage } from "@/lib/i18n";
++import { useWhatsOn } from "@/lib/whats-on";
++import { eventCopy } from "@/lib/events";
+ import { Reveal } from "./Reveal";
+ import { Magnetic } from "./Magnetic";
+ import { ShimmerButton } from "./ShimmerButton";
+ import { KineticText } from "./KineticText";
+ import { ZaloIcon, WhatsAppIcon } from "./SocialIcons";
+ 
+ // Bookings routing. Thảo Điền and Thị Sách share the central Saigon line;
+ // Hội An has its own WhatsApp/Zalo number. Digits only, country code first.
+ const CENTRAL_BOOKINGS_NUMBER = "84849000531";
+ const HOI_AN_BOOKINGS_NUMBER = "84868774026";
+@@ -82,27 +84,42 @@ const initialState: FormState = {
+ const REQUIRED_FIELDS: (keyof FormState)[] = [
+   "name",
+   "phone",
+   "date",
+   "time",
+   "location",
+ ];
+ 
+ export function Reservation() {
+   const { t, lang } = useLanguage();
++  const { event, bookingEventId, clearBooking } = useWhatsOn();
++  const bookingForEvent =
++    bookingEventId && event && event.id === bookingEventId ? event : null;
+   const [form, setForm] = useState<FormState>(initialState);
+   const [touched, setTouched] = useState<Partial<Record<keyof FormState, boolean>>>({});
+   const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
+   const formRef = useRef<HTMLFormElement>(null);
+ 
+   const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+ 
++  useEffect(() => {
++    if (!bookingForEvent) return;
++    // eslint-disable-next-line react-hooks/set-state-in-effect
++    setForm((f) => ({
++      ...f,
++      date: bookingForEvent.bookingDate,
++      location: bookingForEvent.locationName,
++      notes: eventCopy(bookingForEvent, lang).bookingNote,
++    }));
++    setTouched((tch) => ({ ...tch, date: true, location: true }));
++  }, [bookingForEvent, lang]);
++
+   const errors = useMemo(() => {
+     const e: Partial<Record<keyof FormState, string>> = {};
+     for (const field of REQUIRED_FIELDS) {
+       if (!form[field].trim()) e[field] = t.reservation.required;
+     }
+     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+       e.email = t.reservation.required;
+     }
+     return e;
+   }, [form, t]);
+@@ -237,20 +254,43 @@ export function Reservation() {
+           </span>
+           <KineticText as="h2" className="font-display text-balance mt-4 text-4xl text-ink sm:text-5xl">
+             {t.reservation.title}
+           </KineticText>
+           <p className="text-balance mx-auto mt-4 max-w-md text-sm leading-relaxed text-charcoal/80 sm:text-base">
+             {t.reservation.subtitle}
+           </p>
+         </Reveal>
+ 
+         <Reveal delay={0.15} className="mt-12 rounded-sm border border-border bg-white p-6 shadow-xl sm:p-10">
++          {bookingForEvent && status !== "success" && (
++            <div className="mb-6 flex items-center justify-between gap-3 rounded-sm border border-gold/40 bg-gold/10 px-4 py-3 text-sm text-ink">
++              <span>
++                {t.whatsOn.bookingBannerPrefix}{" "}
++                <strong className="font-semibold">
++                  {eventCopy(bookingForEvent, lang).eyebrow}
++                </strong>
++                {" · "}
++                {eventCopy(bookingForEvent, lang).when}
++              </span>
++              <button
++                type="button"
++                onClick={() => {
++                  clearBooking();
++                  setForm((f) => ({ ...f, date: "", location: "", notes: "" }));
++                  setTouched((tch) => ({ ...tch, date: false, location: false }));
++                }}
++                className="shrink-0 cursor-pointer text-xs font-semibold uppercase tracking-wide text-wine hover:underline"
++              >
++                {t.whatsOn.bookingClear}
++              </button>
++            </div>
++          )}
+           <AnimatePresence mode="wait">
+             {status === "success" ? (
+               <motion.div
+                 key="success"
+                 initial={{ opacity: 0, y: 12 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 exit={{ opacity: 0 }}
+                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                 role="status"
+                 aria-live="polite"
+diff --git a/src/lib/events.ts b/src/lib/events.ts
+new file mode 100644
+index 0000000..e5a336f
+--- /dev/null
++++ b/src/lib/events.ts
+@@ -0,0 +1,110 @@
++import type { Lang } from "@/lib/i18n";
++
++export interface SiteEventCopy {
++  eyebrow: string;
++  title: string; // first headline line
++  titleEm: string; // second headline line, rendered italic + gold
++  description: string;
++  when: string;
++  where: string;
++  price: string;
++  cta: string;
++  bookingNote: string; // seeded into the reservation notes field + shown in the banner
++}
++
++export interface SiteEvent {
++  id: string;
++  /** Stop showing once now >= this instant. Vietnam offset (+07:00). */
++  showUntilISO: string;
++  /** Pre-fill value for the reservation <input type="date"> (YYYY-MM-DD). */
++  bookingDate: string;
++  /** Must exactly match a t.locations.items[].name key. */
++  locationName: string;
++  copy: Partial<Record<Lang, SiteEventCopy>> & { en: SiteEventCopy };
++}
++
++// Pinchos Night was moved from 26 Sep to Sat 19 Sep 2026; details otherwise
++// unchanged. (Social captions in iberico-promotions/ still say 26 Sep — out of scope.)
++const PINCHOS_NIGHT: SiteEvent = {
++  id: "pinchos-night",
++  showUntilISO: "2026-09-20T00:00:00+07:00",
++  bookingDate: "2026-09-19",
++  locationName: "IBÉRICO Thảo Điền",
++  copy: {
++    en: {
++      eyebrow: "Pinchos Night · 1st Edition",
++      title: "20 pinchos,",
++      titleEm: "one night only",
++      description:
++        "A Basque-style pintxo feast at IBÉRICO Thảo Điền — coming out of the kitchen non-stop, all you can eat.",
++      when: "Sat 19 Sep · 6:00–9:00 PM",
++      where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
++      price: "490.000++ VND / person · drinks separate",
++      cta: "Reserve a table",
++      bookingNote: "Booking for Pinchos Night — Sat 19 Sep, 6 PM",
++    },
++    vi: {
++      eyebrow: "Pinchos Night · Số đầu tiên",
++      title: "20 loại pinchos,",
++      titleEm: "một đêm duy nhất",
++      description:
++        "Tiệc pincho kiểu Basque tại IBÉRICO Thảo Điền — ra liên tục từ bếp, ăn không giới hạn.",
++      when: "Thứ Bảy 19/9 · 18:00–21:00",
++      where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
++      price: "490.000++ VND / người · đồ uống tính riêng",
++      cta: "Đặt bàn",
++      bookingNote: "Đặt bàn cho Pinchos Night — Thứ Bảy 19/9, 18:00",
++    },
++  },
++};
++
++const ANNIVERSARY_5YR: SiteEvent = {
++  id: "anniversary-5yr",
++  showUntilISO: "2026-10-04T00:00:00+07:00",
++  bookingDate: "2026-10-03",
++  locationName: "IBÉRICO Thảo Điền",
++  copy: {
++    en: {
++      eyebrow: "5 Years of IBÉRICO",
++      title: "The anniversary",
++      titleEm: "party",
++      description:
++        "Five years in Thảo Điền — one big night. Paella cooked live, jamón carved by hand, a DJ till late, live flamenco, and fireworks after dark.",
++      when: "Sat 3 Oct · from 4:00 PM",
++      where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
++      price: "Free entry · à la carte all night",
++      cta: "Reserve a table",
++      bookingNote: "Booking for the 5-Year Anniversary Party — Sat 3 Oct, from 4 PM",
++    },
++    vi: {
++      eyebrow: "5 Năm IBÉRICO",
++      title: "Tiệc kỷ niệm",
++      titleEm: "năm năm",
++      description:
++        "Năm năm ở Thảo Điền — một đêm thật đã. Paella nấu tại chỗ, jamón cắt tay, DJ tới khuya, flamenco sống, và pháo hoa khi trời tối.",
++      when: "Thứ Bảy 3/10 · từ 16:00",
++      where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
++      price: "Vào cửa tự do · gọi món cả tối",
++      cta: "Đặt bàn",
++      bookingNote: "Đặt bàn cho Tiệc Kỷ Niệm 5 Năm — Thứ Bảy 3/10, từ 16:00",
++    },
++  },
++};
++
++export const SITE_EVENTS: SiteEvent[] = [PINCHOS_NIGHT, ANNIVERSARY_5YR];
++
++/** Soonest still-upcoming event, or null when all have passed. */
++export function currentEvent(now: Date = new Date()): SiteEvent | null {
++  return (
++    SITE_EVENTS.filter(
++      (e) => now.getTime() < new Date(e.showUntilISO).getTime(),
++    ).sort(
++      (a, b) =>
++        new Date(a.showUntilISO).getTime() - new Date(b.showUntilISO).getTime(),
++    )[0] ?? null
++  );
++}
++
++export function eventCopy(event: SiteEvent, lang: Lang): SiteEventCopy {
++  return event.copy[lang] ?? event.copy.en;
++}
+diff --git a/src/lib/i18n.tsx b/src/lib/i18n.tsx
+index 9673389..f3cea53 100644
+--- a/src/lib/i18n.tsx
++++ b/src/lib/i18n.tsx
+@@ -50,20 +50,30 @@ export interface Dict {
+   };
+   hero: {
+     eyebrow: string;
+     title1: string;
+     title2: string;
+     subtitle: string;
+     cta1: string;
+     cta2: string;
+     scroll: string;
+   };
++  whatsOn: {
++    navLabel: string;
++    close: string;
++    maybeLater: string;
++    whenLabel: string;
++    whereLabel: string;
++    priceLabel: string;
++    bookingBannerPrefix: string;
++    bookingClear: string;
++  };
+   story: {
+     eyebrow: string;
+     title: string;
+     body: string;
+     quote: string;
+     quoteAuthor: string;
+     stats: { value: string; label: string }[];
+   };
+   menu: {
+     eyebrow: string;
+@@ -161,29 +171,39 @@ const en: Dict = {
+   nav: {
+     story: "Our Story",
+     menu: "Menu",
+     gallery: "Gallery",
+     locations: "Locations",
+     events: "Events",
+     careers: "Careers",
+     reserve: "Reserve",
+   },
+   hero: {
+-    eyebrow: "Saigon · Est. 2021",
++    eyebrow: "Vinos y Tapas · Saigon · Est. 2021",
+     title1: "Tapas",
+     title2: "y Vino",
+     subtitle:
+       "Iberian tapas and Spanish wine, unhurried — in the heart of Ho Chi Minh City.",
+     cta1: "Reserve a Table",
+     cta2: "View Menu",
+     scroll: "Scroll",
+   },
++  whatsOn: {
++    navLabel: "What's On",
++    close: "Close",
++    maybeLater: "Maybe later",
++    whenLabel: "When",
++    whereLabel: "Where",
++    priceLabel: "Price",
++    bookingBannerPrefix: "You're booking for",
++    bookingClear: "Clear",
++  },
+   story: {
+     eyebrow: "Our Story",
+     title: "The Living Spirit of Spanish Dining in Vietnam",
+     body: "Founded in 2021, IBÉRICO brought Spain's tapas spirit to Vietnam: hand-sliced jamón, garlicky prawns hot off the pan, paella built for the table. Order by instinct, share everything, linger long — now three houses strong, from Saigon to the river in Hội An.",
+     quote: "Best Spanish Restaurant in Vietnam.",
+     quoteAuthor: "Gourmet Vietnam Awards, 2025",
+     stats: [
+       { value: "2021", label: "Founded in Saigon" },
+       { value: "3", label: "Locations across Vietnam" },
+       { value: "2025", label: "Best Spanish Restaurant, Gourmet Vietnam Awards" },
+@@ -1551,29 +1571,39 @@ const vi: Dict = {
+   nav: {
+     story: "Câu Chuyện",
+     menu: "Thực Đơn",
+     gallery: "Hình Ảnh",
+     locations: "Chi Nhánh",
+     events: "Sự Kiện",
+     careers: "Tuyển Dụng",
+     reserve: "Đặt Bàn",
+   },
+   hero: {
+-    eyebrow: "Sài Gòn · Thành lập 2021",
++    eyebrow: "Vinos y Tapas · Sài Gòn · Thành lập 2021",
+     title1: "Tapas",
+     title2: "y Vino",
+     subtitle:
+       "Tapas Iberia và vang Tây Ban Nha, thong thả — giữa lòng Thành phố Hồ Chí Minh.",
+     cta1: "Đặt Bàn Ngay",
+     cta2: "Xem Thực Đơn",
+     scroll: "Cuộn xuống",
+   },
++  whatsOn: {
++    navLabel: "Sự kiện",
++    close: "Đóng",
++    maybeLater: "Để sau",
++    whenLabel: "Khi nào",
++    whereLabel: "Ở đâu",
++    priceLabel: "Giá",
++    bookingBannerPrefix: "Bạn đang đặt bàn cho",
++    bookingClear: "Xoá",
++  },
+   story: {
+     eyebrow: "Câu Chuyện Của Chúng Tôi",
+     title: "Tinh Thần Sống Động Của Ẩm Thực Tây Ban Nha Tại Việt Nam",
+     body: "Ra đời năm 2021, IBÉRICO mang tinh thần tapas Tây Ban Nha đến Việt Nam: jamón thái tay, tôm sốt tỏi thơm lừng ngay khi ra chảo, paella làm cho cả bàn cùng thưởng thức. Gọi theo bản năng, chia sẻ tất cả, ở lại thật lâu — nay đã có ba cơ sở, từ Sài Gòn đến bên sông Hội An.",
+     quote: "Nhà Hàng Tây Ban Nha Xuất Sắc Nhất Việt Nam.",
+     quoteAuthor: "Gourmet Vietnam Awards, 2025",
+     stats: [
+       { value: "2021", label: "Thành lập tại Sài Gòn" },
+       { value: "3", label: "Chi nhánh trên khắp Việt Nam" },
+       { value: "2025", label: "Nhà Hàng Tây Ban Nha Xuất Sắc Nhất, Gourmet Vietnam Awards" },
+@@ -2941,29 +2971,39 @@ const es: Dict = {
+   nav: {
+     story: "Historia",
+     menu: "Carta",
+     gallery: "Galería",
+     locations: "Locales",
+     events: "Eventos",
+     careers: "Empleo",
+     reserve: "Reservar",
+   },
+   hero: {
+-    eyebrow: "Saigón · Desde 2021",
++    eyebrow: "Vinos y Tapas · Saigón · Desde 2021",
+     title1: "Tapas",
+     title2: "y Vino",
+     subtitle:
+       "Tapas ibéricas y vino español, sin prisa — en el corazón de Ho Chi Minh.",
+     cta1: "Reservar Mesa",
+     cta2: "Ver la Carta",
+     scroll: "Desplázate",
+   },
++  whatsOn: {
++    navLabel: "Agenda",
++    close: "Cerrar",
++    maybeLater: "Quizás luego",
++    whenLabel: "Cuándo",
++    whereLabel: "Dónde",
++    priceLabel: "Precio",
++    bookingBannerPrefix: "Estás reservando para",
++    bookingClear: "Borrar",
++  },
+   story: {
+     eyebrow: "Nuestra Historia",
+     title: "El Espíritu Vivo de la Gastronomía Española en Vietnam",
+     body: "Fundado en 2021, IBÉRICO trajo el espíritu de las tapas españolas a Vietnam: jamón cortado a mano, gambas al ajillo recién salidas de la sartén, paella pensada para toda la mesa. Pide por instinto, comparte todo, quédate hasta tarde — hoy con tres locales, desde Saigón hasta el río en Hội An.",
+     quote: "El Mejor Restaurante Español de Vietnam.",
+     quoteAuthor: "Gourmet Vietnam Awards, 2025",
+     stats: [
+       { value: "2021", label: "Fundado en Saigón" },
+       { value: "3", label: "Locales en Vietnam" },
+       { value: "2025", label: "Mejor Restaurante Español, Gourmet Vietnam Awards" },
+diff --git a/src/lib/whats-on.tsx b/src/lib/whats-on.tsx
+new file mode 100644
+index 0000000..2187910
+--- /dev/null
++++ b/src/lib/whats-on.tsx
+@@ -0,0 +1,76 @@
++"use client";
++
++import {
++  createContext,
++  useCallback,
++  useContext,
++  useEffect,
++  useMemo,
++  useState,
++  type ReactNode,
++} from "react";
++import { currentEvent, type SiteEvent } from "@/lib/events";
++
++interface WhatsOnContextValue {
++  event: SiteEvent | null;
++  popupOpen: boolean;
++  bookingEventId: string | null;
++  openPopup: () => void;
++  closePopup: () => void;
++  startBooking: () => void;
++  clearBooking: () => void;
++}
++
++const WhatsOnContext = createContext<WhatsOnContextValue | null>(null);
++
++export function WhatsOnProvider({ children }: { children: ReactNode }) {
++  const [event, setEvent] = useState<SiteEvent | null>(null);
++  const [popupOpen, setPopupOpen] = useState(false);
++  const [bookingEventId, setBookingEventId] = useState<string | null>(null);
++
++  // Resolve the active event only after mount so the server render and the
++  // first client render agree (they would otherwise diverge on clock/timezone).
++  useEffect(() => {
++    // eslint-disable-next-line react-hooks/set-state-in-effect
++    setEvent(currentEvent());
++  }, []);
++
++  const openPopup = useCallback(() => setPopupOpen(true), []);
++  const closePopup = useCallback(() => setPopupOpen(false), []);
++  const startBooking = useCallback(() => {
++    setBookingEventId((prev) => event?.id ?? prev);
++    setPopupOpen(false);
++  }, [event]);
++  const clearBooking = useCallback(() => setBookingEventId(null), []);
++
++  const value = useMemo(
++    () => ({
++      event,
++      popupOpen,
++      bookingEventId,
++      openPopup,
++      closePopup,
++      startBooking,
++      clearBooking,
++    }),
++    [
++      event,
++      popupOpen,
++      bookingEventId,
++      openPopup,
++      closePopup,
++      startBooking,
++      clearBooking,
++    ],
++  );
++
++  return (
++    <WhatsOnContext.Provider value={value}>{children}</WhatsOnContext.Provider>
++  );
++}
++
++export function useWhatsOn() {
++  const ctx = useContext(WhatsOnContext);
++  if (!ctx) throw new Error("useWhatsOn must be used within WhatsOnProvider");
++  return ctx;
++}

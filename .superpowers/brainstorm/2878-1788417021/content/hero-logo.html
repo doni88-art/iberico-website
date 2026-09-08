@@ -1,0 +1,101 @@
+<h2>Hero logo treatment — 4 directions</h2>
+<p class="subtitle">Each is the real dusk photo with a different way of carrying the brand. "A" is what's live now (the white box you flagged). Click the one you're drawn to — or tell me in the terminal.</p>
+
+<style>
+  .heros { display:grid; grid-template-columns:repeat(2,1fr); gap:22px; margin-top:8px; }
+  @media (max-width:720px){ .heros{ grid-template-columns:1fr; } }
+  .hcard { border:1px solid var(--border,#333); border-radius:10px; overflow:hidden; cursor:pointer; transition:transform .15s, box-shadow .15s; background:#000; }
+  .hcard:hover { transform:translateY(-3px); box-shadow:0 12px 34px rgba(0,0,0,.35); }
+  .hcard.selected { outline:3px solid #FACA3C; outline-offset:2px; }
+  .stage {
+    position:relative; aspect-ratio:9/13; width:100%;
+    background:url('/files/hero.jpg') center/cover no-repeat;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:26px 20px; color:#fdf6ec;
+    font-family:"Playfair Display",Georgia,serif;
+  }
+  .stage::before{ content:""; position:absolute; inset:0;
+    background:linear-gradient(to bottom, rgba(20,15,12,.62), rgba(20,15,12,.48) 45%, rgba(20,15,12,.9)); }
+  .stage > * { position:relative; z-index:1; }
+  .eyebrow { font-family:"Karla",system-ui,sans-serif; font-size:9px; letter-spacing:.32em;
+    text-transform:uppercase; color:#FACA3C; border:1px solid rgba(250,202,60,.4);
+    border-radius:999px; padding:5px 11px; margin-bottom:16px; }
+  .big { font-size:37px; line-height:.95; font-weight:700; }
+  .big em { font-style:italic; color:#FACA3C; display:block; }
+  .sub { font-family:"Karla",system-ui,sans-serif; font-size:11px; line-height:1.5;
+    color:rgba(253,246,236,.85); margin-top:14px; max-width:230px; }
+  .btnrow{ display:flex; gap:8px; margin-top:16px; }
+  .btn{ font-family:"Karla",system-ui,sans-serif; font-size:9px; letter-spacing:.12em; text-transform:uppercase;
+    padding:8px 12px; border-radius:999px; }
+  .btn.solid{ background:#9A2423; color:#fff; }
+  .btn.ghost{ border:1px solid rgba(253,246,236,.5); }
+  .cap { font-family:"Karla",system-ui,sans-serif; font-size:12px; padding:10px 14px; color:var(--text,#ddd); background:var(--panel,#1b1b1b); }
+  .cap b{ color:#FACA3C; }
+
+  /* A — current white card */
+  .cardbox{ display:flex; align-items:center; gap:10px; background:#fdf6ec; border-radius:14px;
+    padding:12px 16px; box-shadow:0 10px 24px rgba(0,0,0,.4); margin-bottom:14px; }
+  .cardbox img{ height:30px; width:auto; }
+  .cardbox span{ font-size:19px; font-weight:700; color:#9A2423; letter-spacing:.04em; }
+
+  /* B — knockout crest */
+  .knock{ height:60px; width:auto; filter:brightness(0) invert(1) drop-shadow(0 3px 16px rgba(0,0,0,.5)); margin-bottom:14px; }
+  .knock.sm{ height:46px; }
+
+  /* C — crest + wordmark lockup */
+  .lockup{ display:flex; flex-direction:column; align-items:center; gap:8px; margin-bottom:16px; }
+  .lockup img{ height:44px; filter:brightness(0) invert(1) drop-shadow(0 2px 12px rgba(0,0,0,.5)); }
+  .lockup .wm{ font-size:15px; letter-spacing:.34em; font-weight:600; text-transform:uppercase;
+    font-family:"Karla",system-ui,sans-serif; }
+  .lockup .hr{ width:34px; height:1px; background:rgba(253,246,236,.6); }
+</style>
+
+<div class="heros">
+
+  <div class="hcard" data-choice="a" onclick="toggleSelect(this)">
+    <div class="stage">
+      <div class="cardbox"><img src="/files/crest.png" alt=""><span>IBÉRICO</span></div>
+      <div class="eyebrow">Saigon · Est. 2021</div>
+      <div class="big">Tapas<em>y Vino</em></div>
+      <div class="sub">Iberian tapas and Spanish wine, unhurried.</div>
+      <div class="btnrow"><span class="btn solid">Reserve</span><span class="btn ghost">Menu</span></div>
+    </div>
+    <div class="cap"><b>A · Now</b> — white card floating on the photo. Reads like a sticker; breaks the editorial mood.</div>
+  </div>
+
+  <div class="hcard" data-choice="b" onclick="toggleSelect(this)">
+    <div class="stage">
+      <img class="knock" src="/files/crest.png" alt="">
+      <div class="eyebrow">Saigon · Est. 2021</div>
+      <div class="big">Tapas<em>y Vino</em></div>
+      <div class="sub">Iberian tapas and Spanish wine, unhurried.</div>
+      <div class="btnrow"><span class="btn solid">Reserve</span><span class="btn ghost">Menu</span></div>
+    </div>
+    <div class="cap"><b>B · Knockout crest</b> — crest alone, printed white straight onto the photo, small. No box. Quiet, confident.</div>
+  </div>
+
+  <div class="hcard" data-choice="c" onclick="toggleSelect(this)">
+    <div class="stage">
+      <div class="lockup">
+        <img src="/files/crest.png" alt="">
+        <div class="hr"></div>
+        <div class="wm">Ibérico</div>
+      </div>
+      <div class="eyebrow">Vinos y Tapas · Saigon</div>
+      <div class="big">Tapas<em>y Vino</em></div>
+      <div class="btnrow"><span class="btn solid">Reserve</span><span class="btn ghost">Menu</span></div>
+    </div>
+    <div class="cap"><b>C · Crest + wordmark lockup</b> — crest, hairline, letter-spaced IBÉRICO as live text. Keeps the name visible without a box.</div>
+  </div>
+
+  <div class="hcard" data-choice="d" onclick="toggleSelect(this)">
+    <div class="stage">
+      <div class="eyebrow">Ibérico · Vinos y Tapas · Est. 2021</div>
+      <div class="big" style="font-size:44px">Tapas<em>y Vino</em></div>
+      <div class="sub">Iberian tapas and Spanish wine, unhurried — in the heart of Ho Chi Minh City.</div>
+      <div class="btnrow"><span class="btn solid">Reserve</span><span class="btn ghost">Menu</span></div>
+    </div>
+    <div class="cap"><b>D · Type only</b> — no crest in the hero at all; the name rides in the eyebrow. Crest still lives in the navbar. Most magazine-like.</div>
+  </div>
+
+</div>

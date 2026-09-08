@@ -1,0 +1,117 @@
+# Review package: b508eb9..aba11e3
+
+## Commits
+aba11e3 fix(hero): order crest lockup above the eyebrow
+31645af feat(hero): replace white logo card with crest + wordmark lockup
+
+## Files changed
+ src/components/Hero.tsx | 40 +++++++++++++++++++++-------------------
+ 1 file changed, 21 insertions(+), 19 deletions(-)
+
+## Diff
+diff --git a/src/components/Hero.tsx b/src/components/Hero.tsx
+index a148bc3..df77b3d 100644
+--- a/src/components/Hero.tsx
++++ b/src/components/Hero.tsx
+@@ -1,20 +1,19 @@
+ "use client";
+ 
+ import { useRef } from "react";
+ import Image from "next/image";
+ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+ import { useLanguage } from "@/lib/i18n";
+ import { ChevronDown } from "lucide-react";
+ import { Magnetic } from "./Magnetic";
+ import { ShimmerButton } from "./ShimmerButton";
+-import { LogoMark } from "./Logo";
+ 
+ export function Hero() {
+   const { t } = useLanguage();
+   const shouldReduceMotion = useReducedMotion();
+   const sectionRef = useRef<HTMLElement>(null);
+ 
+   const { scrollYProgress } = useScroll({
+     target: sectionRef,
+     offset: ["start start", "end start"],
+   });
+@@ -43,59 +42,62 @@ export function Hero() {
+           />
+         </motion.div>
+         <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/55 to-ink/90" />
+         <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" />
+       </motion.div>
+ 
+       <motion.div
+         style={{ y: contentY, opacity: contentOpacity }}
+         className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-6 text-center text-cream"
+       >
+-        <motion.span
+-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+-          animate={{ opacity: 1, y: 0 }}
+-          transition={{ duration: 0.8, ease }}
+-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold-light/40 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-light"
+-        >
+-          {t.hero.eyebrow}
+-        </motion.span>
+-
+         <motion.div
+           initial={{ opacity: 0, scale: 0.92, y: shouldReduceMotion ? 0 : 12 }}
+           animate={{ opacity: 1, scale: 1, y: 0 }}
+-          transition={{ duration: 0.8, delay: 0.05, ease }}
+-          className="mb-7 flex items-center gap-4 rounded-2xl bg-cream px-7 py-4 shadow-xl"
++          transition={{ duration: 0.9, delay: 0.05, ease }}
++          className="mb-8 flex flex-col items-center gap-2.5"
+         >
+-          <LogoMark className="h-12 w-12 shrink-0" />
+           <Image
+-            src="/brand/logo-wordmark.png"
++            src="/brand/logo-mark.png"
+             alt="IBÉRICO Vinos y Tapas"
+-            width={908}
+-            height={530}
+-            className="h-12 w-auto sm:h-14"
++            width={462}
++            height={601}
+             priority
++            className="h-[52px] w-auto brightness-0 invert drop-shadow-[0_2px_16px_rgba(0,0,0,0.5)]"
+           />
++          <span className="h-px w-9 bg-cream/50" />
++          <span className="font-display text-sm tracking-[0.34em] text-cream sm:text-base">
++            <span className="pl-[0.34em]">IBÉRICO</span>
++          </span>
+         </motion.div>
+ 
++        <motion.span
++          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
++          animate={{ opacity: 1, y: 0 }}
++          transition={{ duration: 0.8, delay: 0.15, ease }}
++          className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold-light/40 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-light"
++        >
++          {t.hero.eyebrow}
++        </motion.span>
++
+         <h1 className="font-display text-balance leading-[0.95]">
+           <motion.span
+             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 32 }}
+             animate={{ opacity: 1, y: 0 }}
+-            transition={{ duration: 0.9, delay: 0.1, ease }}
++            transition={{ duration: 0.9, delay: 0.2, ease }}
+             className="block text-[15vw] sm:text-8xl md:text-9xl"
+           >
+             {t.hero.title1}
+           </motion.span>
+           <motion.span
+             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 32 }}
+             animate={{ opacity: 1, y: 0 }}
+-            transition={{ duration: 0.9, delay: 0.25, ease }}
++            transition={{ duration: 0.9, delay: 0.3, ease }}
+             className="block text-[15vw] italic text-gold-light sm:text-8xl md:text-9xl"
+           >
+             {t.hero.title2}
+           </motion.span>
+         </h1>
+ 
+         <motion.p
+           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.8, delay: 0.45, ease }}

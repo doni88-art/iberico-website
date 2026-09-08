@@ -1,0 +1,120 @@
+<h2>Events popup — 3 layouts</h2>
+<p class="subtitle">All on the site's ink + gold palette, Playfair headline, dismissible (✕ / Esc / tap outside). Shown here with real Pinchos Night copy. Click the layout you want.</p>
+
+<style>
+  .popwrap { display:flex; flex-direction:column; gap:30px; margin-top:8px; }
+  .popcard { border:1px solid var(--border,#333); border-radius:10px; overflow:hidden; cursor:pointer; background:var(--panel,#1b1b1b); transition:transform .15s, box-shadow .15s; }
+  .popcard:hover { transform:translateY(-3px); box-shadow:0 14px 38px rgba(0,0,0,.4); }
+  .popcard.selected { outline:3px solid #FACA3C; outline-offset:2px; }
+  .popcap { font-family:"Karla",system-ui,sans-serif; font-size:12px; padding:11px 15px; color:var(--text,#ddd); }
+  .popcap b { color:#FACA3C; }
+
+  /* dimmed page behind the modal */
+  .backdrop { position:relative; padding:34px 18px; background:
+     linear-gradient(rgba(12,9,7,.82),rgba(12,9,7,.82)), url('/files/hero.jpg') center/cover; display:flex; justify-content:center; }
+
+  .modal { width:100%; max-width:430px; background:#171310; color:#fdf6ec; border:1px solid rgba(250,202,60,.22);
+    border-radius:4px; overflow:hidden; position:relative; box-shadow:0 30px 80px rgba(0,0,0,.6);
+    font-family:"Karla",system-ui,sans-serif; }
+  .x { position:absolute; top:10px; right:12px; color:rgba(253,246,236,.6); font-size:18px; z-index:3; }
+  .m-body { padding:30px 30px 26px; text-align:center; }
+  .m-crest { height:40px; filter:brightness(0) invert(1); opacity:.92; margin-bottom:14px; }
+  .m-eyebrow { font-size:10px; letter-spacing:.3em; text-transform:uppercase; color:#FACA3C; }
+  .m-title { font-family:"Playfair Display",Georgia,serif; font-size:30px; line-height:1.05; font-weight:700; margin-top:12px; }
+  .m-title em { font-style:italic; color:#FACA3C; }
+  .m-desc { font-size:12.5px; line-height:1.6; color:rgba(253,246,236,.8); margin-top:12px; }
+  .m-hr { width:38px; height:1px; background:rgba(250,202,60,.5); margin:18px auto; }
+  .m-facts { font-size:12px; line-height:1.9; letter-spacing:.02em; }
+  .m-facts .k { color:#FACA3C; text-transform:uppercase; letter-spacing:.14em; font-size:10px; }
+  .m-cta { display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:22px; }
+  .m-btn { background:#9A2423; color:#fff; font-size:11px; letter-spacing:.14em; text-transform:uppercase; padding:13px 26px; border-radius:999px; }
+  .m-later { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:rgba(253,246,236,.55); }
+  .m-photo { width:100%; height:180px; object-fit:cover; display:block; }
+
+  .split { display:flex; text-align:left; }
+  .split .half-img { width:42%; object-fit:cover; }
+  .split .half-body { width:58%; padding:28px 26px; }
+  .split .m-cta { align-items:flex-start; }
+  @media (max-width:640px){ .split{ flex-direction:column; } .split .half-img,.split .half-body{ width:100%; } .split .half-img{ height:160px; } }
+</style>
+
+<div class="popwrap">
+
+  <!-- Option 1 -->
+  <div class="popcard" data-choice="1" onclick="toggleSelect(this)">
+    <div class="backdrop">
+      <div class="modal">
+        <span class="x">&times;</span>
+        <div class="m-body">
+          <img class="m-crest" src="/files/crest.png" alt="">
+          <div class="m-eyebrow">Pinchos Night · 1st Edition</div>
+          <div class="m-title">20 pinchos,<br><em>one night only</em></div>
+          <div class="m-desc">A Basque-style pintxo feast at IBÉRICO Thảo Điền — coming out of the kitchen non-stop, all you can eat.</div>
+          <div class="m-hr"></div>
+          <div class="m-facts">
+            <div><span class="k">When</span> &nbsp; Sat 26 Sep · 6:00–9:00 PM</div>
+            <div><span class="k">Where</span> &nbsp; IBÉRICO Thảo Điền</div>
+            <div><span class="k">Price</span> &nbsp; 490.000++ / person · drinks separate</div>
+          </div>
+          <div class="m-cta">
+            <span class="m-btn">Reserve a table</span>
+            <span class="m-later">Maybe later</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="popcap"><b>1 · Compact card</b> — type only, no photo. Fastest to load, most restrained, one layout everywhere.</div>
+  </div>
+
+  <!-- Option 2 -->
+  <div class="popcard" data-choice="2" onclick="toggleSelect(this)">
+    <div class="backdrop">
+      <div class="modal split">
+        <span class="x">&times;</span>
+        <img class="half-img" src="/files/pop-jamon.jpg" alt="">
+        <div class="half-body">
+          <div class="m-eyebrow">Pinchos Night · 1st Edition</div>
+          <div class="m-title" style="font-size:25px">20 pinchos,<br><em>one night only</em></div>
+          <div class="m-desc" style="margin-top:10px">Basque-style pintxo feast — all you can eat, straight from the kitchen.</div>
+          <div class="m-facts" style="margin-top:14px">
+            <div><span class="k">When</span> &nbsp; Sat 26 Sep · 6–9 PM</div>
+            <div><span class="k">Where</span> &nbsp; IBÉRICO Thảo Điền</div>
+            <div><span class="k">Price</span> &nbsp; 490.000++ pp</div>
+          </div>
+          <div class="m-cta">
+            <span class="m-btn">Reserve a table</span>
+            <span class="m-later">Maybe later</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="popcap"><b>2 · Side photo</b> — image left, details right; stacks image-on-top on mobile. Most premium / editorial. A touch heavier.</div>
+  </div>
+
+  <!-- Option 3 -->
+  <div class="popcard" data-choice="3" onclick="toggleSelect(this)">
+    <div class="backdrop">
+      <div class="modal">
+        <span class="x">&times;</span>
+        <img class="m-photo" src="/files/pop-guests.jpg" alt="">
+        <div class="m-body" style="padding-top:24px">
+          <div class="m-eyebrow">Pinchos Night · 1st Edition</div>
+          <div class="m-title">20 pinchos,<br><em>one night only</em></div>
+          <div class="m-desc">Basque-style pintxo feast at IBÉRICO Thảo Điền — all you can eat.</div>
+          <div class="m-hr"></div>
+          <div class="m-facts">
+            <div><span class="k">When</span> &nbsp; Sat 26 Sep · 6:00–9:00 PM</div>
+            <div><span class="k">Where</span> &nbsp; IBÉRICO Thảo Điền</div>
+            <div><span class="k">Price</span> &nbsp; 490.000++ / person</div>
+          </div>
+          <div class="m-cta">
+            <span class="m-btn">Reserve a table</span>
+            <span class="m-later">Maybe later</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="popcap"><b>3 · Photo on top</b> — one banner image, details below. Same layout on every screen, works great on mobile. Middle ground. ← my pick</div>
+  </div>
+
+</div>
