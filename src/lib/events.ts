@@ -20,6 +20,10 @@ export interface SiteEvent {
   bookingDate: string;
   /** Must exactly match a t.locations.items[].name key. */
   locationName: string;
+  /** Artwork shown at the top of the popup (path under /public). */
+  poster?: string;
+  /** Open the popup once per visitor shortly after load (remembered in localStorage). */
+  autoOpen?: boolean;
   copy: Partial<Record<Lang, SiteEventCopy>> & { en: SiteEventCopy };
 }
 
@@ -60,6 +64,8 @@ const PINCHOS_NIGHT: SiteEvent = {
 
 const ANNIVERSARY_5YR: SiteEvent = {
   id: "anniversary-5yr",
+  poster: "/images/anniversary-popup.jpg",
+  autoOpen: true,
   showUntilISO: "2026-10-04T00:00:00+07:00",
   bookingDate: "2026-10-03",
   locationName: "IBÉRICO Thảo Điền",
@@ -93,13 +99,14 @@ const ANNIVERSARY_5YR: SiteEvent = {
 
 export const SITE_EVENTS: SiteEvent[] = [PINCHOS_NIGHT, ANNIVERSARY_5YR];
 
-/** Soonest still-upcoming event, or null when all have passed. */
+/** Featured event: a still-upcoming autoOpen event wins, otherwise the soonest one; null when all have passed. */
 export function currentEvent(now: Date = new Date()): SiteEvent | null {
   return (
     SITE_EVENTS.filter(
       (e) => now.getTime() < new Date(e.showUntilISO).getTime(),
     ).sort(
       (a, b) =>
+        Number(!!b.autoOpen) - Number(!!a.autoOpen) ||
         new Date(a.showUntilISO).getTime() - new Date(b.showUntilISO).getTime(),
     )[0] ?? null
   );

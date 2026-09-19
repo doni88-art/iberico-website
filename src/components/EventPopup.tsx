@@ -115,7 +115,7 @@ export function EventPopup() {
                 : { opacity: 0, y: 12, scale: 0.96 }
             }
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="relative w-full max-w-md rounded-sm border border-gold/20 bg-ink p-8 text-center text-cream shadow-2xl outline-none sm:p-10"
+            className="relative w-full max-w-md max-h-[94vh] overflow-y-auto rounded-sm border border-gold/20 bg-ink p-8 text-center text-cream shadow-2xl outline-none sm:p-10"
           >
             <button
               type="button"
@@ -126,30 +126,48 @@ export function EventPopup() {
               <X size={20} />
             </button>
 
-            <Image
-              src="/brand/logo-mark.png"
-              alt=""
-              width={462}
-              height={601}
-              className="mx-auto h-10 w-auto brightness-0 invert"
-            />
+            {event.poster ? (
+              <>
+                <Image
+                  src={event.poster}
+                  alt={`${c.eyebrow}: ${c.title} ${c.titleEm}. ${c.when}`}
+                  width={1080}
+                  height={1350}
+                  priority
+                  className="mx-auto -mt-8 mb-5 max-h-[56vh] w-auto rounded-sm sm:-mt-10"
+                />
+                <h2 id={titleId} className="sr-only">
+                  {c.title} {c.titleEm}
+                </h2>
+              </>
+            ) : (
+              <>
+                <Image
+                  src="/brand/logo-mark.png"
+                  alt=""
+                  width={462}
+                  height={601}
+                  className="mx-auto h-10 w-auto brightness-0 invert"
+                />
 
-            <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-light">
-              {c.eyebrow}
-            </p>
+                <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-light">
+                  {c.eyebrow}
+                </p>
 
-            <h2 id={titleId} className="font-display mt-3 text-3xl leading-tight">
-              {c.title}
-              <span className="block italic text-gold-light">{c.titleEm}</span>
-            </h2>
+                <h2 id={titleId} className="font-display mt-3 text-3xl leading-tight">
+                  {c.title}
+                  <span className="block italic text-gold-light">{c.titleEm}</span>
+                </h2>
 
-            <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-cream/80">
-              {c.description}
-            </p>
+                <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-cream/80">
+                  {c.description}
+                </p>
 
-            <span className="mx-auto my-5 block h-px w-9 bg-gold/50" />
+                <span className="mx-auto my-5 block h-px w-9 bg-gold/50" />
+              </>
+            )}
 
-            <dl className="space-y-2 text-sm">
+            <dl className={event.poster ? "hidden" : "space-y-2 text-sm"}>
               {[
                 [t.whatsOn.whenLabel, c.when],
                 [t.whatsOn.whereLabel, c.where],

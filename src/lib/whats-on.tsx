@@ -31,8 +31,24 @@ export function WhatsOnProvider({ children }: { children: ReactNode }) {
   // Resolve the active event only after mount so the server render and the
   // first client render agree (they would otherwise diverge on clock/timezone).
   useEffect(() => {
+    const current = currentEvent();
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setEvent(currentEvent());
+    setEvent(current);
+    if (!current?.autoOpen) return;
+    // Auto-open once per visitor; a failed/blocked localStorage just skips it.
+    const key = `iberico:popup-seen:${current.id}`;
+    try {
+      if (window.localStorage.getItem(key)) return;
+    } catch {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setPopupOpen(true);
+      try {
+        window.localStorage.setItem(key, "1");
+      } catch {}
+    }, 1800);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const openPopup = useCallback(() => setPopupOpen(true), []);
