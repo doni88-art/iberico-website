@@ -35,19 +35,20 @@ export function WhatsOnProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setEvent(current);
     if (!current?.autoOpen) return;
-    // Auto-open once per visitor; a failed/blocked localStorage just skips it.
+    // Auto-open at most once every 12 hours per visitor; `?popup` forces it (for testing).
+    // A blocked/failed localStorage just means it opens every visit.
     const key = `iberico:popup-seen:${current.id}`;
+    const forced = new URLSearchParams(window.location.search).has("popup");
     try {
-      if (window.localStorage.getItem(key)) return;
-    } catch {
-      return;
-    }
+      const last = Number(window.localStorage.getItem(key) ?? 0);
+      if (!forced && Date.now() - last < 12 * 60 * 60 * 1000) return;
+    } catch {}
     const timer = window.setTimeout(() => {
       setPopupOpen(true);
       try {
-        window.localStorage.setItem(key, "1");
+        window.localStorage.setItem(key, String(Date.now()));
       } catch {}
-    }, 1800);
+    }, 1500);
     return () => window.clearTimeout(timer);
   }, []);
 

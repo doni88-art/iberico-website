@@ -134,7 +134,8 @@ export function EventPopup() {
                   width={1080}
                   height={1350}
                   priority
-                  className="mx-auto -mt-8 mb-5 max-h-[56vh] w-auto rounded-sm sm:-mt-10"
+                  unoptimized
+                  className="mx-auto -mt-8 mb-5 max-h-[66vh] w-auto rounded-sm sm:-mt-10"
                 />
                 <h2 id={titleId} className="sr-only">
                   {c.title} {c.titleEm}
