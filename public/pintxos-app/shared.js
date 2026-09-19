@@ -1,7 +1,7 @@
 // IBÉRICO Pintxos Night — shared config + data
 window.PINTXOS_CONFIG = {
   supabaseUrl: "https://mxauprdroxxwoaiezybt.supabase.co",
-  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14YXVwcmRyb3h4d29haWV6eWJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwOTU2MDksImV4cCI6MjEwMDY3MTYwOX0.z1BE5Snoom3nNxh8WwULDQ9Iif9W8t1-zyU-9dtRctk",
+  supabaseAnonKey: "sb_publishable_Hs-esXrnTZXUFtV6mMszDQ_Ru59GyK3",
   table: "pintxos_night_votes"
 };
 
