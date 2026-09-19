@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IBÉRICO — Pintxos Night Results</title>
+<link rel="stylesheet" href="/pintxos-app/style.css">
+</head>
+<body>
+
+<div class="wrap wide" id="app">
+
+  <div class="stub">
+    <div class="eyebrow">Ibérico · Staff Only</div>
+    <h1>Live Leaderboard</h1>
+    <div class="sub" id="voteSummary">Waiting for votes…</div>
+    <div class="perf"></div>
+  </div>
+
+  <button class="btn btn-primary" id="revealBtn" style="margin-top:16px;">Reveal Tonight's Winner</button>
+
+  <div id="leaderboard" style="margin-top:20px;"></div>
+
+</div>
+
+<div class="reveal-overlay" id="revealOverlay" hidden>
+  <div class="reveal-eyebrow">Tonight's Winner Pincho</div>
+  <div class="reveal-winner" id="revealWinnerName">—</div>
+  <div class="reveal-sub" id="revealWinnerStats">—</div>
+  <div class="reveal-runners" id="revealRunners"></div>
+  <button class="btn btn-ghost close-reveal" id="closeRevealBtn">Back to Leaderboard</button>
+</div>
+
+<script src="/pintxos-app/shared.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+(function(){
+  var cfg = window.PINTXOS_CONFIG;
+  var DISHES = window.PINTXOS_DISHES;
+  var STATIONS = window.PINTXOS_STATIONS;
+  var client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+
+  var stationLabel = {};
+  STATIONS.forEach(function(s){ stationLabel[s.id] = s.label; });
+  var dishById = {};
+  DISHES.forEach(function(d){ dishById[d.id] = d; });
+
+  var lbEl = document.getElementById("leaderboard");
+  var summaryEl = document.getElementById("voteSummary");
+  var revealBtn = document.getElementById("revealBtn");
+  var revealOverlay = document.getElementById("revealOverlay");
+  var closeRevealBtn = document.getElementById("closeRevealBtn");
+
+  var lastStandings = [];
+
+  function computeStandings(rows){
+    var agg = {};
+    rows.forEach(function(r){
+      if(!agg[r.dish_id]) agg[r.dish_id] = { sum: 0, count: 0 };
+      agg[r.dish_id].sum += r.rating;
+      agg[r.dish_id].count += 1;
+    });
+    var list = Object.keys(agg).map(function(id){
+      var dish = dishById[id];
+      if(!dish) return null;
+      var a = agg[id];
+      return {
+        id: id,
+        name: dish.name,
+        station: stationLabel[dish.station] || "",
+        avg: a.sum / a.count,
+        votes: a.count
+      };
+    }).filter(Boolean);
+    list.sort(function(a, b){
+      if(b.avg !== a.avg) return b.avg - a.avg;
+      return b.votes - a.votes;
+    });
+    return list;
+  }
+
+  function renderLeaderboard(list, totalVotes){
+    summaryEl.textContent = totalVotes + " rating" + (totalVotes === 1 ? "" : "s") + " logged so far";
+    if(list.length === 0){
+      lbEl.innerHTML = '<div class="footer-note">No ratings yet — get guests scanning the QR.</div>';
+      return;
+    }
+    lbEl.innerHTML = "";
+    list.forEach(function(item, i){
+      var row = document.createElement("div");
+      row.className = "lb-row";
+      row.innerHTML =
+        '<div class="lb-rank">' + (i+1) + '</div>' +
+        '<div><div class="lb-name">' + item.name + '</div><div class="lb-station">' + item.station + '</div></div>' +
+        '<div class="lb-avg">' + item.avg.toFixed(1) + '</div>' +
+        '<div class="lb-votes">' + item.votes + ' vote' + (item.votes === 1 ? "" : "s") + '</div>';
+      lbEl.appendChild(row);
+    });
+  }
+
+  function refresh(){
+    client.from(cfg.table).select("dish_id, rating").then(function(res){
+      if(res.error){ console.error(res.error); return; }
+      var rows = res.data || [];
+      lastStandings = computeStandings(rows);
+      renderLeaderboard(lastStandings, rows.length);
+    });
+  }
+
+  revealBtn.addEventListener("click", function(){
+    if(lastStandings.length === 0){
+      alert("No ratings yet to reveal.");
+      return;
+    }
+    var winner = lastStandings[0];
+    document.getElementById("revealWinnerName").textContent = winner.name;
+    document.getElementById("revealWinnerStats").textContent =
+      winner.avg.toFixed(1) + " avg · " + winner.votes + " vote" + (winner.votes === 1 ? "" : "s") + " · " + winner.station;
+
+    var runnersEl = document.getElementById("revealRunners");
+    runnersEl.innerHTML = "";
+    lastStandings.slice(1, 3).forEach(function(r, i){
+      var div = document.createElement("div");
+      div.innerHTML = "#" + (i+2) + '<b>' + r.name + '</b>' + r.avg.toFixed(1) + ' avg';
+      runnersEl.appendChild(div);
+    });
+
+    revealOverlay.hidden = false;
+  });
+
+  closeRevealBtn.addEventListener("click", function(){ revealOverlay.hidden = true; });
+
+  refresh();
+  setInterval(refresh, 4000);
+})();
+</script>
+</body>
+</html>

@@ -1,23 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async redirects() {
+  async rewrites() {
     return [
-      {
-        source: "/pintxos-night",
-        destination: "https://iberico-pintxos-night-iberico2.vercel.app/",
-        permanent: false,
-      },
-      {
-        source: "/pintxos",
-        destination: "https://iberico-pintxos-night-iberico2.vercel.app/",
-        permanent: false,
-      },
-      {
-        source: "/pintxos-night/staff",
-        destination: "https://iberico-pintxos-night-iberico2.vercel.app/results.html",
-        permanent: false,
-      },
+      { source: "/pintxos-night", destination: "/pintxos-app/index.html" },
+      { source: "/pintxos", destination: "/pintxos-app/index.html" },
+      { source: "/pintxos-night/staff", destination: "/pintxos-app/results.html" },
     ];
   },
 };

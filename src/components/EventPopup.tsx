@@ -11,23 +11,13 @@ import { ShimmerButton } from "./ShimmerButton";
 
 export function EventPopup() {
   const { t, lang } = useLanguage();
-  const { event, popupOpen, openPopup, closePopup, startBooking } = useWhatsOn();
+  const { event, popupOpen, closePopup, startBooking } = useWhatsOn();
   const shouldReduceMotion = useReducedMotion();
   const cardRef = useRef<HTMLDivElement>(null);
   const lastFocused = useRef<HTMLElement | null>(null);
   // Set when the CTA hands off to the reservation form, so the close-effect
   // cleanup does not yank focus back out of the form.
   const skipRestore = useRef(false);
-
-  // Auto-open ~900ms after mount, every visit (no persistence). Skipped when the
-  // visitor deep-linked to a section (e.g. /#reserve, /#menu from QR codes /
-  // promo collateral) — they asked for something specific, don't hijack them.
-  useEffect(() => {
-    if (!event) return;
-    if (window.location.hash) return;
-    const id = window.setTimeout(() => openPopup(), 900);
-    return () => window.clearTimeout(id);
-  }, [event, openPopup]);
 
   // While open: lock body scroll, trap focus, restore focus on close, Esc closes.
   useEffect(() => {

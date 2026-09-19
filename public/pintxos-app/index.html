@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>IBÉRICO — Pintxos Night</title>
+<link rel="stylesheet" href="/pintxos-app/style.css">
+</head>
+<body>
+
+<div class="wrap" id="app">
+
+  <div class="stub">
+    <div class="eyebrow">Ibérico · Pintxos Night</div>
+    <h1>Rate the Pintxos</h1>
+    <div class="sub" id="dishCountSub">Saturday, September 19</div>
+    <div class="perf"></div>
+  </div>
+
+  <div id="step-locked" class="card" style="margin-top:14px; text-align:center;" hidden>
+    <div class="eyebrow" style="margin-bottom:6px;">Not open yet</div>
+    <h2 style="font-size:21px; margin:2px 0 6px; color:var(--accent);">Tasting opens at 6 PM</h2>
+    <p style="font-size:13.5px; color:var(--ink-soft); line-height:1.5; margin:0 0 10px;">
+      Come back once the first pinchos hit the counter. This page unlocks itself —
+      no need to refresh.
+    </p>
+    <div id="countdown" style="font-family:'Space Mono', monospace; font-size:15px; color:var(--brass); font-variant-numeric: tabular-nums;"></div>
+  </div>
+
+  <div id="step-name" class="card" style="margin-top:14px;" hidden>
+    <label class="field-label" for="nameInput">Your name</label>
+    <input type="text" id="nameInput" placeholder="e.g. Maria" autocomplete="name" maxlength="60" />
+    <button class="btn btn-primary" id="startBtn" style="margin-top:12px;">Start Tasting</button>
+  </div>
+
+  <div class="card" id="howItWorks" style="margin-top:14px;">
+    <label class="field-label" style="margin-bottom:10px;">How it works</label>
+    <div style="display:flex; flex-direction:column; gap:10px; font-size:13.5px; line-height:1.5; color:var(--ink-soft);">
+      <div><b style="color:var(--ink);">1. Add your name.</b> No account, no password — just so we know whose ratings are whose.</div>
+      <div><b style="color:var(--ink);">2. Rate as you taste.</b> Tap 1–5 stars on each pincho you try.</div>
+      <div><b style="color:var(--ink);">3. Submit once.</b> Each phone can submit only one time, so finish tasting first.</div>
+      <div><b style="color:var(--ink);">4. Winner revealed at closing.</b> Staff tally every guest's ratings and announce the Winner Pincho at the bar.</div>
+    </div>
+  </div>
+
+  <div id="step-rate" hidden>
+    <div class="progress-block">
+      <div class="progress-row">
+        <span class="progress-label">Rated</span>
+        <span class="progress-count" id="progressCount">0 / 20</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="progressBar"></div></div>
+    </div>
+
+    <div id="stations"></div>
+
+    <button class="btn btn-primary" id="submitBtn" style="margin-top:22px;">Submit My Ratings</button>
+    <div class="footer-note">Your stars are kept on this phone until you submit. <b>You can only submit once.</b></div>
+  </div>
+
+  <div id="step-done" class="card" style="margin-top:14px; text-align:center;" hidden>
+    <h2 style="color:var(--accent); font-size:22px; margin:4px 0 8px;">Thanks, <span id="doneName"></span>!</h2>
+    <p style="font-size:14px; color:var(--ink-soft); line-height:1.6;">
+      Your ratings are in. The winner pincho gets revealed at the end of the night —
+      keep an eye on the bar.
+    </p>
+  </div>
+
+</div>
+
+<script src="/pintxos-app/shared.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+(function(){
+  var cfg = window.PINTXOS_CONFIG;
+  var DISHES = window.PINTXOS_DISHES;
+  var STATIONS = window.PINTXOS_STATIONS;
+  var client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+
+  var LS_DEVICE = "iberico_pintxos_device_id";
+  var LS_NAME = "iberico_pintxos_name";
+  var LS_DRAFT = "iberico_pintxos_draft";
+
+  function uuid(){
+    if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c){
+      var r = Math.random()*16|0, v = c === "x" ? r : (r&0x3|0x8);
+      return v.toString(16);
+    });
+  }
+
+  var deviceId = localStorage.getItem(LS_DEVICE);
+  if(!deviceId){ deviceId = uuid(); localStorage.setItem(LS_DEVICE, deviceId); }
+  var guestName = localStorage.getItem(LS_NAME) || "";
+
+  var ratings = {};
+  try { ratings = JSON.parse(localStorage.getItem(LS_DRAFT) || "{}") || {}; } catch(e){ ratings = {}; }
+
+  var stepLocked = document.getElementById("step-locked");
+  var stepName = document.getElementById("step-name");
+  var stepRate = document.getElementById("step-rate");
+  var stepDone = document.getElementById("step-done");
+  var nameInput = document.getElementById("nameInput");
+  var startBtn = document.getElementById("startBtn");
+  var submitBtn = document.getElementById("submitBtn");
+  var doneName = document.getElementById("doneName");
+  var stationsEl = document.getElementById("stations");
+
+  var starIcon = '<svg viewBox="0 0 24 24"><path class="spear" d="M12 2.5l2.9 6.3 6.9.6-5.2 4.5 1.6 6.8L12 16.9 5.8 20.7l1.6-6.8-5.2-4.5 6.9-.6L12 2.5z"/></svg>';
+
+  function buildStations(){
+    stationsEl.innerHTML = "";
+    STATIONS.forEach(function(st){
+      var dishes = DISHES.filter(function(d){ return d.station === st.id; });
+      var section = document.createElement("div");
+      section.className = "station";
+
+      var head = document.createElement("div");
+      head.className = "station-head";
+      head.innerHTML = '<h2>' + st.label + '<span class="vi-sub" lang="vi">' + st.vi + '</span></h2>' +
+        (st.tag ? '<span class="special-tag">' + st.tag + '</span>' : '') +
+        '<span class="station-count" data-station-count="' + st.id + '"></span>';
+      section.appendChild(head);
+
+      dishes.forEach(function(d){
+        var card = document.createElement("div");
+        card.className = "dish";
+        card.dataset.dish = d.id;
+        card.innerHTML =
+          '<div class="dish-name">' + d.name + '</div>' +
+          '<div class="dish-desc">' + d.desc + '</div>' +
+          '<div class="dish-desc dish-vi" lang="vi">' + d.vi + '</div>' +
+          '<div class="rate-row" data-rate="' + d.id + '"></div>';
+        var rateRow = card.querySelector('[data-rate="' + d.id + '"]');
+        for(var i=1;i<=5;i++){
+          (function(n){
+            var rbtn = document.createElement("button");
+            rbtn.className = "rate-btn";
+            rbtn.setAttribute("aria-label", "Rate " + d.name + " " + n + " out of 5");
+            rbtn.innerHTML = starIcon;
+            rbtn.addEventListener("click", function(){ setRating(d.id, n); });
+            rateRow.appendChild(rbtn);
+          })(i);
+        }
+        section.appendChild(card);
+      });
+
+      stationsEl.appendChild(section);
+    });
+  }
+
+  function ratedIds(){
+    return Object.keys(ratings).filter(function(k){ return ratings[k] > 0; });
+  }
+
+  function renderRatings(){
+    var rated = ratedIds().length;
+    document.getElementById("progressCount").textContent = rated + " / " + DISHES.length;
+    document.getElementById("progressBar").style.width = (rated / DISHES.length * 100) + "%";
+
+    STATIONS.forEach(function(st){
+      var total = DISHES.filter(function(d){ return d.station === st.id; }).length;
+      var count = DISHES.filter(function(d){ return d.station === st.id && ratings[d.id] > 0; }).length;
+      var el = document.querySelector('[data-station-count="' + st.id + '"]');
+      if(el) el.textContent = count + "/" + total;
+    });
+
+    DISHES.forEach(function(d){
+      var card = document.querySelector('.dish[data-dish="' + d.id + '"]');
+      if(!card) return;
+      var r = ratings[d.id] || 0;
+      card.classList.toggle("rated", r > 0);
+      var rbtns = card.querySelectorAll(".rate-btn");
+      rbtns.forEach(function(rb, i){ rb.classList.toggle("filled", i < r); });
+    });
+  }
+
+  function setRating(dishId, n){
+    ratings[dishId] = (ratings[dishId] === n) ? 0 : n;
+    try { localStorage.setItem(LS_DRAFT, JSON.stringify(ratings)); } catch(e){}
+    renderRatings();
+  }
+
+  function showDone(){
+    doneName.textContent = guestName || "friend";
+    stepName.hidden = true;
+    stepRate.hidden = true;
+    stepDone.hidden = false;
+    document.getElementById("howItWorks").hidden = true;
+  }
+
+  function goToRating(){
+    stepName.hidden = true;
+    stepDone.hidden = true;
+    stepRate.hidden = false;
+    renderRatings();
+  }
+
+  function enterFlow(){
+    client.rpc("pintxos_has_submitted", { p_device_id: deviceId }).then(function(res){
+      if(res.data === true){ showDone(); return; }
+      if(guestName){ nameInput.value = guestName; goToRating(); }
+      else { stepName.hidden = false; }
+    });
+  }
+
+  startBtn.addEventListener("click", function(){
+    var v = nameInput.value.trim();
+    if(!v){ nameInput.focus(); return; }
+    guestName = v;
+    localStorage.setItem(LS_NAME, guestName);
+    goToRating();
+  });
+
+  submitBtn.addEventListener("click", function(){
+    var rated = ratedIds();
+    if(rated.length === 0){
+      alert("Rate at least one dish before submitting.");
+      return;
+    }
+    if(!confirm("Submit your ratings? You can only submit once from this phone.")) return;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting…";
+    var votes = rated.map(function(dishId){ return { dish_id: dishId, rating: ratings[dishId] }; });
+    client.rpc("submit_pintxos_votes", { p_device_id: deviceId, p_guest_name: guestName, p_votes: votes }).then(function(res){
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit My Ratings";
+      if(res.error){
+        if(/already submitted/i.test(res.error.message)){ showDone(); return; }
+        alert("Something went wrong submitting — please try again.");
+        console.error(res.error);
+        return;
+      }
+      try { localStorage.removeItem(LS_DRAFT); } catch(e){}
+      showDone();
+    });
+  });
+
+  document.getElementById("dishCountSub").textContent = "Saturday, September 19 · " + DISHES.length + " dishes";
+  buildStations();
+
+  var startTime = new Date(window.PINTXOS_START_TIME).getTime();
+  var countdownEl = document.getElementById("countdown");
+  var unlocked = false;
+
+  function formatCountdown(ms){
+    var totalSec = Math.max(0, Math.floor(ms / 1000));
+    var h = Math.floor(totalSec / 3600);
+    var m = Math.floor((totalSec % 3600) / 60);
+    var s = totalSec % 60;
+    function pad(n){ return (n < 10 ? "0" : "") + n; }
+    return "Opens in " + h + "h " + pad(m) + "m " + pad(s) + "s";
+  }
+
+  function checkGate(){
+    var now = Date.now();
+    if(now >= startTime){
+      if(!unlocked){
+        unlocked = true;
+        stepLocked.hidden = true;
+        enterFlow();
+      }
+      return;
+    }
+    stepLocked.hidden = false;
+    stepName.hidden = true;
+    stepRate.hidden = true;
+    stepDone.hidden = true;
+    countdownEl.textContent = formatCountdown(startTime - now);
+  }
+
+  checkGate();
+  setInterval(checkGate, 1000);
+})();
+</script>
+</body>
+</html>
