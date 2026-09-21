@@ -43,12 +43,13 @@ export function WhatsOnProvider({ children }: { children: ReactNode }) {
       const last = Number(window.localStorage.getItem(key) ?? 0);
       if (!forced && Date.now() - last < 12 * 60 * 60 * 1000) return;
     } catch {}
+    // Wait long enough for the hero to land and be read before interrupting.
     const timer = window.setTimeout(() => {
       setPopupOpen(true);
       try {
         window.localStorage.setItem(key, String(Date.now()));
       } catch {}
-    }, 1500);
+    }, 7000);
     return () => window.clearTimeout(timer);
   }, []);
 

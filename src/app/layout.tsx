@@ -4,7 +4,6 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
 import { WhatsOnProvider } from "@/lib/whats-on";
-import { ScrollProgress } from "@/components/ScrollProgress";
 import { CustomCursor } from "@/components/CustomCursor";
 
 const playfair = Playfair_Display({
@@ -68,7 +67,6 @@ export default function RootLayout({
       className={`${playfair.variable} ${karla.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream text-ink">
-        <ScrollProgress />
         <CustomCursor />
         <LanguageProvider>
           <WhatsOnProvider>{children}</WhatsOnProvider>

@@ -6,7 +6,6 @@ import Image from "next/image";
 import { MapPin, Clock, Phone, Users, ArrowUpRight } from "lucide-react";
 import { useLanguage, type LocationInfo } from "@/lib/i18n";
 import { Reveal } from "./Reveal";
-import { KineticText } from "./KineticText";
 
 const LOCATION_PHOTOS: Record<string, string> = {
   "IBÉRICO Thảo Điền": "/images/real-location-thaodien.jpg",
@@ -45,9 +44,9 @@ export function Locations() {
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-wine">
             {t.locations.eyebrow}
           </span>
-          <KineticText as="h2" className="font-display text-balance mt-4 text-4xl text-ink sm:text-5xl">
+          <h2 className="font-display text-balance mt-4 text-4xl text-ink sm:text-5xl">
             {t.locations.title}
-          </KineticText>
+          </h2>
           <p className="text-balance mx-auto mt-5 max-w-xl text-sm leading-relaxed text-charcoal/80 sm:text-base">
             {t.locations.subtitle}
           </p>
@@ -59,7 +58,7 @@ export function Locations() {
               key={item.name}
               type="button"
               onClick={() => setActive(i)}
-              className={`relative cursor-pointer rounded-full border px-5 py-2.5 text-sm font-semibold tracking-wide transition-colors duration-300 ${
+              className={`relative inline-flex min-h-11 cursor-pointer items-center rounded-full border px-5 text-sm font-semibold tracking-wide transition-colors duration-300 ${
                 active === i
                   ? "border-wine text-cream"
                   : "border-border text-charcoal hover:border-wine/50"
@@ -122,10 +121,10 @@ export function Locations() {
                       <span>{loc.capacity}</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <Phone size={18} className="mt-0.5 shrink-0 text-gold-deep" />
+                      <Phone size={18} className="mt-3 shrink-0 text-gold-deep sm:mt-0.5" />
                       <a
                         href={`tel:${loc.phone.replace(/\s+/g, "")}`}
-                        className="cursor-pointer hover:text-wine"
+                        className="inline-flex min-h-11 cursor-pointer items-center hover:text-wine sm:min-h-0"
                       >
                         {loc.phone}
                       </a>

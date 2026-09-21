@@ -121,7 +121,7 @@ export function EventPopup() {
               type="button"
               onClick={closePopup}
               aria-label={t.whatsOn.close}
-              className="absolute right-3 top-3 flex h-9 w-9 cursor-pointer items-center justify-center text-cream/55 transition-colors hover:text-cream"
+              className="absolute right-1.5 top-1.5 flex h-11 w-11 cursor-pointer items-center justify-center text-cream/55 transition-colors hover:text-cream"
             >
               <X size={20} />
             </button>
@@ -151,7 +151,7 @@ export function EventPopup() {
                   className="mx-auto h-10 w-auto brightness-0 invert"
                 />
 
-                <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-light">
+                <p className="mt-4 text-xs font-semibold uppercase tracking-[0.3em] text-gold-light">
                   {c.eyebrow}
                 </p>
 
@@ -175,7 +175,7 @@ export function EventPopup() {
                 [t.whatsOn.priceLabel, c.price],
               ].map(([k, v]) => (
                 <div key={k} className="flex flex-col items-center">
-                  <dt className="text-[10px] uppercase tracking-[0.14em] text-gold-light">
+                  <dt className="text-[11px] uppercase tracking-[0.14em] text-gold-light">
                     {k}
                   </dt>
                   <dd className="text-cream/90">{v}</dd>
@@ -195,7 +195,7 @@ export function EventPopup() {
               <button
                 type="button"
                 onClick={closePopup}
-                className="cursor-pointer text-[11px] uppercase tracking-[0.1em] text-cream/55 transition-colors hover:text-cream/90"
+                className="min-h-11 cursor-pointer text-xs uppercase tracking-[0.1em] text-cream/55 transition-colors hover:text-cream/90"
               >
                 {t.whatsOn.maybeLater}
               </button>

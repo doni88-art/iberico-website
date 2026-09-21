@@ -5,7 +5,7 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
 import { Reveal } from "./Reveal";
-import { KineticText } from "./KineticText";
+import { ShimmerButton } from "./ShimmerButton";
 
 // Real photography from IBÉRICO's own menu, indexed to match
 // menu.categories order (same order across every language dictionary).
@@ -51,9 +51,9 @@ export function Menu() {
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-gold-light">
             {t.menu.eyebrow}
           </span>
-          <KineticText as="h2" className="font-display text-balance mt-4 text-4xl sm:text-5xl">
+          <h2 className="font-display text-balance mt-4 text-4xl sm:text-5xl">
             {t.menu.title}
-          </KineticText>
+          </h2>
           <p className="text-balance mx-auto mt-5 max-w-xl text-sm leading-relaxed text-cream/70 sm:text-base">
             {t.menu.subtitle}
           </p>
@@ -66,7 +66,7 @@ export function Menu() {
                 key={loc}
                 type="button"
                 onClick={() => selectLocation(loc)}
-                className={`relative cursor-pointer rounded-full border px-5 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] transition-colors duration-300 sm:text-sm ${
+                className={`relative cursor-pointer inline-flex min-h-11 items-center rounded-full border px-5 text-xs font-semibold uppercase tracking-[0.15em] transition-colors duration-300 sm:text-sm ${
                   location === loc
                     ? "border-gold-light text-ink"
                     : "border-cream/20 text-cream/70 hover:text-cream"
@@ -88,13 +88,13 @@ export function Menu() {
         </Reveal>
 
         <Reveal delay={0.15} className="mt-8">
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+          <div className="-mx-6 flex snap-x snap-mandatory gap-2 overflow-x-auto px-6 pb-1 [mask-image:linear-gradient(to_right,transparent,black_1.5rem,black_calc(100%-1.5rem),transparent)] [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:justify-center sm:gap-3 sm:overflow-visible sm:px-0 sm:[mask-image:none] [&::-webkit-scrollbar]:hidden">
             {categories.map((cat, i) => (
               <button
                 key={cat.label}
                 type="button"
                 onClick={() => setActive(i)}
-                className={`relative cursor-pointer rounded-full px-4 py-2 text-xs font-semibold tracking-wide transition-colors duration-300 sm:px-5 sm:text-sm ${
+                className={`relative inline-flex min-h-11 shrink-0 cursor-pointer snap-center items-center whitespace-nowrap rounded-full px-4 text-xs font-semibold tracking-wide transition-colors duration-300 sm:px-5 sm:text-sm ${
                   active === i
                     ? "text-cream"
                     : "text-cream/70 hover:text-cream"
@@ -155,7 +155,7 @@ export function Menu() {
                           {item.name}
                         </h3>
                         {item.tag && (
-                          <span className="rounded-full bg-wine px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-cream">
+                          <span className="rounded-full bg-wine px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-cream">
                             {item.tag}
                           </span>
                         )}
@@ -174,9 +174,18 @@ export function Menu() {
           </div>
         </div>
 
-        <p className="mt-14 text-center text-xs text-cream/40">
+        <p className="mt-14 text-center text-xs text-cream/60">
           {note}
         </p>
+
+        <div className="mt-12 flex flex-col items-center gap-5 border-t border-cream/10 pt-12 text-center">
+          <p className="font-display text-balance text-2xl text-cream sm:text-3xl">
+            {t.menu.reserveLine}
+          </p>
+          <ShimmerButton href="#reserve" variant="wine" className="min-w-[200px]">
+            {t.hero.cta1}
+          </ShimmerButton>
+        </div>
       </div>
     </section>
   );

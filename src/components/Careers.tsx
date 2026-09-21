@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { Reveal, RevealGroup, revealItem } from "./Reveal";
-import { KineticText } from "./KineticText";
 
 const CAREERS_EMAIL = "hola@weareiberico.com";
 
@@ -18,12 +17,11 @@ export function Careers() {
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-wine">
             {t.careers.eyebrow}
           </span>
-          <KineticText
-            as="h2"
+          <h2
             className="font-display text-balance mt-4 text-4xl text-ink sm:text-5xl"
           >
             {t.careers.title}
-          </KineticText>
+          </h2>
           <p className="text-balance mx-auto mt-5 max-w-xl text-sm leading-relaxed text-charcoal/80 sm:text-base">
             {t.careers.subtitle}
           </p>
@@ -38,10 +36,10 @@ export function Careers() {
             >
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-wine px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cream">
+                  <span className="rounded-full bg-wine px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-cream">
                     {pos.type}
                   </span>
-                  <span className="rounded-full border border-border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-stone">
+                  <span className="rounded-full border border-border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-stone">
                     {pos.department}
                   </span>
                 </div>
@@ -55,7 +53,7 @@ export function Careers() {
                 href={`mailto:${CAREERS_EMAIL}?subject=${encodeURIComponent(
                   `Application: ${pos.title}`
                 )}`}
-                className="mt-6 inline-flex w-fit cursor-pointer items-center gap-2 text-sm font-semibold text-wine transition-colors hover:text-wine-bright"
+                className="mt-4 inline-flex min-h-11 w-fit cursor-pointer items-center gap-2 text-sm font-semibold text-wine transition-colors hover:text-wine-bright"
               >
                 {t.careers.applyCta}
                 <ArrowUpRight size={16} />

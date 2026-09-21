@@ -78,7 +78,7 @@ export function Navbar() {
                 IBÉRICO
               </span>
               <span
-                className={`mt-0.5 text-[9px] tracking-[0.25em] uppercase ${
+                className={`mt-0.5 text-[11px] tracking-[0.25em] uppercase ${
                   scrolled || open ? "text-gold-deep" : "text-gold-light"
                 }`}
               >

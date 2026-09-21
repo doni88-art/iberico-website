@@ -8,9 +8,7 @@ import { useLanguage } from "@/lib/i18n";
 import { useWhatsOn } from "@/lib/whats-on";
 import { eventCopy } from "@/lib/events";
 import { Reveal } from "./Reveal";
-import { Magnetic } from "./Magnetic";
 import { ShimmerButton } from "./ShimmerButton";
-import { KineticText } from "./KineticText";
 import { ZaloIcon, WhatsAppIcon } from "./SocialIcons";
 
 // Bookings routing. Thảo Điền and Thị Sách share the central Saigon line;
@@ -282,9 +280,9 @@ export function Reservation() {
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-wine">
             {t.reservation.eyebrow}
           </span>
-          <KineticText as="h2" className="font-display text-balance mt-4 text-4xl text-ink sm:text-5xl">
+          <h2 className="font-display text-balance mt-4 text-4xl text-ink sm:text-5xl">
             {t.reservation.title}
-          </KineticText>
+          </h2>
           <p className="text-balance mx-auto mt-4 max-w-md text-sm leading-relaxed text-charcoal/80 sm:text-base">
             {t.reservation.subtitle}
           </p>
@@ -487,61 +485,57 @@ export function Reservation() {
 
                 <div className="sm:col-span-2 mt-2 flex flex-col items-center gap-5">
                   <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-                    <Magnetic range={70} strength={0.2} className="w-full sm:w-auto">
-                      <ShimmerButton
-                        type="submit"
-                        variant="wine"
-                        disabled={status === "submitting"}
-                        className="w-full sm:min-w-[220px]"
-                      >
-                        {status === "submitting" && channel === "whatsapp" && (
-                          <Loader2 size={16} className="animate-spin" />
-                        )}
-                        {!(status === "submitting" && channel === "whatsapp") && (
-                          <WhatsAppIcon size={16} />
-                        )}
-                        {status === "submitting" && channel === "whatsapp"
-                          ? t.reservation.submitting
-                          : t.reservation.submitWhatsApp}
-                      </ShimmerButton>
-                    </Magnetic>
+                    <ShimmerButton
+                      type="submit"
+                      variant="wine"
+                      disabled={status === "submitting"}
+                      className="w-full sm:w-auto sm:min-w-[220px]"
+                    >
+                      {status === "submitting" && channel === "whatsapp" && (
+                        <Loader2 size={16} className="animate-spin" />
+                      )}
+                      {!(status === "submitting" && channel === "whatsapp") && (
+                        <WhatsAppIcon size={16} />
+                      )}
+                      {status === "submitting" && channel === "whatsapp"
+                        ? t.reservation.submitting
+                        : t.reservation.submitWhatsApp}
+                    </ShimmerButton>
 
-                    <Magnetic range={70} strength={0.2} className="w-full sm:w-auto">
-                      <ShimmerButton
-                        type="button"
-                        variant="outlineDark"
-                        disabled={status === "submitting"}
-                        onClick={() => sendVia("zalo")}
-                        className="w-full sm:min-w-[220px]"
-                      >
-                        {status === "submitting" && channel === "zalo" && (
-                          <Loader2 size={16} className="animate-spin" />
-                        )}
-                        {!(status === "submitting" && channel === "zalo") && (
-                          <ZaloIcon size={16} />
-                        )}
-                        {status === "submitting" && channel === "zalo"
-                          ? t.reservation.submitting
-                          : t.reservation.submitZalo}
-                      </ShimmerButton>
-                    </Magnetic>
+                    <ShimmerButton
+                      type="button"
+                      variant="outlineDark"
+                      disabled={status === "submitting"}
+                      onClick={() => sendVia("zalo")}
+                      className="w-full sm:w-auto sm:min-w-[220px]"
+                    >
+                      {status === "submitting" && channel === "zalo" && (
+                        <Loader2 size={16} className="animate-spin" />
+                      )}
+                      {!(status === "submitting" && channel === "zalo") && (
+                        <ZaloIcon size={16} />
+                      )}
+                      {status === "submitting" && channel === "zalo"
+                        ? t.reservation.submitting
+                        : t.reservation.submitZalo}
+                    </ShimmerButton>
                   </div>
 
                   <div className="flex flex-col items-center gap-3">
-                    <span className="text-xs uppercase tracking-[0.15em] text-stone/70">
+                    <span className="text-xs uppercase tracking-[0.15em] text-stone">
                       {t.reservation.orContact}
                     </span>
                     <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
                       <a
                         href={`tel:+${bookingsNumberFor(form.location)}`}
-                        className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-stone transition-colors hover:text-wine"
+                        className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-sm font-medium text-stone transition-colors hover:text-wine"
                       >
                         <Phone size={16} />
                         {t.reservation.call}
                       </a>
                       <a
                         href={`mailto:${BOOKINGS_EMAIL}?subject=Reservation%20Request`}
-                        className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-stone transition-colors hover:text-wine"
+                        className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-sm font-medium text-stone transition-colors hover:text-wine"
                       >
                         <Mail size={16} />
                         {t.reservation.emailUs}

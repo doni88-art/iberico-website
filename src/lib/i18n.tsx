@@ -82,6 +82,7 @@ export interface Dict {
     note: string;
     categories: MenuCategory[];
     hoianNote: string;
+    reserveLine: string;
     hoianCategories: MenuCategory[];
   };
   gallery: {
@@ -801,6 +802,7 @@ const en: Dict = {
       },
     ],
     hoianNote: "Prices in VND (thousands) · Excl. 8–10% VAT",
+    reserveLine: "Found something you like? Save us a table.",
     hoianCategories: [
       {
         label: "Exclusive Set Menus",
@@ -2201,6 +2203,7 @@ const vi: Dict = {
       },
     ],
     hoianNote: "Giá niêm yết bằng VNĐ (nghìn đồng) · Chưa gồm VAT 8–10%",
+    reserveLine: "Đã chọn được món ưng ý? Giữ bàn cho bạn nhé.",
     hoianCategories: [
       {
         label: "Set Menu Riêng",
@@ -3601,6 +3604,7 @@ const es: Dict = {
       },
     ],
     hoianNote: "Precios en VND (miles) · Sin incluir 8–10% de IVA",
+    reserveLine: "¿Algo te ha llamado la atención? Te guardamos una mesa.",
     hoianCategories: [
       {
         label: "Menús Exclusivos",

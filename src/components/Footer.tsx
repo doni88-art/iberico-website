@@ -49,14 +49,14 @@ export function Footer() {
             <h4 className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-light">
               {t.nav.menu}
             </h4>
-            <ul className="mt-4 space-y-2.5 text-sm text-cream/70">
-              <li><a href="#story" className="cursor-pointer transition-colors hover:text-gold-light">{t.nav.story}</a></li>
-              <li><a href="#menu" className="cursor-pointer transition-colors hover:text-gold-light">{t.nav.menu}</a></li>
-              <li><a href="#gallery" className="cursor-pointer transition-colors hover:text-gold-light">{t.nav.gallery}</a></li>
-              <li><a href="#locations" className="cursor-pointer transition-colors hover:text-gold-light">{t.nav.locations}</a></li>
-              <li><a href="#events" className="cursor-pointer transition-colors hover:text-gold-light">{t.nav.events}</a></li>
-              <li><a href="#careers" className="cursor-pointer transition-colors hover:text-gold-light">{t.nav.careers}</a></li>
-              <li><a href="#reserve" className="cursor-pointer transition-colors hover:text-gold-light">{t.nav.reserve}</a></li>
+            <ul className="mt-2 space-y-0 text-sm text-cream/70 sm:mt-4 sm:space-y-2.5">
+              <li><a href="#story" className="inline-flex min-h-11 cursor-pointer items-center transition-colors hover:text-gold-light sm:min-h-0">{t.nav.story}</a></li>
+              <li><a href="#menu" className="inline-flex min-h-11 cursor-pointer items-center transition-colors hover:text-gold-light sm:min-h-0">{t.nav.menu}</a></li>
+              <li><a href="#gallery" className="inline-flex min-h-11 cursor-pointer items-center transition-colors hover:text-gold-light sm:min-h-0">{t.nav.gallery}</a></li>
+              <li><a href="#locations" className="inline-flex min-h-11 cursor-pointer items-center transition-colors hover:text-gold-light sm:min-h-0">{t.nav.locations}</a></li>
+              <li><a href="#events" className="inline-flex min-h-11 cursor-pointer items-center transition-colors hover:text-gold-light sm:min-h-0">{t.nav.events}</a></li>
+              <li><a href="#careers" className="inline-flex min-h-11 cursor-pointer items-center transition-colors hover:text-gold-light sm:min-h-0">{t.nav.careers}</a></li>
+              <li><a href="#reserve" className="inline-flex min-h-11 cursor-pointer items-center transition-colors hover:text-gold-light sm:min-h-0">{t.nav.reserve}</a></li>
             </ul>
           </div>
 
@@ -70,7 +70,7 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-cream/20 transition-colors hover:border-wine-bright hover:text-wine-bright"
+                className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-cream/20 transition-colors hover:border-wine-bright hover:text-wine-bright"
               >
                 <InstagramIcon size={18} />
               </a>
@@ -79,14 +79,14 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
-                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-cream/20 transition-colors hover:border-wine-bright hover:text-wine-bright"
+                className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-cream/20 transition-colors hover:border-wine-bright hover:text-wine-bright"
               >
                 <FacebookIcon size={18} />
               </a>
               <a
                 href="mailto:hola@weareiberico.com"
                 aria-label="Email"
-                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-cream/20 transition-colors hover:border-wine-bright hover:text-wine-bright"
+                className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-cream/20 transition-colors hover:border-wine-bright hover:text-wine-bright"
               >
                 <Mail size={18} />
               </a>
@@ -95,7 +95,7 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
-                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-cream/20 transition-colors hover:border-wine-bright hover:text-wine-bright"
+                className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-cream/20 transition-colors hover:border-wine-bright hover:text-wine-bright"
               >
                 <WhatsAppIcon size={18} />
               </a>
@@ -104,21 +104,21 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Zalo"
-                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-cream/20 transition-colors hover:border-wine-bright hover:text-wine-bright"
+                className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-cream/20 transition-colors hover:border-wine-bright hover:text-wine-bright"
               >
                 <ZaloIcon size={18} />
               </a>
             </div>
-            <div className="mt-5 space-y-2 text-sm">
+            <div className="mt-3 text-sm">
               <a
                 href={`tel:+${SAIGON_NUMBER}`}
-                className="block cursor-pointer text-cream/70 transition-colors hover:text-gold-light"
+                className="flex min-h-11 cursor-pointer items-center text-cream/70 transition-colors hover:text-gold-light"
               >
                 <span className="text-cream/90">Ho Chi Minh City</span> · +84 849 000 531
               </a>
               <a
                 href={`tel:+${HOI_AN_NUMBER}`}
-                className="block cursor-pointer text-cream/70 transition-colors hover:text-gold-light"
+                className="flex min-h-11 cursor-pointer items-center text-cream/70 transition-colors hover:text-gold-light"
               >
                 <span className="text-cream/90">Hội An</span> · +84 868 774 026
               </a>
@@ -126,13 +126,13 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-4 py-8 text-xs text-cream/40 sm:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 py-8 text-xs text-cream/60 sm:flex-row">
           <p>
             © {year} IBÉRICO Tapas y Vino — {t.footer.madeWith}. {t.footer.rights}
           </p>
           <a
             href="#main"
-            className="flex cursor-pointer items-center gap-1.5 transition-colors hover:text-gold-light"
+            className="flex min-h-11 cursor-pointer items-center gap-1.5 transition-colors hover:text-gold-light"
           >
             <ArrowUp size={14} />
             {t.hero.scroll}

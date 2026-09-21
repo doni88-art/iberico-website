@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { Reveal, RevealGroup, revealItem } from "./Reveal";
-import { KineticText } from "./KineticText";
 
 const IMAGES = [
   { src: "/images/real-facade-night-thisach.jpg", alt: "IBÉRICO Thị Sách glowing marquee sign and terrace at night", span: "sm:col-span-2" },
@@ -69,9 +68,9 @@ export function Gallery() {
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-wine">
             {t.gallery.eyebrow}
           </span>
-          <KineticText as="h2" className="font-display text-balance mt-4 text-4xl text-ink sm:text-5xl">
+          <h2 className="font-display text-balance mt-4 text-4xl text-ink sm:text-5xl">
             {t.gallery.title}
-          </KineticText>
+          </h2>
           <p className="text-balance mx-auto mt-5 max-w-xl text-sm leading-relaxed text-charcoal/80 sm:text-base">
             {t.gallery.subtitle}
           </p>
@@ -175,9 +174,9 @@ function Press() {
         <span className="text-xs font-semibold uppercase tracking-[0.3em] text-wine">
           {t.press.eyebrow}
         </span>
-        <KineticText as="h3" className="font-display text-balance mt-4 text-3xl text-ink sm:text-4xl">
+        <h3 className="font-display text-balance mt-4 text-3xl text-ink sm:text-4xl">
           {t.press.title}
-        </KineticText>
+        </h3>
         <div className="mt-4 flex items-center justify-center gap-1.5 text-gold-deep">
           {Array.from({ length: 5 }).map((_, i) => (
             <Star

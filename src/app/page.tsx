@@ -23,8 +23,8 @@ export default function Home() {
         <Menu />
         <Locations />
         <Events />
-        <Careers />
         <Reservation />
+        <Careers />
       </main>
       <Footer />
       <EventPopup />

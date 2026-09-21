@@ -5,7 +5,6 @@ import Image from "next/image";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
 import { ChevronDown } from "lucide-react";
-import { Magnetic } from "./Magnetic";
 import { ShimmerButton } from "./ShimmerButton";
 
 export function Hero() {
@@ -18,8 +17,6 @@ export function Hero() {
     offset: ["start start", "end start"],
   });
   const imageY = useTransform(scrollYProgress, [0, 1], ["0%", shouldReduceMotion ? "0%" : "22%"]);
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", shouldReduceMotion ? "0%" : "18%"]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -45,8 +42,7 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" />
       </motion.div>
 
-      <motion.div
-        style={{ y: contentY, opacity: contentOpacity }}
+      <div
         className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-6 text-center text-cream"
       >
         <motion.div
@@ -73,7 +69,7 @@ export function Hero() {
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold-light/40 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold-light"
+          className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold-light/40 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.3em] text-gold-light"
         >
           {t.hero.eyebrow}
         </motion.span>
@@ -86,6 +82,7 @@ export function Hero() {
             className="block text-[15vw] sm:text-8xl md:text-9xl"
           >
             {t.hero.title1}
+            <span className="sr-only"> </span>
           </motion.span>
           <motion.span
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 32 }}
@@ -112,16 +109,14 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.6, ease }}
           className="mt-10 flex flex-col items-center gap-4 sm:flex-row"
         >
-          <Magnetic range={70} strength={0.3}>
-            <ShimmerButton href="#reserve" variant="wine" className="min-w-[200px]">
-              {t.hero.cta1}
-            </ShimmerButton>
-          </Magnetic>
+          <ShimmerButton href="#reserve" variant="wine" className="min-w-[200px]">
+            {t.hero.cta1}
+          </ShimmerButton>
           <ShimmerButton href="#menu" variant="outline" className="min-w-[200px]">
             {t.hero.cta2}
           </ShimmerButton>
         </motion.div>
-      </motion.div>
+      </div>
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -129,15 +124,10 @@ export function Hero() {
         transition={{ duration: 1, delay: 1 }}
         className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-cream/70"
       >
-        <span className="text-[10px] uppercase tracking-[0.3em]">
+        <span className="text-[11px] uppercase tracking-[0.3em]">
           {t.hero.scroll}
         </span>
-        <motion.div
-          animate={shouldReduceMotion ? {} : { y: [0, 8, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <ChevronDown size={18} />
-        </motion.div>
+        <ChevronDown size={18} />
       </motion.div>
     </section>
   );
