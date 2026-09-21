@@ -17,7 +17,7 @@ export default function GlassDemo() {
     <div
       ref={containerRef}
       className="relative h-screen w-full bg-cover bg-center"
-      style={{ backgroundImage: "url('/images/real-jamon-carving.jpg')" }}
+      style={{ backgroundImage: "url('/images/real-jamon-board.jpg')" }}
     >
       <LiquidGlass
         displacementScale={70}
