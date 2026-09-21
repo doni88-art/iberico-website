@@ -75,7 +75,7 @@ const ANNIVERSARY_5YR: SiteEvent = {
       title: "The anniversary",
       titleEm: "party",
       description:
-        "Five years in Thảo Điền — one big night. Paella cooked live, jamón carved by hand, a DJ till late, live flamenco, and fireworks after dark.",
+        "Five years in Thảo Điền — one big night. Paella cooked live, free-flow jamón Ibérico, a DJ till late, live flamenco, and fireworks after dark.",
       when: "Sat 3 Oct · from 4:00 PM",
       where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
       price: "Free flow food & drinks · 4–6:30 PM",
@@ -87,7 +87,7 @@ const ANNIVERSARY_5YR: SiteEvent = {
       title: "Tiệc kỷ niệm",
       titleEm: "năm năm",
       description:
-        "Năm năm ở Thảo Điền — một đêm thật đã. Paella nấu tại chỗ, jamón cắt tay, DJ tới khuya, flamenco sống, và pháo hoa khi trời tối.",
+        "Năm năm ở Thảo Điền — một đêm thật đã. Paella nấu tại chỗ, jamón Ibérico free flow, DJ tới khuya, flamenco sống, và pháo hoa khi trời tối.",
       when: "Thứ Bảy 3/10 · từ 16:00",
       where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
       price: "Free flow đồ ăn & thức uống · 16:00–18:30",
