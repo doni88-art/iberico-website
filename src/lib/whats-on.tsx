@@ -15,6 +15,9 @@ interface WhatsOnContextValue {
   event: SiteEvent | null;
   popupOpen: boolean;
   bookingEventId: string | null;
+  /** Set only for the automatic pop-up: ms after which it should self-dismiss
+   * unless the visitor is interacting with it. null for a manually opened popup. */
+  autoCloseMs: number | null;
   openPopup: () => void;
   closePopup: () => void;
   startBooking: () => void;
@@ -23,10 +26,15 @@ interface WhatsOnContextValue {
 
 const WhatsOnContext = createContext<WhatsOnContextValue | null>(null);
 
+// How long the auto-triggered popup stays up before it dismisses itself —
+// it's a heads-up, not a form to fill in, so it shouldn't linger.
+const AUTO_POPUP_DISMISS_MS = 6000;
+
 export function WhatsOnProvider({ children }: { children: ReactNode }) {
   const [event, setEvent] = useState<SiteEvent | null>(null);
   const [popupOpen, setPopupOpen] = useState(false);
   const [bookingEventId, setBookingEventId] = useState<string | null>(null);
+  const [autoCloseMs, setAutoCloseMs] = useState<number | null>(null);
 
   // Resolve the active event only after mount so the server render and the
   // first client render agree (they would otherwise diverge on clock/timezone).
@@ -46,6 +54,7 @@ export function WhatsOnProvider({ children }: { children: ReactNode }) {
     // Wait long enough for the hero to land and be read before interrupting.
     const timer = window.setTimeout(() => {
       setPopupOpen(true);
+      setAutoCloseMs(AUTO_POPUP_DISMISS_MS);
       try {
         window.localStorage.setItem(key, String(Date.now()));
       } catch {}
@@ -53,7 +62,10 @@ export function WhatsOnProvider({ children }: { children: ReactNode }) {
     return () => window.clearTimeout(timer);
   }, []);
 
-  const openPopup = useCallback(() => setPopupOpen(true), []);
+  const openPopup = useCallback(() => {
+    setAutoCloseMs(null);
+    setPopupOpen(true);
+  }, []);
   const closePopup = useCallback(() => setPopupOpen(false), []);
   const startBooking = useCallback(() => {
     setBookingEventId((prev) => event?.id ?? prev);
@@ -66,6 +78,7 @@ export function WhatsOnProvider({ children }: { children: ReactNode }) {
       event,
       popupOpen,
       bookingEventId,
+      autoCloseMs,
       openPopup,
       closePopup,
       startBooking,
@@ -75,6 +88,7 @@ export function WhatsOnProvider({ children }: { children: ReactNode }) {
       event,
       popupOpen,
       bookingEventId,
+      autoCloseMs,
       openPopup,
       closePopup,
       startBooking,

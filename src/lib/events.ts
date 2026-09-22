@@ -24,6 +24,8 @@ export interface SiteEvent {
   poster?: string;
   /** Open the popup once per visitor shortly after load (remembered in localStorage). */
   autoOpen?: boolean;
+  /** Walk-in event: the CTA just closes the popup instead of scrolling to the reservation form. */
+  noBooking?: boolean;
   copy: Partial<Record<Lang, SiteEventCopy>> & { en: SiteEventCopy };
 }
 
@@ -66,6 +68,7 @@ const ANNIVERSARY_5YR: SiteEvent = {
   id: "anniversary-5yr",
   poster: "/images/anniversary-popup.jpg",
   autoOpen: true,
+  noBooking: true,
   showUntilISO: "2026-10-04T00:00:00+07:00",
   bookingDate: "2026-10-03",
   locationName: "IBÉRICO Thảo Điền",
@@ -79,7 +82,7 @@ const ANNIVERSARY_5YR: SiteEvent = {
       when: "Sat 3 Oct · from 4:00 PM",
       where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
       price: "Free flow food & drinks · 4–6:30 PM",
-      cta: "Reserve a table",
+      cta: "Skip the booking. Bring your appetite.",
       bookingNote: "Booking for the 5-Year Anniversary Party — Sat 3 Oct, from 4 PM",
     },
     vi: {
@@ -91,7 +94,7 @@ const ANNIVERSARY_5YR: SiteEvent = {
       when: "Thứ Bảy 3/10 · từ 16:00",
       where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
       price: "Free flow đồ ăn & thức uống · 16:00–18:30",
-      cta: "Đặt bàn",
+      cta: "Không cần đặt trước — cứ ghé!",
       bookingNote: "Đặt bàn cho Tiệc Kỷ Niệm 5 Năm — Thứ Bảy 3/10, từ 16:00",
     },
   },

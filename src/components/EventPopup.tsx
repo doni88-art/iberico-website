@@ -11,13 +11,30 @@ import { ShimmerButton } from "./ShimmerButton";
 
 export function EventPopup() {
   const { t, lang } = useLanguage();
-  const { event, popupOpen, closePopup, startBooking } = useWhatsOn();
+  const { event, popupOpen, closePopup, startBooking, autoCloseMs } =
+    useWhatsOn();
   const shouldReduceMotion = useReducedMotion();
   const cardRef = useRef<HTMLDivElement>(null);
   const lastFocused = useRef<HTMLElement | null>(null);
   // Set when the CTA hands off to the reservation form, so the close-effect
   // cleanup does not yank focus back out of the form.
   const skipRestore = useRef(false);
+  // The auto-triggered popup is a heads-up, not a form: it dismisses itself
+  // after autoCloseMs, unless the visitor touches or focuses it first.
+  const autoCloseCancelled = useRef(false);
+
+  useEffect(() => {
+    autoCloseCancelled.current = false;
+    if (!popupOpen || !autoCloseMs) return;
+    const timer = window.setTimeout(() => {
+      if (!autoCloseCancelled.current) closePopup();
+    }, autoCloseMs);
+    return () => window.clearTimeout(timer);
+  }, [popupOpen, autoCloseMs, closePopup]);
+
+  const cancelAutoClose = () => {
+    autoCloseCancelled.current = true;
+  };
 
   // While open: lock body scroll, trap focus, restore focus on close, Esc closes.
   useEffect(() => {
@@ -103,6 +120,8 @@ export function EventPopup() {
             aria-labelledby={titleId}
             tabIndex={-1}
             onClick={(e) => e.stopPropagation()}
+            onPointerEnter={cancelAutoClose}
+            onFocusCapture={cancelAutoClose}
             initial={
               shouldReduceMotion
                 ? { opacity: 0 }
@@ -187,7 +206,7 @@ export function EventPopup() {
               <ShimmerButton
                 type="button"
                 variant="wine"
-                onClick={onReserve}
+                onClick={event.noBooking ? closePopup : onReserve}
                 className="min-w-[200px]"
               >
                 {c.cta}
