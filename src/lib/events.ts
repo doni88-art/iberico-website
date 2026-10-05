@@ -64,43 +64,7 @@ const PINCHOS_NIGHT: SiteEvent = {
   },
 };
 
-const ANNIVERSARY_5YR: SiteEvent = {
-  id: "anniversary-5yr",
-  poster: "/images/anniversary-popup.jpg",
-  autoOpen: true,
-  noBooking: true,
-  showUntilISO: "2026-10-04T00:00:00+07:00",
-  bookingDate: "2026-10-03",
-  locationName: "IBÉRICO Thảo Điền",
-  copy: {
-    en: {
-      eyebrow: "5 Years of IBÉRICO",
-      title: "The anniversary",
-      titleEm: "party",
-      description:
-        "Five years in Thảo Điền — one big night. Paella cooked live, free-flow jamón Ibérico, a DJ till late, live flamenco, and fireworks after dark.",
-      when: "Sat 3 Oct · from 4:00 PM",
-      where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
-      price: "Free flow food & drinks · 4–6:30 PM",
-      cta: "Skip the booking. Bring your appetite.",
-      bookingNote: "Booking for the 5-Year Anniversary Party — Sat 3 Oct, from 4 PM",
-    },
-    vi: {
-      eyebrow: "5 Năm IBÉRICO",
-      title: "Tiệc kỷ niệm",
-      titleEm: "năm năm",
-      description:
-        "Năm năm ở Thảo Điền — một đêm thật đã. Paella nấu tại chỗ, jamón Ibérico free flow, DJ tới khuya, flamenco sống, và pháo hoa khi trời tối.",
-      when: "Thứ Bảy 3/10 · từ 16:00",
-      where: "IBÉRICO Thảo Điền · 33 Võ Trường Toản",
-      price: "Free flow đồ ăn & thức uống · 16:00–18:30",
-      cta: "Không cần đặt trước — cứ ghé!",
-      bookingNote: "Đặt bàn cho Tiệc Kỷ Niệm 5 Năm — Thứ Bảy 3/10, từ 16:00",
-    },
-  },
-};
-
-export const SITE_EVENTS: SiteEvent[] = [PINCHOS_NIGHT, ANNIVERSARY_5YR];
+export const SITE_EVENTS: SiteEvent[] = [PINCHOS_NIGHT];
 
 /** Featured event: a still-upcoming autoOpen event wins, otherwise the soonest one; null when all have passed. */
 export function currentEvent(now: Date = new Date()): SiteEvent | null {
