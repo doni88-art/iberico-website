@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { getSupabaseAdmin, type Booking } from "@/lib/supabase";
 import { buildConfirmationEmail } from "@/lib/email";
+import { notifyBookingOnZalo } from "@/lib/zalo";
 
 export const runtime = "nodejs";
 
@@ -126,6 +127,10 @@ export async function POST(request: Request) {
     if (inserted.email) {
       await sendConfirmationNow(supabase, inserted as Booking);
     }
+
+    // Push the booking to staff on Zalo (OA message) — works regardless of
+    // which button the guest used, since Zalo links can't prefill a message.
+    await notifyBookingOnZalo(inserted as Booking);
 
     return NextResponse.json({ ok: true });
   } catch (err) {

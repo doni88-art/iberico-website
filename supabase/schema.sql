@@ -44,3 +44,15 @@ create index if not exists bookings_phone_idx on bookings (phone);
 -- (used server-side in the API routes) can read or write this table.
 -- The anon/public key the browser would otherwise use has no access at all.
 alter table bookings enable row level security;
+
+-- Zalo Official Account OAuth tokens (single row, id = 1). Written by
+-- /api/zalo/callback, refreshed automatically by src/lib/zalo.ts.
+create table if not exists zalo_oa_tokens (
+  id int primary key default 1 check (id = 1),
+  oa_id text,
+  access_token text not null,
+  refresh_token text not null,
+  expires_at timestamptz not null,
+  updated_at timestamptz not null default now()
+);
+alter table zalo_oa_tokens enable row level security;
