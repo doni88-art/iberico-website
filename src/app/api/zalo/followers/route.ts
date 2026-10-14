@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listFollowers } from "@/lib/zalo";
+import { listFollowers, listRecentChats } from "@/lib/zalo";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,7 +10,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
-    return NextResponse.json(await listFollowers());
+    const [followers, recent] = await Promise.all([listFollowers(), listRecentChats()]);
+    return NextResponse.json({ followers, recent });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 502 });
   }
