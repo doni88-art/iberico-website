@@ -84,15 +84,18 @@ async function sendText(userId: string, text: string) {
   if (json.error) throw new Error(`Zalo send failed (${json.error}): ${json.message}`);
 }
 
+// Mirrors buildMessageLines() in components/Reservation.tsx (the WhatsApp text).
 export function bookingText(b: Booking) {
   return [
-    "NEW RESERVATION",
-    `${b.name} · ${b.phone}`,
-    `${b.booking_date} ${b.booking_time} · ${b.party_size} guests`,
-    b.location,
-    b.notes ? `Notes: ${b.notes}` : null,
+    `Hi IBÉRICO! I'd like to reserve a table.`,
+    `Name: ${b.name}`,
+    `Phone: ${b.phone}`,
     b.email ? `Email: ${b.email}` : null,
-    `via ${b.channel}`,
+    `Date: ${b.booking_date}`,
+    `Time: ${b.booking_time}`,
+    `Guests: ${b.party_size}`,
+    `Location: ${b.location}`,
+    b.notes ? `Notes: ${b.notes}` : null,
   ]
     .filter(Boolean)
     .join("\n");
