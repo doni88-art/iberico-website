@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Token exchange failed" }, { status: 502 });
   }
   return new NextResponse(
-    "Zalo OA connected. Next: follow the OA from your personal Zalo, send it any message, then open /api/zalo/followers?key=<CRON_SECRET> to get your user_id.",
+    "Zalo OA connected. Next: follow the OA from your personal Zalo, send it any message, then open /api/zalo/followers?key=<ZALO_SETUP_KEY> to get your user_id.",
     { headers: { "Content-Type": "text/plain; charset=utf-8" } }
   );
 }

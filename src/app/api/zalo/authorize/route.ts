@@ -4,11 +4,11 @@ import { createHash, randomBytes } from "node:crypto";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// One-time: open /api/zalo/authorize?key=<CRON_SECRET> while logged in to Zalo
+// One-time: open /api/zalo/authorize?key=<ZALO_SETUP_KEY> while logged in to Zalo
 // as the OA admin. PKCE verifier travels in an httpOnly cookie to /callback.
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const secret = process.env.CRON_SECRET;
+  const secret = process.env.ZALO_SETUP_KEY;
   if (!secret || url.searchParams.get("key") !== secret) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
