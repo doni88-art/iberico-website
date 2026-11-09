@@ -62,28 +62,6 @@ export async function getAccessToken(): Promise<string> {
   return saveTokens(t);
 }
 
-export async function listFollowers(count = 50) {
-  const token = await getAccessToken();
-  const res = await fetch(
-    `https://openapi.zalo.me/v2.0/oa/getfollowers?data=${encodeURIComponent(
-      JSON.stringify({ offset: 0, count })
-    )}`,
-    { headers: { access_token: token } }
-  );
-  return res.json();
-}
-
-export async function listRecentChats(count = 10) {
-  const token = await getAccessToken();
-  const res = await fetch(
-    `https://openapi.zalo.me/v2.0/oa/listrecentchat?data=${encodeURIComponent(
-      JSON.stringify({ offset: 0, count })
-    )}`,
-    { headers: { access_token: token } }
-  );
-  return res.json();
-}
-
 async function sendText(userId: string, text: string) {
   const token = await getAccessToken();
   const res = await fetch(`${OA_API}/message/cs`, {
