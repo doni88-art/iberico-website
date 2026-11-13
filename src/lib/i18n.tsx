@@ -1551,7 +1551,7 @@ const en: Dict = {
     emailUs: "Email",
     lateNote:
       "Kitchen closes for hot dishes at 22:30 — a limited menu (cold cuts, cheeses, wine) is still available for bookings until 23:30.",
-    zaloCopied: "Details copied — paste them into the Zalo chat that just opened.",
+    zaloCopied: "Last step: your details are copied. PASTE them into the Zalo chat that just opened and press SEND.",
   },
   footer: {
     tagline: "Authentic Spanish tapas & wine, shared in Ho Chi Minh City.",
@@ -2952,7 +2952,7 @@ const vi: Dict = {
     emailUs: "Email",
     lateNote:
       "Bếp nóng đóng cửa lúc 22:30 — vẫn có thể đặt bàn đến 23:30 với thực đơn giới hạn (đồ nguội, phô mai, rượu vang).",
-    zaloCopied: "Đã sao chép thông tin — vui lòng dán vào cuộc trò chuyện Zalo vừa mở.",
+    zaloCopied: "Bước cuối: thông tin đã được sao chép. Hãy DÁN vào cuộc trò chuyện Zalo vừa mở và nhấn GỬI.",
   },
   footer: {
     tagline: "Tapas và rượu vang Tây Ban Nha chính thống, cùng chia sẻ tại Thành phố Hồ Chí Minh.",
@@ -4353,7 +4353,7 @@ const es: Dict = {
     emailUs: "Correo",
     lateNote:
       "La cocina caliente cierra a las 22:30 — aún se puede reservar hasta las 23:30 con una carta limitada (embutidos, quesos, vino).",
-    zaloCopied: "Detalles copiados — pégalos en el chat de Zalo que se acaba de abrir.",
+    zaloCopied: "Último paso: tus datos están copiados. PÉGALOS en el chat de Zalo que se acaba de abrir y pulsa ENVIAR.",
   },
   footer: {
     tagline: "Auténticas tapas y vino español, para compartir en Ho Chi Minh.",

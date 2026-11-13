@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { getSupabaseAdmin, type Booking } from "@/lib/supabase";
 import { buildConfirmationEmail } from "@/lib/email";
-import { notifyBookingOnZalo } from "@/lib/zalo";
+import { notifyBookingOnZalo, bookingText } from "@/lib/zalo";
 
 export const runtime = "nodejs";
 
@@ -60,6 +60,29 @@ async function sendConfirmationNow(
     }
   } catch (err) {
     console.error("Immediate confirmation send threw, cron will retry:", err);
+  }
+}
+
+
+async function sendStaffAlert(booking: Booking) {
+  const resendKey = process.env.RESEND_API_KEY;
+  if (!resendKey) return;
+  try {
+    const to = (process.env.BOOKING_ALERT_EMAIL ?? "reservation@weareiberico.com")
+      .split(",")
+      .map((a) => a.trim())
+      .filter(Boolean);
+    const resend = new Resend(resendKey);
+    const { error } = await resend.emails.send({
+      from: process.env.RESEND_FROM ?? "IBÉRICO <onboarding@resend.dev>",
+      to,
+      replyTo: booking.email ?? undefined,
+      subject: `New reservation — ${booking.name} · ${booking.booking_date} ${booking.booking_time} · ${booking.party_size} guests · ${booking.location}`,
+      text: `${bookingText(booking)}\n\nVia: ${booking.channel}`,
+    });
+    if (error) console.error("Staff alert email failed:", error.message);
+  } catch (err) {
+    console.error("Staff alert email threw:", err);
   }
 }
 
@@ -130,6 +153,7 @@ export async function POST(request: Request) {
 
     // Push the booking to staff on Zalo (OA message) — works regardless of
     // which button the guest used, since Zalo links can't prefill a message.
+    await sendStaffAlert(inserted as Booking);
     await notifyBookingOnZalo(inserted as Booking);
 
     return NextResponse.json({ ok: true });

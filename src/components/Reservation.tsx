@@ -334,7 +334,10 @@ export function Reservation() {
                   {t.reservation.successBody}
                 </p>
                 {channel === "zalo" && (
-                  <p className="mt-3 max-w-sm text-sm leading-relaxed text-wine">
+                  <p
+                    role="alert"
+                    className="mt-5 w-full max-w-md rounded-sm border-2 border-wine bg-wine/10 px-5 py-4 text-lg font-bold leading-snug text-wine sm:text-xl"
+                  >
                     {t.reservation.zaloCopied}
                   </p>
                 )}
