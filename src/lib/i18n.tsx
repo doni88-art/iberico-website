@@ -1489,7 +1489,7 @@ const en: Dict = {
       "We're always looking for people who care about great food and warm hospitality — across our Saigon and Hội An houses.",
     applyCta: "Apply Now",
     emailNote:
-      "Send your CV and a short note to hola@weareiberico.com, or reach us on WhatsApp — tell us which role and location you're applying for.",
+      "Send your CV and a short note to reservation@weareiberico.com, or reach us on WhatsApp — tell us which role and location you're applying for.",
     positions: [
       {
         title: "Waiter",
@@ -2890,7 +2890,7 @@ const vi: Dict = {
       "Chúng tôi luôn tìm kiếm những người yêu ẩm thực và dịch vụ chân thành — tại cả Sài Gòn và Hội An.",
     applyCta: "Ứng Tuyển Ngay",
     emailNote:
-      "Gửi CV và vài dòng giới thiệu đến hola@weareiberico.com, hoặc nhắn tin qua WhatsApp — cho chúng tôi biết bạn ứng tuyển vị trí nào và tại chi nhánh nào.",
+      "Gửi CV và vài dòng giới thiệu đến reservation@weareiberico.com, hoặc nhắn tin qua WhatsApp — cho chúng tôi biết bạn ứng tuyển vị trí nào và tại chi nhánh nào.",
     positions: [
       {
         title: "Nhân Viên Phục Vụ",
@@ -4291,7 +4291,7 @@ const es: Dict = {
       "Siempre buscamos personas apasionadas por la buena comida y la hospitalidad cercana — en Saigón y Hội An.",
     applyCta: "Postular Ahora",
     emailNote:
-      "Envía tu CV y una breve nota a hola@weareiberico.com, o escríbenos por WhatsApp — cuéntanos a qué puesto y en qué local te postulas.",
+      "Envía tu CV y una breve nota a reservation@weareiberico.com, o escríbenos por WhatsApp — cuéntanos a qué puesto y en qué local te postulas.",
     positions: [
       {
         title: "Camarero/a",

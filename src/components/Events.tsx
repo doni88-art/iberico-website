@@ -44,7 +44,7 @@ export function Events() {
 
           <Reveal delay={0.2}>
             <ShimmerButton
-              href="mailto:hola@weareiberico.com?subject=Private%20Event%20Enquiry"
+              href="mailto:reservation@weareiberico.com?subject=Private%20Event%20Enquiry"
               variant="wine"
               className="mt-10"
             >

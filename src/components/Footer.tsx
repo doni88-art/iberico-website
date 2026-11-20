@@ -84,7 +84,7 @@ export function Footer() {
                 <FacebookIcon size={18} />
               </a>
               <a
-                href="mailto:hola@weareiberico.com"
+                href="mailto:reservation@weareiberico.com"
                 aria-label="Email"
                 className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-cream/20 transition-colors hover:border-wine-bright hover:text-wine-bright"
               >
