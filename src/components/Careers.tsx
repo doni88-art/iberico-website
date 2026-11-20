@@ -5,7 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { Reveal, RevealGroup, revealItem } from "./Reveal";
 
-const CAREERS_EMAIL = "reservation@weareiberico.com";
+const CAREERS_EMAIL = "hola@weareiberico.com";
 
 export function Careers() {
   const { t } = useLanguage();
