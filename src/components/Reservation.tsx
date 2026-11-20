@@ -15,7 +15,7 @@ import { ZaloIcon, WhatsAppIcon } from "./SocialIcons";
 // Hội An has its own WhatsApp/Zalo number. Digits only, country code first.
 const CENTRAL_BOOKINGS_NUMBER = "84849000531";
 const HOI_AN_BOOKINGS_NUMBER = "84868774026";
-const BOOKINGS_EMAIL = "hola@weareiberico.com";
+const BOOKINGS_EMAIL = "reservation@weareiberico.com";
 
 // Keyed by the (untranslated) location name — the same key set as LOCATION_HOURS.
 const LOCATION_BOOKINGS_NUMBER: Record<string, string> = {
