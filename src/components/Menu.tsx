@@ -179,15 +179,21 @@ export function Menu() {
           {note}
         </p>
 
-        <p className="mt-4 text-center">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+          <Link
+            href="/menu"
+            className="inline-flex min-h-11 items-center rounded-full border border-gold-light/60 px-5 text-sm font-semibold text-gold-light transition-colors hover:bg-gold-light hover:text-ink"
+          >
+            View full menu (Saigon)
+          </Link>
           <Link
             href="/menu/zh"
             lang="zh-Hans"
             className="inline-flex min-h-11 items-center rounded-full border border-cream/20 px-5 text-sm text-cream/80 transition-colors hover:border-gold-light hover:text-cream"
           >
-            中文菜单 · Chinese menu (Saigon)
+            中文菜单
           </Link>
-        </p>
+        </div>
 
         <div className="mt-12 flex flex-col items-center gap-5 border-t border-cream/10 pt-12 text-center">
           <p className="font-display text-balance text-2xl text-cream sm:text-3xl">
