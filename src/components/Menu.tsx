@@ -21,10 +21,11 @@ const CATEGORY_IMAGES = [
   "/images/menu-sangria-pour.jpg",
 ];
 
-const SAIGON_LABEL: Record<"en" | "vi" | "es", string> = {
+const SAIGON_LABEL: Record<"en" | "vi" | "es" | "zh", string> = {
   en: "Saigon",
   vi: "Sài Gòn",
   es: "Saigón",
+  zh: "西贡",
 };
 
 type LocationView = "saigon" | "hoian";

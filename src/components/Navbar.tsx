@@ -88,7 +88,7 @@ export function Navbar() {
           </a>
 
           <ul
-            className={`hidden lg:flex items-center gap-9 text-sm font-medium tracking-wide ${
+            className={`hidden lg:flex items-center gap-6 xl:gap-9 whitespace-nowrap text-sm font-medium tracking-wide ${
               scrolled ? "text-charcoal" : "text-cream/90"
             }`}
           >
@@ -130,7 +130,7 @@ export function Navbar() {
               setLang={setLang}
               light={!scrolled}
             />
-            <ShimmerButton href="#reserve" variant="wine" size="sm" className="hover:scale-[1.03]">
+            <ShimmerButton href="#reserve" variant="wine" size="sm" className="whitespace-nowrap hover:scale-[1.03]">
               {t.nav.reserve}
             </ShimmerButton>
           </div>
@@ -265,7 +265,7 @@ function LangSwitcher({
           key={code}
           type="button"
           onClick={() => setLang(code)}
-          className={`flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-2 transition-colors ${
+          className={`flex cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 transition-colors ${
             lang === code
               ? "bg-gold text-ink"
               : light

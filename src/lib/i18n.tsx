@@ -8,8 +8,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { zh } from "./i18n-zh";
 
-export type Lang = "en" | "vi" | "es";
+export type Lang = "en" | "vi" | "es" | "zh";
 
 export interface MenuItem {
   name: string;
@@ -4364,18 +4365,20 @@ const es: Dict = {
   },
 };
 
-export const dictionaries: Record<Lang, Dict> = { en, vi, es };
+export const dictionaries: Record<Lang, Dict> = { en, vi, es, zh };
 
 export const languageLabels: Record<Lang, string> = {
   en: "EN",
   vi: "VI",
   es: "ES",
+  zh: "中文",
 };
 
 export const languageFlags: Record<Lang, string> = {
   en: "🇬🇧",
   vi: "🇻🇳",
   es: "🇪🇸",
+  zh: "🇨🇳",
 };
 
 interface LanguageContextValue {
@@ -4402,7 +4405,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       setLangState(stored);
     } else {
       const browserLang = navigator.language.slice(0, 2);
-      if (browserLang === "vi" || browserLang === "es") {
+      if (browserLang === "vi" || browserLang === "es" || browserLang === "zh") {
         setLangState(browserLang);
       }
     }
