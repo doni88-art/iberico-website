@@ -181,13 +181,15 @@ export function Menu() {
 
         <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
           <Link
-            href="/menu"
+            href={location === "saigon" ? "/menu" : "/menu/hoi-an"}
             className="inline-flex min-h-11 items-center rounded-full border border-gold-light/60 px-5 text-sm font-semibold text-gold-light transition-colors hover:bg-gold-light hover:text-ink"
           >
-            View full menu (Saigon)
+            {location === "saigon"
+              ? "View full menu (Saigon)"
+              : "View full menu (Hội An)"}
           </Link>
           <Link
-            href="/menu/zh"
+            href={location === "saigon" ? "/menu/zh" : "/menu/hoi-an/zh"}
             lang="zh-Hans"
             className="inline-flex min-h-11 items-center rounded-full border border-cream/20 px-5 text-sm text-cream/80 transition-colors hover:border-gold-light hover:text-cream"
           >
