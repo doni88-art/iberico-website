@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
 import { Reveal } from "./Reveal";
@@ -176,6 +177,16 @@ export function Menu() {
 
         <p className="mt-14 text-center text-xs text-cream/60">
           {note}
+        </p>
+
+        <p className="mt-4 text-center">
+          <Link
+            href="/menu/zh"
+            lang="zh-Hans"
+            className="inline-flex min-h-11 items-center rounded-full border border-cream/20 px-5 text-sm text-cream/80 transition-colors hover:border-gold-light hover:text-cream"
+          >
+            中文菜单 · Chinese menu (Saigon)
+          </Link>
         </p>
 
         <div className="mt-12 flex flex-col items-center gap-5 border-t border-cream/10 pt-12 text-center">
