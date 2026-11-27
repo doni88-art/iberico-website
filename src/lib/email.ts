@@ -127,7 +127,7 @@ export function buildConfirmationEmail(booking: Booking) {
 // Sends the guest to a Google Maps search for their specific location, where
 // the review composer is one click away — avoids needing each location's
 // exact Google Place ID hardcoded here.
-function googleReviewUrl(location: string) {
+export function googleReviewUrl(location: string) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
 }
 

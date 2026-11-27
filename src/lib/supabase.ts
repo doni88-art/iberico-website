@@ -31,4 +31,5 @@ export type Booking = {
   lang: "en" | "vi" | "es";
   confirmation_email_sent_at: string | null;
   survey_email_sent_at: string | null;
+  whatsapp_review_sent_at: string | null;
 };

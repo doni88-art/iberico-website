@@ -56,3 +56,10 @@ create table if not exists zalo_oa_tokens (
   updated_at timestamptz not null default now()
 );
 alter table zalo_oa_tokens enable row level security;
+
+-- Google-review request sent to guests on WhatsApp ~3h after the visit
+-- (see /api/send-whatsapp-reviews).
+alter table bookings add column if not exists whatsapp_review_sent_at timestamptz;
+create index if not exists bookings_pending_wa_review_idx
+  on bookings (reservation_at)
+  where whatsapp_review_sent_at is null and channel = 'whatsapp';
